@@ -22,10 +22,13 @@ public class Constants {
         public static int FOREGROUND_SERVICE = 101;
     }
 
+
+
     public static TextView count = null;
     public static float lastCount = 0;
 
     public static String STEP = "start counting";
+    public static String STEP_OR_BIKE = "twoInOne";//true == step & false == bike
 
     public static Notification showNotification(String title, String message,
                                         Context context, Intent intent, boolean makeSound, boolean canClose) {

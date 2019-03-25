@@ -17,7 +17,7 @@ import android.util.Log;
 
 import java.util.Objects;
 
-public class StepCountingService extends Service implements SensorEventListener {
+public class SaveLocationService extends Service implements SensorEventListener {
 
     private static final int NOTIF_ID = 1;
     private static final String NOTIF_CHANNEL_ID = "Channel_Id";
