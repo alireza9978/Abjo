@@ -1,10 +1,10 @@
 package coleo.com.abjo.constants;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -17,23 +17,29 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.widget.TextView;
 
-import coleo.com.abjo.activity.Menu;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.Menu;
+import coleo.com.abjo.service.MyReceiver;
 
 public class Constants {
 
     public interface ACTION {
-        public static String STARTFOREGROUND_ACTION = "com.truiton.foregroundservice.action.startforeground";
-        public static String STOPFOREGROUND_ACTION = "com.truiton.foregroundservice.action.stopforeground";
+        public static String START_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.start.foreground.step";
+        public static String START_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.start.foreground.bike";
+        public static String PAUSE_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.pause.foreground.step";
+        public static String PAUSE_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.pause.foreground.bike";
+        public static String RESUME_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.resume.foreground.step";
+        public static String RESUME_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.resume.foreground.bike";
+        public static String STOP_FOREGROUND_ACTION = "com.truiton.foregroundservice.action.stop.foreground";
     }
 
     public interface NOTIFICATION_ID {
         public static int FOREGROUND_SERVICE = 101;
     }
 
+    private static String NOTIFICATION_CHANELL_ID = "com.coleo.abjo";
 
 
     public static TextView count = null;
@@ -41,57 +47,118 @@ public class Constants {
 
     public static String STEP = "start counting";
     public static String STEP_OR_BIKE = "twoInOne";//true == step & false == bike
+    public static String FROM_NOTIFICATION = "fromOtherSide";
+    public static String IS_PAUSE = "fromDarkSide";
 
-    public static Notification showNotification(String title, String message,
-                                        Context context, Intent intent, boolean makeSound, boolean canClose) {
+    public static NotificationCompat.Builder showNotification(String title, String message,
+                                                              Context context, boolean makeSound,
+                                                              boolean canClose, boolean isStep,
+                                                              boolean isPause) {
+        //todo separate bike and step
+        //todo prevent open program many time
+        Intent intent = new Intent(context, Menu.class);
+        intent.putExtra(FROM_NOTIFICATION, true);
+        intent.putExtra(IS_PAUSE, isPause);
+        intent.putExtra(STEP_OR_BIKE, isStep);
 
+        Intent pause = new Intent(context, MyReceiver.class);
+        if (isPause) {
+            if (isStep) {
+                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
+            } else {
+                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
+            }
+        } else {
+            if (isStep) {
+                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
+            } else {
+                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
+            }
+        }
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(context, 0, pause, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "com.coleo.abjo")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANELL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(message)
+                .setOnlyAlertOnce(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setOngoing(!canClose);
+                .setOngoing(!canClose)
+                .addAction(android.R.drawable.ic_media_pause, "pause", snoozePendingIntent);
 
 
-        if (intent != null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(pendingIntent);
-        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            int importance = NotificationManager.IMPORTANCE_MIN;
+//            if (makeSound) {
+//                importance = NotificationManager.IMPORTANCE_DEFAULT;
+//            }
+//
+//            NotificationChannel channel = new NotificationChannel(
+//                    NOTIFICATION_CHANELL_ID,
+//                    context.getString(R.string.app_name),
+//                    importance
+//            );
+//
+//            if (notificationManager != null) {
+//                notificationManager.createNotificationChannel(channel);
+//            }
+//        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId("com.coleo.abjo");
+            builder.setChannelId(NOTIFICATION_CHANELL_ID);
             if (makeSound) {
                 builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
             } else {
                 builder.setPriority(NotificationManager.IMPORTANCE_MIN);
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_MIN;
-            if (makeSound) {
-                importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+        return builder;
+    }
+
+    @SuppressLint("RestrictedApi")
+    public static void updateNotification(NotificationCompat.Builder notification,
+                                          String title, String message,
+                                          Context context,
+                                          boolean isPause, boolean isStep) {
+
+        Intent pause = new Intent(context, MyReceiver.class);
+        int drawable;
+        String actionName;
+        if (isPause) {
+            actionName = "resume";
+            drawable = android.R.drawable.ic_media_play;
+            if (isStep) {
+                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
+            } else {
+                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
             }
-
-            NotificationChannel channel = new NotificationChannel(
-                    "com.coleo.abjo",
-                    context.getString(R.string.app_name),
-                    importance
-            );
-
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-
-        if (notificationManager != null) {
-            return builder.build();
         } else {
-            Log.i("Constants", "showNotification: null");
-            return null;
+            actionName = "pause";
+            drawable = android.R.drawable.ic_media_pause;
+            if (isStep) {
+                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
+            } else {
+                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
+            }
         }
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(context, 0, pause, 0);
+
+        notification.mActions.clear();
+        notification.addAction(drawable, actionName, snoozePendingIntent);
+        notification.setContentTitle(title);
+        notification.setContentText(message);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
     }
 
 

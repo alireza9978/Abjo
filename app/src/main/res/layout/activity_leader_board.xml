@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LeaderBoard">
+    tools:context=".activity.LeaderBoard">
 
 </android.support.constraint.ConstraintLayout>
