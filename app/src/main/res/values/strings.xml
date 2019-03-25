@@ -3,4 +3,5 @@
     <string name="step_count_button_text">step</string>
     <string name="bike_button_text">bike</string>
     <string name="leader_board_button_text">leader board</string>
+    <string name="gps_network_not_enabled">your location is off</string>
 </resources>
