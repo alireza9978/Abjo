@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -17,14 +18,19 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Button;
 import android.widget.TextView;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.Menu;
 import coleo.com.abjo.service.MyReceiver;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Constants {
 
+    public static final String LAST_ACTION_PRE_NAME = "unknown";
+    public static final String LAST_ACTION_SAVE_NAME = "noName";
     public interface ACTION {
         public static String START_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.start.foreground.step";
         public static String START_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.start.foreground.bike";
@@ -34,10 +40,21 @@ public class Constants {
         public static String RESUME_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.resume.foreground.bike";
         public static String STOP_FOREGROUND_ACTION = "com.truiton.foregroundservice.action.stop.foreground";
     }
+    public static boolean isActionKindStep(String action){
+        return !action.equals(ACTION.START_FOREGROUND_ACTION_BIKE) &&
+                !action.equals(ACTION.PAUSE_FOREGROUND_ACTION_BIKE) &&
+                !action.equals(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
+
+    }
 
     public interface NOTIFICATION_ID {
         public static int FOREGROUND_SERVICE = 101;
     }
+
+    public static Button start_stop = null;
+    public static Button pause_resume= null;
+    public static boolean isWorking = false;
+    public static boolean isPause = false;
 
     private static String NOTIFICATION_CHANELL_ID = "com.coleo.abjo";
 
@@ -46,20 +63,20 @@ public class Constants {
     public static float lastCount = 0;
 
     public static String STEP = "start counting";
-    public static String STEP_OR_BIKE = "twoInOne";//true == step & false == bike
+    public static String STEP_OR_BIKE = "start counting";
+    public static String LAST_ACTION_INTENT = "twoInOne";//true == step & false == bike
     public static String FROM_NOTIFICATION = "fromOtherSide";
-    public static String IS_PAUSE = "fromDarkSide";
 
     public static NotificationCompat.Builder showNotification(String title, String message,
                                                               Context context, boolean makeSound,
                                                               boolean canClose, boolean isStep,
                                                               boolean isPause) {
-        //todo separate bike and step
         //todo prevent open program many time
         Intent intent = new Intent(context, Menu.class);
         intent.putExtra(FROM_NOTIFICATION, true);
-        intent.putExtra(IS_PAUSE, isPause);
-        intent.putExtra(STEP_OR_BIKE, isStep);
+        intent.putExtra(LAST_ACTION_INTENT, getLastAction(context));
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         Intent pause = new Intent(context, MyReceiver.class);
         if (isPause) {
@@ -89,7 +106,6 @@ public class Constants {
                 .addAction(android.R.drawable.ic_media_pause, "pause", snoozePendingIntent);
 
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
 //        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -149,11 +165,11 @@ public class Constants {
                 pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
             }
         }
-        PendingIntent snoozePendingIntent =
+        PendingIntent pausePendingIntent =
                 PendingIntent.getBroadcast(context, 0, pause, 0);
 
         notification.mActions.clear();
-        notification.addAction(drawable, actionName, snoozePendingIntent);
+        notification.addAction(drawable, actionName, pausePendingIntent);
         notification.setContentTitle(title);
         notification.setContentText(message);
 
@@ -242,6 +258,17 @@ public class Constants {
         if (!gps_enabled && !network_enabled) {
             Constants.displayPromptForEnablingGPS(context);
         }
+    }
+
+    public static void saveLastAction(Context context,String action){
+        SharedPreferences.Editor editor = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE).edit();
+        editor.putString(LAST_ACTION_SAVE_NAME, action);
+        editor.apply();
+    }
+
+    public static String getLastAction(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE);
+        return sharedPreferences.getString(LAST_ACTION_SAVE_NAME, ACTION.STOP_FOREGROUND_ACTION);
     }
 
 }

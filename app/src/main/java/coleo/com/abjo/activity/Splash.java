@@ -18,7 +18,6 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        //todo set last action to intent
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

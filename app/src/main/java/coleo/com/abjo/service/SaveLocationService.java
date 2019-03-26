@@ -14,16 +14,21 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 
 import java.util.Objects;
 
 import coleo.com.abjo.constants.Constants;
+
+import static coleo.com.abjo.constants.Constants.pause_resume;
+import static coleo.com.abjo.constants.Constants.start_stop;
 
 public class SaveLocationService extends Service implements SensorEventListener {
 
     private static final String LOG_TAG = "ForegroundService";
     private String TAG = "counter";
     private SensorManager sensorManager;
+    private boolean isStep = false;
 
     @Override
     public void onCreate() {
@@ -38,6 +43,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 //        }
         //todo save location and send to server
         // Acquire a reference to the system Location Manager
+
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         // Define a listener that responds to location updates
@@ -76,24 +82,27 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //todo save last action
+        Constants.saveLastAction(getBaseContext(), intent.getAction());
         switch (Objects.requireNonNull(intent.getAction())) {
             case Constants.ACTION.START_FOREGROUND_ACTION_STEP: {
                 Log.i(LOG_TAG, "Received Start Foreground Intent step");
-                notification = Constants.showNotification("wow", "we are calculating your steps"
+
+                notification = Constants.showNotification("STEP", "we are calculating your steps"
                         , this, true, false, true, false);
                 startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                         notification.build());
-
+                startService();
+                isStep = true;
                 break;
             }
             case Constants.ACTION.START_FOREGROUND_ACTION_BIKE: {
                 Log.i(LOG_TAG, "Received Start Foreground Intent bike");
-                notification = Constants.showNotification("wow", "we are calculating your steps"
+                notification = Constants.showNotification("BIKE", "we are calculating your cycle"
                         , this, true, false, false, false);
                 startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                         notification.build());
-
+                startService();
+                isStep = false;
                 break;
             }
             case Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP: {
@@ -101,6 +110,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
                 Constants.updateNotification(notification, "wow", "we are calculating your steps"
                         , this, true,true);
+                pauseService();
                 break;
             }
             case Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE: {
@@ -108,6 +118,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
                 Constants.updateNotification(notification, "wow", "we are calculating your steps"
                         , this, true,false);
+                pauseService();
                 break;
             }
             case Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP: {
@@ -115,6 +126,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
                 Constants.updateNotification(notification, "wow", "we are calculating your steps"
                         , this, false,true);
+                resumeService();
                 break;
             }
             case Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE: {
@@ -122,11 +134,14 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
                 Constants.updateNotification(notification, "wow", "we are calculating your steps"
                         , this, false,false);
+                resumeService();
+
                 break;
             }
             case Constants.ACTION.STOP_FOREGROUND_ACTION:
                 Log.i(LOG_TAG, "Received Stop Foreground Intent");
                 stopForeground(true);
+                stopService();
                 stopSelf();
                 break;
         }
@@ -147,5 +162,32 @@ public class SaveLocationService extends Service implements SensorEventListener 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    private void startService() {
+        start_stop.setText("stop");
+        pause_resume.setVisibility(View.VISIBLE);
+        Constants.isWorking = true;
+        Constants.isPause = false;
+    }
+
+    private void stopService() {
+        start_stop.setText("start");
+        pause_resume.setVisibility(View.INVISIBLE);
+        Constants.isWorking = false;
+        Constants.isPause = false;
+    }
+
+    private void pauseService() {
+        pause_resume.setText("resume");
+        Constants.isWorking = true;
+        Constants.isPause = true;
+    }
+
+    private void resumeService() {
+        pause_resume.setText("pause");
+        Constants.isPause = false;
+        Constants.isWorking = true;
+    }
+
 }
 

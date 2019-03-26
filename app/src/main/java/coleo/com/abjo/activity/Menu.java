@@ -17,18 +17,17 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     private boolean fromNotification = false;
     private boolean fromStep = false;
     private boolean isPause = false;
+    private String lastAction = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        lastAction = Constants.getLastAction(this);
+
         Bundle extra = getIntent().getExtras();
         fromNotification = Objects.requireNonNull(extra).getBoolean(Constants.FROM_NOTIFICATION, false);
-        if (fromNotification) {
-            fromStep = extra.getBoolean(Constants.STEP_OR_BIKE, false);
-            isPause = extra.getBoolean(Constants.IS_PAUSE, false);
-        }
 
     }
 
@@ -37,13 +36,22 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         Constants.checkPermission(this);
         Constants.checkLocation(this);
+        lastAction = Constants.getLastAction(this);
         if (fromNotification) {
             Intent intent = new Intent(this, CountActivity.class);
-            intent.putExtra(Constants.FROM_NOTIFICATION,true);
-            intent.putExtra(Constants.IS_PAUSE,isPause);
-            intent.putExtra(Constants.STEP_OR_BIKE, fromStep);
+            //age az notification biad hatman last action == stop nabode
             startActivity(intent);
             fromNotification = false;
+        } else {
+            if (!lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
+                findViewById(R.id.start_bycicle_button_id).setVisibility(View.INVISIBLE);
+                findViewById(R.id.start_step_button_id).setVisibility(View.INVISIBLE);
+                findViewById(R.id.continue_last_action_id).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.start_bycicle_button_id).setVisibility(View.VISIBLE);
+                findViewById(R.id.start_step_button_id).setVisibility(View.VISIBLE);
+                findViewById(R.id.continue_last_action_id).setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -57,7 +65,6 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             case R.id.start_step_button_id: {
                 Log.i(TAG, "onClick: step");
                 Intent intent = new Intent(this, CountActivity.class);
-                intent.putExtra(Constants.FROM_NOTIFICATION,false);
                 intent.putExtra(Constants.STEP_OR_BIKE, true);
                 startActivity(intent);
                 break;
@@ -65,8 +72,13 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             case R.id.start_bycicle_button_id: {
                 Log.i(TAG, "onClick: bike");
                 Intent intent = new Intent(this, CountActivity.class);
-                intent.putExtra(Constants.FROM_NOTIFICATION,false);
                 intent.putExtra(Constants.STEP_OR_BIKE, false);
+                startActivity(intent);
+                break;
+            }
+            case R.id.continue_last_action_id: {
+                Intent intent = new Intent(this, CountActivity.class);
+//                intent.putExtra(Constants.STEP_OR_BIKE, Constants.isActionKindStep(lastAction));
                 startActivity(intent);
                 break;
             }
@@ -76,4 +88,6 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             }
         }
     }
+
+
 }
