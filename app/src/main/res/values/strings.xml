@@ -5,4 +5,8 @@
     <string name="leader_board_button_text">leader board</string>
     <string name="gps_network_not_enabled">your location is off</string>
     <string name="menu_last_action_button_text">continue last action</string>
+    <string name="stop_service">stop</string>
+    <string name="start_service">start</string>
+    <string name="resume_service">resume</string>
+    <string name="pause_service">pause</string>
 </resources>

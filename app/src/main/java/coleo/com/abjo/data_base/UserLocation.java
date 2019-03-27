@@ -10,16 +10,14 @@ public class UserLocation {
     public UserLocation() {
     }
 
-    private static int count = 0;
-
-    public UserLocation(double latitude, double longitude) {
+    public UserLocation(double latitude, double longitude, String time) {
         this.latitude = "" + latitude;
         this.longitude = "" + longitude;
-        this.number = count;
-        count++;
+        this.time = time;
     }
 
-    @PrimaryKey
+
+    @PrimaryKey(autoGenerate = true)
     public int number;
 
     @ColumnInfo(name = "user_lat")
@@ -27,5 +25,8 @@ public class UserLocation {
 
     @ColumnInfo(name = "user_lng")
     public String longitude;
+
+    @ColumnInfo(name = "time")
+    public String time;
 
 }

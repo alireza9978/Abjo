@@ -19,9 +19,13 @@ public interface UserLocationDao {
             "user_lng LIKE :temp_lng LIMIT 1")
     UserLocation findByName(String temp_lat, String temp_lng);
 
+    @Query("DELETE FROM UserLocation")
+    void nukeTable();
+
     @Insert
     void insertAll(UserLocation... users);
 
     @Delete
     void delete(UserLocation user);
+
 }

@@ -65,6 +65,7 @@ public class Constants {
 
     public static TextView count = null;
     public static float lastCount = 0;
+    public static int stepCounted = 0;
 
     public static String STEP = "start counting";
     public static String STEP_OR_BIKE = "start counting";

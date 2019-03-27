@@ -1,12 +1,15 @@
 package coleo.com.abjo.data_base;
 
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 
 import coleo.com.abjo.constants.Constants;
@@ -23,8 +26,12 @@ public class locationRepository {
         new insertAsyncTask(userLocationDao).execute(location);
     }
 
-    public void showSize(Context context) {
-        new getAsyncTask(userLocationDao, context).execute();
+    public void nukeTable() {
+        new nukeAsyncTask(userLocationDao).execute();
+    }
+
+    public void makeJsonAndSend() {
+        new getAsyncTask(userLocationDao).execute();
     }
 
     private static class insertAsyncTask extends AsyncTask<UserLocation, Void, Void> {
@@ -43,25 +50,38 @@ public class locationRepository {
         }
     }
 
-    private static class getAsyncTask extends AsyncTask<Void, Void, Integer> {
+    private static class nukeAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private UserLocationDao mAsyncTaskDao;
-        private Context context;
 
-        getAsyncTask(UserLocationDao dao, Context context) {
+        nukeAsyncTask(UserLocationDao dao) {
             mAsyncTaskDao = dao;
-            this.context = context;
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
-            return makeJson(mAsyncTaskDao.getAll()).toString().length();
+        protected Void doInBackground(Void... voids) {
+            mAsyncTaskDao.nukeTable();
+            return null;
+        }
+    }
+
+    private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject> {
+
+        private UserLocationDao mAsyncTaskDao;
+
+        getAsyncTask(UserLocationDao dao) {
+            mAsyncTaskDao = dao;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            Constants.start_stop.setText(" = " + integer);
+        protected JSONObject doInBackground(Void... voids) {
+            return makeJson(mAsyncTaskDao.getAll());
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            //todo send to server with server class
         }
 
         private JSONObject makeJson(List<UserLocation> locations) {
@@ -72,12 +92,14 @@ public class locationRepository {
                     JSONObject locationJsonObject = new JSONObject();
                     locationJsonObject.put("lat", location.latitude);
                     locationJsonObject.put("lng", location.longitude);
+                    locationJsonObject.put("time", location.time);
                     array.put(locationJsonObject);
                 }
                 object.put("locations", array);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.i("location rep", "makeJson: " + object.toString());
             return object;
         }
 
