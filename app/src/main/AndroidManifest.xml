@@ -22,8 +22,11 @@
         <activity android:name=".activity.LeaderBoard" />
         <activity
             android:name=".activity.Menu"
+            android:launchMode = "singleTop"
             />
-        <activity android:name=".activity.CountActivity"
+        <activity
+            android:name=".activity.CountActivity"
+            android:launchMode = "singleTop"
             />
         <activity android:name=".activity.Splash">
             <intent-filter>

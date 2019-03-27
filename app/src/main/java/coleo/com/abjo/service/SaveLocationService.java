@@ -148,7 +148,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
         super.onDestroy();
         locationManager.removeUpdates(locationListener);
         if (isStep) {
-            Constants.start_stop.setText(stepCounted);
+            Constants.start_stop.setText("" + stepCounted);
         }
     }
 

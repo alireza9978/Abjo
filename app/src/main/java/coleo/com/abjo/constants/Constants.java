@@ -23,9 +23,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.TextView;
 
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.CountActivity;
 import coleo.com.abjo.activity.Menu;
 import coleo.com.abjo.service.MyReceiver;
 
@@ -33,16 +33,16 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Constants {
 
-    public static final String LAST_ACTION_PRE_NAME = "unknown";
-    public static final String LAST_ACTION_SAVE_NAME = "noName";
+    private static final String LAST_ACTION_PRE_NAME = "unknown";
+    private static final String LAST_ACTION_SAVE_NAME = "noName";
     public interface ACTION {
-        public static String START_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.start.foreground.step";
-        public static String START_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.start.foreground.bike";
-        public static String PAUSE_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.pause.foreground.step";
-        public static String PAUSE_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.pause.foreground.bike";
-        public static String RESUME_FOREGROUND_ACTION_STEP = "com.truiton.foregroundservice.action.resume.foreground.step";
-        public static String RESUME_FOREGROUND_ACTION_BIKE = "com.truiton.foregroundservice.action.resume.foreground.bike";
-        public static String STOP_FOREGROUND_ACTION = "com.truiton.foregroundservice.action.stop.foreground";
+        String START_FOREGROUND_ACTION_STEP = "com.coleo.foreground.service.action.start.foreground.step";
+        String START_FOREGROUND_ACTION_BIKE = "com.coleo.foreground.service.action.start.foreground.bike";
+        String PAUSE_FOREGROUND_ACTION_STEP = "com.coleo.foreground.service.action.pause.foreground.step";
+        String PAUSE_FOREGROUND_ACTION_BIKE = "com.coleo.foreground.service.action.pause.foreground.bike";
+        String RESUME_FOREGROUND_ACTION_STEP = "com.coleo.foreground.service.action.resume.foreground.step";
+        String RESUME_FOREGROUND_ACTION_BIKE = "com.coleo.foreground.service.action.resume.foreground.bike";
+        String STOP_FOREGROUND_ACTION = "com.coleo.foreground.service.action.stop.foreground";
     }
     public static boolean isActionKindStep(String action){
         return !action.equals(ACTION.START_FOREGROUND_ACTION_BIKE) &&
@@ -52,7 +52,7 @@ public class Constants {
     }
 
     public interface NOTIFICATION_ID {
-        public static int FOREGROUND_SERVICE = 101;
+        int FOREGROUND_SERVICE = 101;
     }
 
     public static Button start_stop = null;
@@ -60,10 +60,9 @@ public class Constants {
     public static boolean isWorking = false;
     public static boolean isPause = false;
 
-    private static String NOTIFICATION_CHANELL_ID = "com.coleo.abjo";
+    private static String NOTIFICATION_CHANEL_ID = "com.coleo.abjo";
 
 
-    public static TextView count = null;
     public static float lastCount = 0;
     public static int stepCounted = 0;
 
@@ -76,12 +75,9 @@ public class Constants {
                                                               Context context, boolean makeSound,
                                                               boolean canClose, boolean isStep,
                                                               boolean isPause) {
-        //todo prevent open program many time
-        Intent intent = new Intent(context, Menu.class);
-        intent.putExtra(FROM_NOTIFICATION, true);
-        intent.putExtra(LAST_ACTION_INTENT, getLastAction(context));
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent intent = new Intent(context, CountActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent pause = new Intent(context, MyReceiver.class);
         if (isPause) {
@@ -100,7 +96,7 @@ public class Constants {
         PendingIntent snoozePendingIntent =
                 PendingIntent.getBroadcast(context, 0, pause, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANELL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -108,32 +104,15 @@ public class Constants {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(!canClose)
-                .addAction(android.R.drawable.ic_media_pause, "pause", snoozePendingIntent);
+                .addAction(android.R.drawable.ic_media_pause, context.getString(R.string.pause_service), snoozePendingIntent);
 
         builder.setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            int importance = NotificationManager.IMPORTANCE_MIN;
-//            if (makeSound) {
-//                importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            }
-//
-//            NotificationChannel channel = new NotificationChannel(
-//                    NOTIFICATION_CHANELL_ID,
-//                    context.getString(R.string.app_name),
-//                    importance
-//            );
-//
-//            if (notificationManager != null) {
-//                notificationManager.createNotificationChannel(channel);
-//            }
-//        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel(notificationManager);
-            builder.setChannelId(NOTIFICATION_CHANELL_ID);
+            builder.setChannelId(NOTIFICATION_CHANEL_ID);
             if (makeSound) {
                 builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
             } else {
@@ -146,7 +125,7 @@ public class Constants {
 
     @TargetApi(26)
     private static void createChannel(NotificationManager notificationManager) {
-        String name = NOTIFICATION_CHANELL_ID;
+        String name = NOTIFICATION_CHANEL_ID;
         String description = "Notifications for download status";
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
@@ -199,7 +178,6 @@ public class Constants {
             notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
         }
     }
-
 
     private static void displayPromptForEnablingGPS(final Activity activity) {
 

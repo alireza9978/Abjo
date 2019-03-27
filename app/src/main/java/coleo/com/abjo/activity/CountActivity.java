@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.service.SaveLocationService;
@@ -15,9 +17,8 @@ import static coleo.com.abjo.constants.Constants.start_stop;
 
 public class CountActivity extends AppCompatActivity {
 
-    private static final String TAG = "mainActivity";
+//    private static final String TAG = "mainActivity";
 
-    private TextView activityKind;
     private String startActionKind = "";
     private String pauseActionKind = "";
     private String resumeActionKind = "";
@@ -31,21 +32,20 @@ public class CountActivity extends AppCompatActivity {
 
         Constants.start_stop = findViewById(R.id.count_step_start_stop_button_id);
         Constants.pause_resume = findViewById(R.id.count_step_pause_button_id);
-        activityKind = findViewById(R.id.activity_kind_textView_id);
-
+        TextView activityKind = findViewById(R.id.activity_kind_textView_id);
 
         lastAction = Constants.getLastAction(this);
         boolean isStep = !lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION) ?
                 Constants.isActionKindStep(lastAction) :
-                getIntent().getExtras().getBoolean(Constants.STEP_OR_BIKE, false);
+                Objects.requireNonNull(getIntent().getExtras()).getBoolean(Constants.STEP_OR_BIKE, false);
 
         if (isStep) {
-            activityKind.setText("Step count");
+            activityKind.setText(getString(R.string.step_activity_name));
             startActionKind = Constants.ACTION.START_FOREGROUND_ACTION_STEP;
             pauseActionKind = Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP;
             resumeActionKind = Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP;
         } else {
-            activityKind.setText("bike activity");
+            activityKind.setText(getString(R.string.bike_activity_name));
             startActionKind = Constants.ACTION.START_FOREGROUND_ACTION_BIKE;
             pauseActionKind = Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE;
             resumeActionKind = Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE;
@@ -103,21 +103,38 @@ public class CountActivity extends AppCompatActivity {
 
     private void manageButton() {
         if (lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
-            start_stop.setText("start");
+            start_stop.setText(getString(R.string.start_service));
             pause_resume.setVisibility(View.INVISIBLE);
         } else {
-            start_stop.setText("stop");
+            start_stop.setText(getString(R.string.stop_service));
             pause_resume.setVisibility(View.VISIBLE);
             if (lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE) ||
                     lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP)) {
-                pause_resume.setText("pause");
+                pause_resume.setText(getString(R.string.pause_service));
             }
             if (lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE) ||
                     lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP)) {
-                pause_resume.setText("resume");
+                pause_resume.setText(getString(R.string.resume_service));
             }
-
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, Menu.class);
+        intent.putExtra(Constants.FROM_NOTIFICATION, false);
+        intent.putExtra(Constants.LAST_ACTION_INTENT, Constants.getLastAction(this));
+        startActivity(intent);
+        finish();
+    }
 }

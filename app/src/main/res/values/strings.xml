@@ -9,4 +9,6 @@
     <string name="start_service">start</string>
     <string name="resume_service">resume</string>
     <string name="pause_service">pause</string>
+    <string name="step_activity_name">Step count</string>
+    <string name="bike_activity_name">bike activity</string>
 </resources>
