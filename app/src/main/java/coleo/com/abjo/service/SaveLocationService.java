@@ -1,8 +1,11 @@
 package coleo.com.abjo.service;
 
+import android.Manifest;
 import android.app.Service;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +23,9 @@ import android.view.View;
 import java.util.Objects;
 
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_base.TravelDataBase;
+import coleo.com.abjo.data_base.UserLocation;
+import coleo.com.abjo.data_base.locationRepository;
 
 import static coleo.com.abjo.constants.Constants.pause_resume;
 import static coleo.com.abjo.constants.Constants.start_stop;
@@ -28,7 +35,27 @@ public class SaveLocationService extends Service implements SensorEventListener 
     private static final String LOG_TAG = "ForegroundService";
     private String TAG = "counter";
     private SensorManager sensorManager;
+    private LocationManager locationManager;
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i(TAG, "onLocationChanged: " + location.toString());
+            reposetory.insert(new UserLocation(location.getLatitude(), location.getLongitude()));
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+    };
     private boolean isStep = false;
+
+    private long lastTime;
+    private TravelDataBase dataBase;
+    private locationRepository reposetory;
 
     @Override
     public void onCreate() {
@@ -44,24 +71,18 @@ public class SaveLocationService extends Service implements SensorEventListener 
         //todo save location and send to server
         // Acquire a reference to the system Location Manager
 
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                Log.i(TAG, "onLocationChanged: " + location.toString());
-            }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.PROVIDERS_CHANGED_ACTION, 2000, 0, locationListener);
 
         super.onCreate();
     }
@@ -69,6 +90,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        locationManager.removeUpdates(locationListener);
         Log.i(LOG_TAG, "In onDestroy");
     }
 
@@ -164,6 +186,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
     }
 
     private void startService() {
+        makeDataBase();
         start_stop.setText("stop");
         pause_resume.setVisibility(View.VISIBLE);
         Constants.isWorking = true;
@@ -181,12 +204,20 @@ public class SaveLocationService extends Service implements SensorEventListener 
         pause_resume.setText("resume");
         Constants.isWorking = true;
         Constants.isPause = true;
+        reposetory.showSize(getBaseContext());
     }
 
     private void resumeService() {
         pause_resume.setText("pause");
         Constants.isPause = false;
         Constants.isWorking = true;
+    }
+
+
+    private void makeDataBase() {
+        dataBase = Room.databaseBuilder(getApplicationContext(),
+                TravelDataBase.class, "database-name").build();
+        reposetory = new locationRepository(dataBase);
     }
 
 }

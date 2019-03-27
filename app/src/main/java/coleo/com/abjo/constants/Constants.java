@@ -2,9 +2,11 @@ package coleo.com.abjo.constants;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,12 +14,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -105,10 +109,9 @@ public class Constants {
                 .setOngoing(!canClose)
                 .addAction(android.R.drawable.ic_media_pause, "pause", snoozePendingIntent);
 
-
         builder.setContentIntent(pendingIntent);
 
-//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 //
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            int importance = NotificationManager.IMPORTANCE_MIN;
@@ -128,6 +131,7 @@ public class Constants {
 //        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel(notificationManager);
             builder.setChannelId(NOTIFICATION_CHANELL_ID);
             if (makeSound) {
                 builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
@@ -137,6 +141,19 @@ public class Constants {
         }
 
         return builder;
+    }
+
+    @TargetApi(26)
+    private static void createChannel(NotificationManager notificationManager) {
+        String name = NOTIFICATION_CHANELL_ID;
+        String description = "Notifications for download status";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+        NotificationChannel mChannel = new NotificationChannel(name, name, importance);
+        mChannel.setDescription(description);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.BLUE);
+        notificationManager.createNotificationChannel(mChannel);
     }
 
     @SuppressLint("RestrictedApi")
@@ -168,13 +185,18 @@ public class Constants {
         PendingIntent pausePendingIntent =
                 PendingIntent.getBroadcast(context, 0, pause, 0);
 
-        notification.mActions.clear();
-        notification.addAction(drawable, actionName, pausePendingIntent);
-        notification.setContentTitle(title);
-        notification.setContentText(message);
+        if (notification != null) {
+            Log.i("Constants", "updateNotification: ");
+            if (notification.mActions != null)
+                notification.mActions.clear();
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
+            notification.addAction(drawable, actionName, pausePendingIntent);
+            notification.setContentTitle(title);
+            notification.setContentText(message);
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
+        }
     }
 
 
