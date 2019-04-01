@@ -10,7 +10,6 @@
 
     <uses-feature android:name="android.hardware.location.gps" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,16 +17,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Profile"></activity>
+        <activity android:name=".activity.CodeActivity"></activity>
+        <activity android:name=".activity.Login" />
+        <activity
+            android:name=".activity.MenuActivity"
+            android:label="@string/title_activity_menu" />
+        <activity android:name=".activity.Profile" />
         <activity android:name=".activity.LeaderBoard" />
         <activity
-            android:name=".activity.Menu"
-            android:launchMode = "singleTop"
-            />
+            android:name=".activity.OperationActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name=".activity.CountActivity"
-            android:launchMode = "singleTop"
-            />
+            android:launchMode="singleTop" />
         <activity android:name=".activity.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +39,7 @@
         </activity>
 
         <service android:name=".service.SaveLocationService" />
+
         <receiver android:name=".service.MyReceiver" />
     </application>
 

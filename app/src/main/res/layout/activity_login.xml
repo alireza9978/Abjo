@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.Login">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitStart"
+        android:src="@mipmap/login_background" />
+
+    <EditText
+        android:id="@+id/phone_input_id"
+        style="@style/AppTheme.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/login_phone_input_back"
+        android:gravity="center"
+        android:hint="شماره همراه"
+        android:minHeight="50dp"
+        app:layout_constraintBottom_toTopOf="@id/submit_login_id"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/submit_login_id"
+        style="@style/AppTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_submit_back"
+        android:minHeight="50dp"
+        android:text="ورود"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/phone_input_id"
+        app:layout_constraintRight_toRightOf="@id/phone_input_id"
+        app:layout_constraintTop_toBottomOf="@id/phone_input_id" />
+
+</android.support.constraint.ConstraintLayout>

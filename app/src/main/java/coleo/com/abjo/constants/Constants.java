@@ -26,7 +26,7 @@ import android.widget.Button;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.CountActivity;
-import coleo.com.abjo.activity.Menu;
+import coleo.com.abjo.activity.OperationActivity;
 import coleo.com.abjo.service.MyReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -197,7 +197,7 @@ public class Constants {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
                                 d.cancel();
-                                ((Menu) activity).noPermission();
+                                ((OperationActivity) activity).noPermission();
                             }
                         });
         builder.create().show();
@@ -226,7 +226,7 @@ public class Constants {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
                                 d.cancel();
-                                ((Menu) activity).noPermission();
+                                ((OperationActivity) activity).noPermission();
                             }
                         });
         builder.create().show();

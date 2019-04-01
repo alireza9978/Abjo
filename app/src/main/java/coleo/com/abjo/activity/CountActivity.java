@@ -131,7 +131,7 @@ public class CountActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, Menu.class);
+        Intent intent = new Intent(this, OperationActivity.class);
         intent.putExtra(Constants.FROM_NOTIFICATION, false);
         intent.putExtra(Constants.LAST_ACTION_INTENT, Constants.getLastAction(this));
         startActivity(intent);

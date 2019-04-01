@@ -4,9 +4,19 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="colorActivityBackground">#F2F2F3</color>
+
     <color name="colorText">#000000</color>
     <color name="colorRed">#ff0000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorGreen">#309b30</color>
+
+    <color name="login_submit_gradient_right">#BED73B</color>
+    <color name="login_submit_gradient_left">#599541</color>
+    <color name="login_phone_input_stroke">#aaaaaa</color>
+
+    <color name="code_submit_gradient_right">#3FBCC5</color>
+    <color name="code_submit_gradient_left">#355E77</color>
+
 
 </resources>
