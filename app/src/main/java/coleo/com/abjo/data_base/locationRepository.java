@@ -1,7 +1,5 @@
 package coleo.com.abjo.data_base;
 
-import android.arch.persistence.room.RoomDatabase;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,10 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
-
-import coleo.com.abjo.constants.Constants;
 
 public class locationRepository {
 

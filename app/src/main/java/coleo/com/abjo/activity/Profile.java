@@ -1,8 +1,8 @@
 package coleo.com.abjo.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
 
 public class Profile extends AppCompatActivity {

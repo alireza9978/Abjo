@@ -15,15 +15,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Button;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.CountActivity;
 import coleo.com.abjo.activity.OperationActivity;
@@ -32,6 +34,9 @@ import coleo.com.abjo.service.MyReceiver;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Constants {
+
+    public static final double fuckingRatio = 1.351543942992874;
+    public static final double fuckingRatioTop = 1.653934300993125;
 
     private static final String LAST_ACTION_PRE_NAME = "unknown";
     private static final String LAST_ACTION_SAVE_NAME = "noName";
@@ -270,6 +275,28 @@ public class Constants {
     public static String getLastAction(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE);
         return sharedPreferences.getString(LAST_ACTION_SAVE_NAME, ACTION.STOP_FOREGROUND_ACTION);
+    }
+
+    public static float pxToDp(final Context context, final float px) {
+        return px / context.getResources().getDisplayMetrics().density;
+    }
+
+    public static float dpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    public static int getScreenWidth(Activity context) {
+        Display display = context.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
+
+    public static int getScreenHeight(Activity context) {
+        Display display = context.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y;
     }
 
 }

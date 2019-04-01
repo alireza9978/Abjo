@@ -2,7 +2,6 @@ package coleo.com.abjo.service;
 
 import android.Manifest;
 import android.app.Service;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,13 +14,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.Objects;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.room.Room;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;

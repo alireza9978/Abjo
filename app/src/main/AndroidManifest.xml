@@ -17,9 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SignUpActivity"></activity>
-        <activity android:name=".activity.CodeActivity" />
-        <activity android:name=".activity.Login" />
+        <activity
+            android:name=".activity.SignUpActivity"
+            />
+        <activity
+            android:name=".activity.CodeActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.Login"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.MenuActivity"
             android:label="@string/title_activity_menu" />

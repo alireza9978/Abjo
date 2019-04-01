@@ -1,127 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SignUpActivity">
+    tools:context=".activity.SignUpActivity"
 
-    <ImageView
-        android:id="@+id/top_image_id"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="fitStart"
-        android:src="@mipmap/signup_top_back"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/name_input_id"
-        style="@style/AppTheme.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:hint="نام"
-        app:layout_constraintBottom_toTopOf="@id/family_input_id"
-        app:layout_constraintTop_toBottomOf="@id/top_image_id" />
-
-    <EditText
-        android:id="@+id/family_input_id"
-        style="@style/AppTheme.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:hint="نام خانوادگی"
-        app:layout_constraintBottom_toTopOf="@id/student_number_input_id"
-        app:layout_constraintTop_toBottomOf="@id/name_input_id" />
-
-    <EditText
-        android:id="@+id/student_number_input_id"
-        style="@style/AppTheme.EditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:hint="شماره دانشجویی"
-        app:layout_constraintBottom_toTopOf="@id/gender_layout"
-        app:layout_constraintTop_toBottomOf="@id/family_input_id" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/gender_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:layout_constraintBottom_toTopOf="@id/submit_sign_up_id"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/student_number_input_id">
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/man_image_view"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:src="@mipmap/sign_up_man"
-            app:layout_constraintBottom_toTopOf="@id/man_text_view"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/woman_image_view"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/man_text_view"
-            style="@style/AppTheme.TextView"
-            android:layout_width="0dp"
+            android:id="@+id/top_image_id"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="مرد"
-            android:textColor="@color/colorHintEditText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/man_image_view"
-            app:layout_constraintRight_toRightOf="@id/man_image_view"
-            app:layout_constraintTop_toBottomOf="@id/man_image_view" />
-
-        <ImageView
-            android:id="@+id/woman_image_view"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:src="@mipmap/sign_up_woman"
-            app:layout_constraintBottom_toTopOf="@id/woman_text_view"
-            app:layout_constraintLeft_toRightOf="@id/man_image_view"
+            android:scaleType="fitStart"
+            android:src="@mipmap/signup_top_back"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/woman_text_view"
-            style="@style/AppTheme.TextView"
+        <EditText
+            android:id="@+id/name_input_id"
+            style="@style/AppTheme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="250dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="نام"
+            app:layout_constraintBottom_toTopOf="@id/family_input_id"
+            app:layout_constraintTop_toTopOf="@id/top_image_id"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/family_input_id"
+            style="@style/AppTheme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="نام خانوادگی"
+            app:layout_constraintBottom_toTopOf="@id/student_number_input_id"
+            app:layout_constraintTop_toBottomOf="@id/name_input_id" />
+
+        <EditText
+            android:id="@+id/student_number_input_id"
+            style="@style/AppTheme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="شماره دانشجویی"
+            app:layout_constraintBottom_toTopOf="@id/gender_layout"
+            app:layout_constraintTop_toBottomOf="@id/family_input_id" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gender_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="زن"
-            android:textColor="@color/colorHintEditText"
+            android:layout_margin="10dp"
+            app:layout_constraintBottom_toTopOf="@id/submit_sign_up_id"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/student_number_input_id">
+
+            <ImageView
+                android:id="@+id/man_image_view"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@mipmap/sign_up_man"
+                app:layout_constraintBottom_toTopOf="@id/man_text_view"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/woman_image_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/man_text_view"
+                style="@style/AppTheme.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="مرد"
+                android:textColor="@color/colorHintEditText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/man_image_view"
+                app:layout_constraintRight_toRightOf="@id/man_image_view"
+                app:layout_constraintTop_toBottomOf="@id/man_image_view" />
+
+            <ImageView
+                android:id="@+id/woman_image_view"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@mipmap/sign_up_woman"
+                app:layout_constraintBottom_toTopOf="@id/woman_text_view"
+                app:layout_constraintLeft_toRightOf="@id/man_image_view"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/woman_text_view"
+                style="@style/AppTheme.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="زن"
+                android:textColor="@color/colorHintEditText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/woman_image_view"
+                app:layout_constraintRight_toRightOf="@id/woman_image_view"
+                app:layout_constraintTop_toBottomOf="@id/woman_image_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/submit_sign_up_id"
+            style="@style/AppTheme.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/code_submit_back"
+            android:text="تایید"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/woman_image_view"
-            app:layout_constraintRight_toRightOf="@id/woman_image_view"
-            app:layout_constraintTop_toBottomOf="@id/woman_image_view" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <Button
-        android:id="@+id/submit_sign_up_id"
-        style="@style/AppTheme.Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/code_submit_back"
-        android:text="تایید"
-        app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/gender_layout" />
 
 
-</android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
