@@ -27,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.submit_sign_up_id: {
-                Intent intent = new Intent(this, MenuActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }
         }

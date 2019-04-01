@@ -28,7 +28,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.CountActivity;
-import coleo.com.abjo.activity.OperationActivity;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.service.MyReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -37,6 +37,8 @@ public class Constants {
 
     public static final double fuckingRatio = 1.351543942992874;
     public static final double fuckingRatioTop = 1.653934300993125;
+
+    public static Context context = null;
 
     private static final String LAST_ACTION_PRE_NAME = "unknown";
     private static final String LAST_ACTION_SAVE_NAME = "noName";
@@ -202,7 +204,7 @@ public class Constants {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
                                 d.cancel();
-                                ((OperationActivity) activity).noPermission();
+                                ((MainActivity) activity).noPermission();
                             }
                         });
         builder.create().show();
@@ -231,7 +233,7 @@ public class Constants {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
                                 d.cancel();
-                                ((OperationActivity) activity).noPermission();
+                                ((MainActivity) activity).noPermission();
                             }
                         });
         builder.create().show();

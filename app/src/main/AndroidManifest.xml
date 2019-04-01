@@ -18,8 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.SignUpActivity"
-            />
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity android:name=".activity.SignUpActivity" />
         <activity
             android:name=".activity.CodeActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -27,22 +36,10 @@
             android:name=".activity.Login"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.MenuActivity"
-            android:label="@string/title_activity_menu" />
-        <activity android:name=".activity.Profile" />
-        <activity android:name=".activity.LeaderBoard" />
-        <activity
-            android:name=".activity.OperationActivity"
-            android:launchMode="singleTop" />
-        <activity
             android:name=".activity.CountActivity"
             android:launchMode="singleTop" />
         <activity android:name=".activity.Splash">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".service.SaveLocationService" />

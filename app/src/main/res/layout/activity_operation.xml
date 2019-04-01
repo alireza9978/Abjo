@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.OperationActivity">
+    tools:context=".activity.MainActivity">
 
     <TextView
         android:id="@+id/app_name_text_view_id"
@@ -51,18 +51,6 @@
         />
 
 
-    <Button
-        android:id="@+id/leader_board_button_id"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/leader_board_button_text"
-        style="@style/AppTheme.Button"
-        app:layout_constraintTop_toBottomOf="@id/start_step_button_id"
-        app:layout_constraintLeft_toLeftOf="@id/start_step_button_id"
-        app:layout_constraintRight_toRightOf="@id/start_bycicle_button_id"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

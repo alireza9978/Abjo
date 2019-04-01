@@ -12,7 +12,11 @@
     <string name="step_activity_name">Step count</string>
     <string name="bike_activity_name">bike activity</string>
     <string name="title_activity_menu">MenuActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home"> </string>
+    <string name="title_dashboard"> </string>
+    <string name="title_notifications"> </string>
+    <string name="title_activity_main"> </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
