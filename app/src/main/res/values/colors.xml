@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="colorActivityBackground">#F2F2F3</color>
+    <color name="colorHintEditText">#aaaaaa</color>
 
     <color name="colorText">#000000</color>
     <color name="colorRed">#ff0000</color>
