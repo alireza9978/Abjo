@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:src="@mipmap/code_background" />
+        app:srcCompat="@mipmap/code_background" />
 
     <EditText
         android:id="@+id/code_input_id"

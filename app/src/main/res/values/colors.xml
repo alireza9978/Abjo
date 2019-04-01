@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDark">#FAFAFA</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="upperLogoBackColor">#FAFAFA</color>
     <color name="colorActivityBackground">#F2F2F3</color>
     <color name="colorHintEditText">#aaaaaa</color>
+
     <color name="colorBackTextProfile">#F2F2F3</color>
+    <color name="colorBoarderTextProfile">#BDBCBB</color>
 
     <color name="colorText">#000000</color>
     <color name="colorRed">#ff0000</color>
@@ -15,10 +18,40 @@
 
     <color name="login_submit_gradient_right">#BED73B</color>
     <color name="login_submit_gradient_left">#599541</color>
-    <color name="login_phone_input_stroke">#aaaaaa</color>
+    <color name="login_phone_input_stroke">#707070</color>
 
     <color name="code_submit_gradient_right">#3FBCC5</color>
     <color name="code_submit_gradient_left">#355E77</color>
 
 
+    <!-- Bootstrap Brand Colors (Universal) -->
+
+    <!-- Grayscale -->
+    <color name="bootstrap_gray_dark">#373a3c</color>
+    <color name="bootstrap_gray">#55595c</color>
+    <color name="bootstrap_gray_light">#818a91</color>
+    <color name="bootstrap_gray_lighter">#eceeef</color>
+    <color name="bootstrap_gray_lightest">#f7f7f9</color>
+
+    <!-- Brand -->
+    <color name="bootstrap_brand_primary">#0275d8</color>
+    <color name="bootstrap_brand_success">#5cb85c</color>
+    <color name="bootstrap_brand_info">#5bc0de</color>
+    <color name="bootstrap_brand_warning">#f0ad4e</color>
+    <color name="bootstrap_brand_danger">#d9534f</color>
+
+    <!-- View Specific -->
+
+    <!-- Buttons -->
+    <color name="bootstrap_brand_secondary_fill">#ffffff</color>
+    <color name="bootstrap_brand_secondary_border">#cccccc</color>
+    <color name="bootstrap_brand_secondary_text">#373a3c</color>
+
+    <!-- Misc -->
+    <color name="bootstrap_edittext_disabled">#ffe0e0e0</color>
+    <color name="bootstrap_thumbnail_background">#ffffffff</color>
+    <color name="bootstrap_well_background">#F5F5F5</color>
+    <color name="bootstrap_dropdown_divider">#e7e7e7</color>
+    <color name="bootstrap_well_border_color">#E7E7E7</color>
+    <color name="bootstrap_alert_cross_default">#64818a91</color>
 </resources>

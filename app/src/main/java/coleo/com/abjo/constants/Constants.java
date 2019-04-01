@@ -3,8 +3,6 @@ package coleo.com.abjo.constants;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +22,8 @@ import android.util.Log;
 import android.view.Display;
 import android.widget.Button;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
@@ -186,7 +186,7 @@ public class Constants {
         }
     }
 
-    private static void displayPromptForEnablingGPS(final Activity activity) {
+    private static void displayPromptForEnablingGPS(final AppCompatActivity activity) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
@@ -210,7 +210,7 @@ public class Constants {
         builder.create().show();
     }
 
-    private static void displayPromptForGettingPermission(final Activity activity) {
+    private static void displayPromptForGettingPermission(final AppCompatActivity activity) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final String message = "A need your permission to work probebly\n" +
@@ -239,14 +239,14 @@ public class Constants {
         builder.create().show();
     }
 
-    public static void checkPermission(Activity context) {
+    public static void checkPermission(AppCompatActivity context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Constants.displayPromptForGettingPermission(context);
         }
     }
 
-    public static void checkLocation(Activity context) {
+    public static void checkLocation(AppCompatActivity context) {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
@@ -287,14 +287,14 @@ public class Constants {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    public static int getScreenWidth(Activity context) {
+    public static int getScreenWidth(AppCompatActivity context) {
         Display display = context.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.x;
     }
 
-    public static int getScreenHeight(Activity context) {
+    public static int getScreenHeight(AppCompatActivity context) {
         Display display = context.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

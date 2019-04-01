@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TypefaceProvider.registerDefaultIconSets();
         Constants.context = this;
 
         fm.beginTransaction().add(R.id.main_container, fragment1, "1").hide(fragment1).commit();
