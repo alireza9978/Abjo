@@ -32,8 +32,6 @@ public class Profile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         BootstrapProgressBar progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setBootstrapBrand(new TempBrand());
-////        progressBar.setBackground(getContext().getDrawable(R.drawable.profile_long_gray_back));
-
         return view;
     }
 
