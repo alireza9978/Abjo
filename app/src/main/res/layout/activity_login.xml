@@ -23,10 +23,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:background="@drawable/login_phone_input_back"
         android:hint="شماره همراه"
+        android:inputType="phone"
         app:layout_constraintBottom_toTopOf="@id/submit_login_id"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9"
+        android:nextFocusDown="@id/submit_login_id"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button

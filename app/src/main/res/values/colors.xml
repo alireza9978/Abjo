@@ -23,6 +23,7 @@
     <color name="code_submit_gradient_right">#3FBCC5</color>
     <color name="code_submit_gradient_left">#355E77</color>
 
+    <color name="selected_gender_color">#3FBCC5</color>
 
     <!-- Bootstrap Brand Colors (Universal) -->
 

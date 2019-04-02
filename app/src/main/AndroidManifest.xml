@@ -20,13 +20,6 @@
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTop">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
         <activity android:name=".activity.SignUpActivity" />
         <activity
@@ -39,7 +32,11 @@
             android:name=".activity.CountActivity"
             android:launchMode="singleTop" />
         <activity android:name=".activity.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service android:name=".service.SaveLocationService" />
