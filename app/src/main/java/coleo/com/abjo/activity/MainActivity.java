@@ -9,6 +9,8 @@ import android.view.View;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.Serializable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,7 +20,7 @@ import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
 import coleo.com.abjo.constants.Constants;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, Serializable {
 
     final Fragment fragment1 = new Profile();
     final Fragment fragment2 = new Heart();
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment2;
     Context context = this;
-
 
     TabLayout tabLayout;
 
@@ -117,6 +118,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void noPermission() {
         finish();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Do not call super class method here.
+//        super.onSaveInstanceState(outState);
     }
 
     @Override

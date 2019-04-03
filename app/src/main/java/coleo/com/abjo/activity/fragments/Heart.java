@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
+
 import androidx.fragment.app.Fragment;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
 
-public class Heart extends Fragment {
+public class Heart extends Fragment implements Serializable {
 
     private static final String TAG = "menu";
 

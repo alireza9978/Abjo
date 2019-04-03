@@ -13,14 +13,21 @@ import android.widget.TextView;
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
+import coleo.com.abjo.adapter.HistoryAdapter;
+import coleo.com.abjo.data_class.History;
+import coleo.com.abjo.data_class.Transition;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Profile extends Fragment {
+public class Profile extends Fragment implements Serializable {
 
     private RecyclerView list;
     private TextView name;
@@ -29,6 +36,11 @@ public class Profile extends Fragment {
     private TextView coin;
     private TextView hour;
     private BootstrapProgressBar progressBar;
+    private HistoryAdapter adapter;
+    private ArrayList<History> historyArrayList;
+    private ArrayList<Transition> transitionArrayList;
+
+
 
     public Profile() {
         // Required empty public constructor
@@ -48,11 +60,25 @@ public class Profile extends Fragment {
         level = view.findViewById(R.id.level_text_id);
         hour = view.findViewById(R.id.hour_of_activity_text);
         progressBar = view.findViewById(R.id.progress_bar);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
+        list.setLayoutManager(mLayoutManager);
+
+        historyArrayList = new ArrayList<>();
+        transitionArrayList = new ArrayList<>();
+        historyArrayList.add(new History());
+        historyArrayList.add(new History());
+        transitionArrayList.add(new Transition());
+
+        adapter = new HistoryAdapter(historyArrayList, transitionArrayList, getContext());
+        list.setAdapter(adapter);
+        update();
+
         return view;
     }
 
     public void update() {
-
+        adapter.notifyDataSetChanged();
     }
 
     class TempBrand implements BootstrapBrand {

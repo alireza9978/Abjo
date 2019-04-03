@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="@drawable/leader_board_item_back"
+    android:background="@drawable/leader_board_item_back_mine"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
     <TextView
         android:id="@+id/point"
-        style="@style/AppTheme.LeaderBoard"
+        style="@style/AppTheme.LeaderBoardMine"
         android:layout_height="wrap_content"
         android:text="29"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,13 +22,14 @@
         android:id="@+id/lineLeft"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/line_vertical"
+        android:src="@drawable/line_vertical_mine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/point"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/level"
-        style="@style/AppTheme.LeaderBoard"
+        style="@style/AppTheme.LeaderBoardMine"
         android:layout_height="wrap_content"
         android:text="2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,14 +41,14 @@
         android:id="@+id/lineCenter"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/line_vertical"
+        android:src="@drawable/line_vertical_mine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/level"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/name"
-        style="@style/AppTheme.LeaderBoard"
+        style="@style/AppTheme.LeaderBoardMine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="مرتضی افشاری"
@@ -56,19 +57,18 @@
         app:layout_constraintRight_toLeftOf="@id/rank"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <ImageView
         android:id="@+id/lineRight"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:src="@drawable/line_vertical"
+        android:src="@drawable/line_vertical_mine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/rank"
-        style="@style/AppTheme.LeaderBoard"
+        style="@style/AppTheme.LeaderBoardMine"
         android:layout_height="wrap_content"
         android:text="85"
         app:layout_constraintBottom_toBottomOf="parent"

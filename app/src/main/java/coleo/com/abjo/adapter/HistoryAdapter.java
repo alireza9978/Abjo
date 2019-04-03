@@ -43,7 +43,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
 
     @Override
     public void onBindViewHolder(@NonNull HistoryItem holder, int position) {
-
+        //todo fill data on view type
     }
 
     @Override
@@ -53,7 +53,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
 
     @Override
     public int getItemViewType(int position) {
-        if (position > histories.size()) {
+        if (position < histories.size()) {
             return 0;
         } else {
             return 1;

@@ -4,7 +4,7 @@
     android:id="@+id/profile_bike_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="25dp"
+    android:layout_margin="15dp"
     android:background="@drawable/profile_constraint_back"
     android:minHeight="100dp"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -126,8 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="1397/2/19
-13:25"
+            android:text="1397/2/19\n13:25"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/time_image"

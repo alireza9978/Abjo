@@ -30,7 +30,35 @@
         <item name="fontFamily">@font/big_main_font</item>
         <item name="android:layout_width">75dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+
+    <style name="AppTheme.LeaderBoardMine" parent="AppTheme">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="fontFamily">@font/big_main_font</item>
+        <item name="android:layout_width">75dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
+
+    <style name="AppTheme.LeaderBoardTop" parent="AppTheme">
+        <item name="android:textColor">@color/colorHintEditText</item>
+        <item name="fontFamily">@font/big_main_font</item>
+        <item name="android:layout_width">75dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>

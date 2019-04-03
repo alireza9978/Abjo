@@ -5,5 +5,66 @@
     android:layout_height="match_parent"
     tools:context=".activity.fragments.LeaderBoard">
 
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/point"
+            style="@style/AppTheme.LeaderBoardTop"
+            android:layout_height="wrap_content"
+            android:text="امتیاز"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/level"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/level"
+            style="@style/AppTheme.LeaderBoardTop"
+            android:layout_height="wrap_content"
+            android:text="سطح"
+            app:layout_constraintLeft_toRightOf="@id/point"
+            app:layout_constraintRight_toLeftOf="@id/name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/AppTheme.LeaderBoardTop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="شهروند"
+            app:layout_constraintLeft_toRightOf="@id/level"
+            app:layout_constraintRight_toLeftOf="@id/rank"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/rank"
+            style="@style/AppTheme.LeaderBoardTop"
+            android:layout_height="wrap_content"
+            android:text="رتبه"
+            app:layout_constraintLeft_toRightOf="@id/name"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/point"
+            app:srcCompat="@drawable/line" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/leader_board_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </FrameLayout>
