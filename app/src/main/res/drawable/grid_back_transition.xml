@@ -7,69 +7,53 @@
 
     <path
         android:fillColor="#00000000"
-        android:pathData="M 50,60 L350,60"
+        android:pathData="M 0,55 L250,55"
         android:strokeWidth="0.4"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 75,60 L325,60"
+        android:pathData="M 25,55 L225,55"
         android:strokeWidth="0.8"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 150,60 L250,60"
+        android:pathData="M 75,55 L175,55"
         android:strokeWidth="1.2"
         android:strokeColor="@color/bootstrap_gray_lighter" />
 
 
     <path
         android:fillColor="#00000000"
-        android:pathData="M 100,10 L100,90"
+        android:pathData="M 90,0 L90,100"
         android:strokeWidth="0.4"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 100,20 L100,80"
+        android:pathData="M 90,20 L90,80"
         android:strokeWidth="0.8"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 100,40 L100,60"
+        android:pathData="M 90,40 L90,60"
         android:strokeWidth="1.2"
         android:strokeColor="@color/bootstrap_gray_lighter" />
 
 
     <path
         android:fillColor="#00000000"
-        android:pathData="M 185,10 L185,90"
+        android:pathData="M 210,0 L210,100"
         android:strokeWidth="0.4"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 185,20 L185,80"
+        android:pathData="M 210,20 L210,80"
         android:strokeWidth="0.8"
         android:strokeColor="@color/bootstrap_gray_lighter" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M 185,40 L185,60"
+        android:pathData="M 210,40 L210,60"
         android:strokeWidth="1.2"
         android:strokeColor="@color/bootstrap_gray_lighter" />
 
-
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M 275,10 L275,90"
-        android:strokeWidth="0.4"
-        android:strokeColor="@color/bootstrap_gray_lighter" />
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M 275,20 L275,80"
-        android:strokeWidth="0.8"
-        android:strokeColor="@color/bootstrap_gray_lighter" />
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M 275,40 L275,60"
-        android:strokeWidth="1.2"
-        android:strokeColor="@color/bootstrap_gray_lighter" />
 
 </vector>

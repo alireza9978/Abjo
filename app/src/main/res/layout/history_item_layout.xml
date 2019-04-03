@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_bike_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="25dp"
+    android:background="@drawable/profile_constraint_back"
+    android:minHeight="100dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/history_text">
+
+    <ImageView
+        android:id="@+id/bike_or_step_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/history_icon_back"
+        android:paddingTop="10dp"
+        android:src="@mipmap/bike"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/temp_container"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/grid_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/bike_or_step_icon"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/point_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:src="@mipmap/point"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/coin_image"
+            app:layout_constraintTop_toTopOf="@id/time_image"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/point_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="+29"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/point_image"
+            app:layout_constraintRight_toRightOf="@id/point_image"
+            app:layout_constraintTop_toBottomOf="@id/point_image" />
+
+        <ImageView
+            android:id="@+id/coin_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:src="@mipmap/coin_white"
+            app:layout_constraintLeft_toRightOf="@id/point_image"
+            app:layout_constraintRight_toLeftOf="@id/distant_image"
+            app:layout_constraintTop_toTopOf="@id/time_image"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/score_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="+150"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/coin_image"
+            app:layout_constraintRight_toRightOf="@id/coin_image"
+            app:layout_constraintTop_toBottomOf="@id/coin_image" />
+
+        <ImageView
+            android:id="@+id/distant_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:src="@mipmap/distance"
+            app:layout_constraintLeft_toRightOf="@id/coin_image"
+            app:layout_constraintRight_toLeftOf="@id/time_image"
+            app:layout_constraintTop_toTopOf="@id/time_image"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/distant_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="1350 متر"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/distant_image"
+            app:layout_constraintRight_toRightOf="@id/distant_image"
+            app:layout_constraintTop_toBottomOf="@id/distant_image" />
+
+        <ImageView
+            android:id="@+id/time_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@mipmap/date"
+            app:layout_constraintBottom_toTopOf="@id/bike_time_text"
+            app:layout_constraintLeft_toRightOf="@id/distant_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/bike_time_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="1397/2/19
+13:25"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/time_image"
+            app:layout_constraintRight_toRightOf="@id/time_image"
+            app:layout_constraintTop_toTopOf="@id/distant_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

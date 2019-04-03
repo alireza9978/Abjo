@@ -58,6 +58,7 @@
                     app:striped="true" />
 
                 <TextView
+                    android:id="@+id/level_text_id"
                     style="@style/AppTheme.TextView.Profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,6 +71,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/point_text_id"
                     style="@style/AppTheme.TextView.Profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -187,140 +189,18 @@
             app:layout_constraintTop_toBottomOf="@id/line" />
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/profile_bike_info"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_and_transition_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="25dp"
-            android:background="@drawable/profile_constraint_back"
-            android:minHeight="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/history_text">
 
-            <ImageView
-                android:id="@+id/bike_icon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_margin="15dp"
-                android:src="@mipmap/profile_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/temp_container_bike"
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/grid_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/bike_icon"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/bike_point_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@mipmap/profile_big_icon"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/bike_score_image"
-                    app:layout_constraintTop_toTopOf="@id/bike_time_image"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/bike_point_text"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="+29"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/bike_point_image"
-                    app:layout_constraintRight_toRightOf="@id/bike_point_image"
-                    app:layout_constraintTop_toBottomOf="@id/bike_point_image" />
-
-                <ImageView
-                    android:id="@+id/bike_score_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@mipmap/profile_big_icon"
-                    app:layout_constraintLeft_toRightOf="@id/bike_point_image"
-                    app:layout_constraintRight_toLeftOf="@id/bike_distant_image"
-                    app:layout_constraintTop_toTopOf="@id/bike_time_image"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/bike_score_text"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="+150"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/bike_score_image"
-                    app:layout_constraintRight_toRightOf="@id/bike_score_image"
-                    app:layout_constraintTop_toBottomOf="@id/bike_score_image" />
-
-                <ImageView
-                    android:id="@+id/bike_distant_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@mipmap/profile_big_icon"
-                    app:layout_constraintLeft_toRightOf="@id/bike_score_image"
-                    app:layout_constraintRight_toLeftOf="@id/bike_time_image"
-                    app:layout_constraintTop_toTopOf="@id/bike_time_image"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/bike_distant_text"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="1350 متر"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/bike_distant_image"
-                    app:layout_constraintRight_toRightOf="@id/bike_distant_image"
-                    app:layout_constraintTop_toBottomOf="@id/bike_distant_image" />
-
-                <ImageView
-                    android:id="@+id/bike_time_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@mipmap/profile_big_icon"
-                    app:layout_constraintBottom_toTopOf="@id/bike_time_text"
-                    app:layout_constraintLeft_toRightOf="@id/bike_distant_image"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/bike_time_text"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1397/2/19\n13:25"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/bike_time_image"
-                    app:layout_constraintRight_toRightOf="@id/bike_time_image"
-                    app:layout_constraintTop_toTopOf="@id/bike_distant_text" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
