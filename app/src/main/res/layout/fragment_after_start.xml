@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="80dp"
         android:layout_marginRight="25dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/profile_constraint_back"
@@ -158,47 +157,133 @@
             app:layout_constraintBottom_toTopOf="@id/funnyText_id"
             app:layout_constraintTop_toBottomOf="@id/user_name_text_view_id" />
 
-        <TextView
-            android:id="@+id/funnyText_id"
-            style="@style/AppTheme.TextView.Profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:text="اگه نیم ساعت دیگه راه بری
-میمیری"
-            android:textColor="@color/bootstrap_gray_light"
-            android:textSize="25sp"
-            app:layout_constraintTop_toBottomOf="@id/lineOne" />
 
-        <ImageView
-            android:id="@+id/lineTwo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:src="@drawable/line"
-            app:layout_constraintTop_toBottomOf="@id/funnyText_id" />
-
-        <Switch
-            android:id="@+id/switch_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@id/start_button_id"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/time_hour_constraint_layout_id"
+            style="@style/AppTheme.Constraint.time"
+            app:layout_constraintBottom_toTopOf="@id/start_step_button_id"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/time_min_constraint_layout_id"
+            app:layout_constraintTop_toBottomOf="@id/lineOne">
+
+            <TextView
+                android:id="@+id/temp"
+                style="@style/AppTheme.time.temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ساعت"
+                app:layout_constraintBottom_toTopOf="@id/hour"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.robinhood.ticker.TickerView
+                android:id="@+id/hour"
+                style="@style/AppTheme.animated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="454"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/temp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/time_min_constraint_layout_id"
+            style="@style/AppTheme.Constraint.time"
+            app:layout_constraintBottom_toTopOf="@id/start_step_button_id"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@id/time_hour_constraint_layout_id"
+            app:layout_constraintRight_toLeftOf="@id/time_second_constraint_layout_id"
+            app:layout_constraintTop_toBottomOf="@id/lineOne"
+
+            >
+
+            <TextView
+                android:id="@+id/temp_minute"
+                style="@style/AppTheme.time.temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:text="دقیقه"
+                app:layout_constraintBottom_toTopOf="@id/minuet"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.robinhood.ticker.TickerView
+                android:id="@+id/minuet"
+                style="@style/AppTheme.animated"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/temp_minute" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/time_second_constraint_layout_id"
+            style="@style/AppTheme.Constraint.time"
+            app:layout_constraintBottom_toTopOf="@id/start_step_button_id"
+            app:layout_constraintLeft_toRightOf="@id/time_min_constraint_layout_id"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lineTwo" />
+            app:layout_constraintTop_toBottomOf="@id/lineOne">
+
+            <TextView
+                android:id="@+id/temp_second"
+                style="@style/AppTheme.time.temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ثانیه"
+
+                app:layout_constraintBottom_toTopOf="@id/second"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.robinhood.ticker.TickerView
+                android:id="@+id/second"
+                style="@style/AppTheme.animated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/temp_second" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
-            android:id="@+id/start_button_id"
+            android:id="@+id/start_step_button_id"
             style="@style/AppTheme.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="شروع"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/step_count_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/start_bycicle_button_id"
+            app:layout_constraintTop_toBottomOf="@id/time_min_constraint_layout_id" />
+
+        <Button
+            android:id="@+id/start_bycicle_button_id"
+            style="@style/AppTheme.Button"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/bike_button_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/start_step_button_id"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_id" />
+            app:layout_constraintTop_toTopOf="@id/start_step_button_id" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -215,27 +300,6 @@
 
 
     <!--<Button-->
-    <!--android:id="@+id/start_step_button_id"-->
-    <!--android:layout_width="75dp"-->
-    <!--android:layout_height="75dp"-->
-    <!--android:layout_marginTop="150dp"-->
-    <!--style="@style/AppTheme.Button"-->
-    <!--android:text="@string/step_count_button_text"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toLeftOf="@id/start_bycicle_button_id"-->
-    <!--app:layout_constraintTop_toBottomOf="@id/app_name_text_view_id" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/start_bycicle_button_id"-->
-    <!--android:layout_width="75dp"-->
-    <!--android:layout_height="75dp"-->
-    <!--style="@style/AppTheme.Button"-->
-    <!--android:text="@string/bike_button_text"-->
-    <!--app:layout_constraintLeft_toRightOf="@id/start_step_button_id"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="@id/start_step_button_id" />-->
-
-    <!--<Button-->
     <!--android:id="@+id/continue_last_action_id"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="75dp"-->
@@ -246,8 +310,6 @@
     <!--app:layout_constraintTop_toTopOf="@id/start_step_button_id"-->
     <!--android:visibility="invisible"-->
     <!--/>-->
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

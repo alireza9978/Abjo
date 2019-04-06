@@ -25,6 +25,36 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="AppTheme.time.temp" parent="AppTheme">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="fontFamily">@font/big_main_font</item>
+        <item name="android:background">@drawable/back_time_text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">25dp</item>
+    </style>
+
+    <style name="AppTheme.Constraint.time" parent="AppTheme">
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:layout_width">75dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/back_layout_time</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">25dp</item>
+    </style>
+
+
+    <style name="AppTheme.animated" parent="AppTheme">
+        <item name="android:textColor">@color/login_submit_gradient_right</item>
+        <item name="fontFamily">@font/big_main_font</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">50dp</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="AppTheme.LeaderBoard" parent="AppTheme">
         <item name="android:textColor">@color/login_submit_gradient_right</item>
         <item name="fontFamily">@font/big_main_font</item>

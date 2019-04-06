@@ -11,193 +11,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/user_info_layout_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/profile_constraint_back"
-            android:minHeight="150dp"
-            app:layout_constraintBottom_toTopOf="@id/line"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/top_line_info_back"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/profile_long_gray_back"
-                android:padding="5dp"
-                app:layout_constraintBottom_toTopOf="@id/hour_of_activity_text"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0"
-                app:layout_constraintVertical_chainStyle="packed">
-
-
-                <com.beardedhen.androidbootstrap.BootstrapProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:rotation="180"
-                    app:animated="true"
-                    app:bootstrapMaxProgress="100"
-                    app:bootstrapProgress="30"
-                    app:bootstrapSize="md"
-                    app:bootstrapshowPercentage="false"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:roundedCorners="true"
-                    app:striped="true" />
-
-                <TextView
-                    android:id="@+id/level_text_id"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:text=" سطح 1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/point_text_id"
-                    style="@style/AppTheme.TextView.Profile"
-                    android:textColor="@color/colorWhite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="29 امتیاز"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/hour_of_activity_text"
-                style="@style/AppTheme.TextView.Profile"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:background="@drawable/profile_long_gray_back"
-                android:paddingLeft="30dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="85 ساعت"
-                app:layout_constraintBottom_toTopOf="@id/user_name_text_view_id"
-                app:layout_constraintLeft_toLeftOf="@id/top_line_info_back"
-                app:layout_constraintTop_toBottomOf="@id/top_line_info_back" />
-
-            <ImageView
-                android:id="@+id/hour_of_activity_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@mipmap/heart_profile"
-                app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
-                app:layout_constraintLeft_toLeftOf="@id/hour_of_activity_text"
-                app:layout_constraintRight_toLeftOf="@id/hour_of_activity_text"
-                app:layout_constraintTop_toTopOf="@id/hour_of_activity_text" />
-
-
-            <TextView
-                android:id="@+id/coin_of_activity_text"
-                style="@style/AppTheme.TextView.Profile"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/profile_long_gray_back"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="30dp"
-                android:paddingBottom="5dp"
-                android:text="8500 سکه"
-                app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
-                app:layout_constraintRight_toRightOf="@id/top_line_info_back"
-                app:layout_constraintTop_toTopOf="@id/hour_of_activity_text" />
-
-            <ImageView
-                android:id="@+id/coin_of_activity_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@mipmap/coin"
-                app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
-                app:layout_constraintLeft_toRightOf="@id/coin_of_activity_text"
-                app:layout_constraintRight_toRightOf="@id/coin_of_activity_text"
-                app:layout_constraintTop_toTopOf="@id/hour_of_activity_text" />
-
-
-            <TextView
-                android:id="@+id/user_name_text_view_id"
-                style="@style/AppTheme.TextView.Profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text=" مرتضی افشاری"
-                android:textColor="@color/login_submit_gradient_right"
-                android:textSize="35sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/hour_of_activity_text" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <ImageView
-            android:id="@+id/app_icon_profile_id"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            app:srcCompat="@mipmap/profile_big_icon"
-            app:layout_constraintBottom_toTopOf="@id/user_info_layout_id"
-            app:layout_constraintLeft_toLeftOf="@id/user_info_layout_id"
-            app:layout_constraintRight_toRightOf="@id/user_info_layout_id"
-            app:layout_constraintTop_toTopOf="@id/user_info_layout_id" />
-
-        <ImageView
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/line"
-            app:layout_constraintBottom_toTopOf="@id/history_text"
-            app:layout_constraintTop_toBottomOf="@id/user_info_layout_id" />
-
-
         <TextView
             android:id="@+id/history_text"
             style="@style/AppTheme.TextView.Profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:text=" سوابق "
+            android:layout_marginTop="20dp"
             android:textSize="35sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/line"
+            />
+
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:srcCompat="@drawable/line"
+            app:layout_constraintTop_toBottomOf="@id/history_text"
+            app:layout_constraintBottom_toTopOf="@id/history_and_transition_list"
+            />
+
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/history_and_transition_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/history_text">
+            app:layout_constraintTop_toBottomOf="@id/line">
 
 
         </androidx.recyclerview.widget.RecyclerView>
