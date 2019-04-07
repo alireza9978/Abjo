@@ -7,6 +7,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
+import coleo.com.abjo.constants.Constants;
 
 public class Splash extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra(Constants.FROM_NOTIFICATION,false);
                 startActivity(intent);
                 finish();
             }

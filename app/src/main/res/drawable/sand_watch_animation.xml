@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false"
+    >
+    <item
+        android:drawable="@drawable/hour_glass_a"
+        android:duration="500" />
+    <item
+        android:drawable="@drawable/hour_glass_b"
+        android:duration="500" />
+    <item
+        android:drawable="@drawable/hour_glass_c"
+        android:duration="500" />
+    <item
+        android:drawable="@drawable/hour_glass_d"
+        android:duration="500" />
+
+</animation-list>

@@ -21,13 +21,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.robinhood.ticker.TickerView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
-import coleo.com.abjo.activity.CountActivity;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.service.MyReceiver;
 
@@ -37,6 +39,13 @@ public class Constants {
 
     public static final double fuckingRatio = 1.351543942992874;
     public static final double fuckingRatioTop = 1.653934300993125;
+
+    //timer Text view
+    public static TickerView hour;
+    public static TickerView minute;
+    public static TickerView second;
+    public static final int ONE_HOUR = 3_600_000;
+
 
     public static Context context = null;
 
@@ -62,8 +71,8 @@ public class Constants {
         int FOREGROUND_SERVICE = 101;
     }
 
-    public static Button start_stop = null;
-    public static Button pause_resume= null;
+    public static ImageView start_stop = null;
+    public static ImageView pause_resume= null;
     public static boolean isWorking = false;
     public static boolean isPause = false;
 
@@ -83,7 +92,8 @@ public class Constants {
                                                               boolean canClose, boolean isStep,
                                                               boolean isPause) {
 
-        Intent intent = new Intent(context, CountActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Constants.FROM_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent pause = new Intent(context, MyReceiver.class);

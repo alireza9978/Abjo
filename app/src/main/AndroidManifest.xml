@@ -28,9 +28,6 @@
         <activity
             android:name=".activity.Login"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activity.CountActivity"
-            android:launchMode="singleTop" />
         <activity android:name=".activity.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

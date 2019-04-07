@@ -1,10 +1,7 @@
 package coleo.com.abjo.activity;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
@@ -21,7 +18,7 @@ import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
 import coleo.com.abjo.constants.Constants;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, Serializable {
+public class MainActivity extends AppCompatActivity implements Serializable {
 
     final Fragment fragment1 = new Profile();
     final Fragment fragment2 = new Heart();
@@ -119,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tabLayout.selectTab(tabLayout.getTabAt(1));
 
+        Bundle extra = getIntent().getExtras();
+        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+        if (temp) {
+            showAfterStartFromNotification();
+        }
     }
 
     @Override
@@ -137,36 +139,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.start_step_button_id: {
-                Intent intent = new Intent(context, CountActivity.class);
-                intent.putExtra(Constants.STEP_OR_BIKE, true);
-                startActivity(intent);
-                ((Activity) context).finish();
-                break;
-            }
-            case R.id.start_bycicle_button_id: {
-                Intent intent = new Intent(context, CountActivity.class);
-                intent.putExtra(Constants.STEP_OR_BIKE, false);
-                startActivity(intent);
-                ((Activity) context).finish();
-                break;
-            }
-//            case R.id.continue_last_action_id: {
-//                Intent intent = new Intent(context, CountActivity.class);
-//                startActivity(intent);
-//                ((Activity) context).finish();
-//                break;
-//            }
-        }
-    }
-
-    public void showAfterStart() {
+    public void showAfterStart(boolean isStep) {
         mainFragmentNumber = 1;
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
+        ((AfterStartFragment) fragment4).startServiceFromOut(isStep);
+    }
+
+    public void showAfterStartFromNotification() {
+        mainFragmentNumber = 1;
+        fm.beginTransaction().hide(active).show(fragment4).commit();
+        active = fragment4;
+        ((AfterStartFragment) fragment4).startServiceFromNotification();
+    }
+
+    public void backToMain() {
+        mainFragmentNumber = 0;
+        fm.beginTransaction().hide(active).show(fragment2).commit();
+        active = fragment2;
     }
 
     @Override

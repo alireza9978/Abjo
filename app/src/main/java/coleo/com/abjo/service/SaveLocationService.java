@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,6 +18,8 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Toast;
 
+import com.mrq.android.ibrary.FinalCountDownTimer;
+
 import java.util.Objects;
 
 import androidx.core.app.ActivityCompat;
@@ -27,11 +30,12 @@ import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
+import coleo.com.abjo.dialogs.SendJsonDialog;
 
+import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.pause_resume;
 import static coleo.com.abjo.constants.Constants.start_stop;
-import static coleo.com.abjo.constants.Constants.stepCounted;
 
 public class SaveLocationService extends Service implements SensorEventListener {
 
@@ -147,9 +151,9 @@ public class SaveLocationService extends Service implements SensorEventListener 
     public void onDestroy() {
         super.onDestroy();
         locationManager.removeUpdates(locationListener);
-        if (isStep) {
-            Constants.start_stop.setText("" + stepCounted);
-        }
+//        if (isStep) {
+//            Constants.start_stop.setText("" + stepCounted);
+//        }
     }
 
     @Override
@@ -174,6 +178,8 @@ public class SaveLocationService extends Service implements SensorEventListener 
                             notification.build());
                     startService();
                     isStep = true;
+
+
                     break;
                 }
                 case Constants.ACTION.START_FOREGROUND_ACTION_BIKE: {
@@ -244,32 +250,83 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
     }
 
+    class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
+
+        private int second;
+        private int minute;
+        private int hour;
+
+        private OnCount(int second, int minute, int hour) {
+            this.second = second;
+            this.minute = minute;
+            this.hour = hour;
+            Constants.second.setText("" + second);
+            Constants.minute.setText("" + minute);
+            Constants.hour.setText("" + hour);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            second++;
+            if (second >= 60) {
+                second = 0;
+                minute++;
+                if (minute >= 60) {
+                    minute = 0;
+                    hour++;
+                    Constants.second.setText("" + second);
+                    Constants.minute.setText("" + minute);
+                    Constants.hour.setText("" + hour);
+                } else {
+                    Constants.second.setText("" + second);
+                    Constants.minute.setText("" + minute);
+                }
+            } else {
+                Constants.second.setText("" + second);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(second, minute, hour));
+        }
+    }
+
+    private FinalCountDownTimer countDownTimer;
     private void startService() {
         makeDataBase();
-        start_stop.setText(getBaseContext().getString(R.string.stop_service));
+        countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(0, 0, 0));
+        countDownTimer.start();
+        start_stop.setImageResource(R.mipmap.stop_icon);
         pause_resume.setVisibility(View.VISIBLE);
         Constants.isWorking = true;
         Constants.isPause = false;
     }
 
     private void stopService() {
-        start_stop.setText(getBaseContext().getString(R.string.start_service));
-        pause_resume.setVisibility(View.INVISIBLE);
         Constants.isWorking = false;
         Constants.isPause = false;
+        countDownTimer.cancel();
+//        ((MainActivity) context).backToMain();
         //todo make json and send to server
+        SendJsonDialog dialog = new SendJsonDialog(context);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+        //todo go next page
     }
 
     private void pauseService() {
-        pause_resume.setText(getBaseContext().getString(R.string.resume_service));
+        pause_resume.setImageResource(R.mipmap.play_icon);
         Constants.isWorking = true;
         Constants.isPause = true;
+        countDownTimer.cancel();
     }
 
     private void resumeService() {
-        pause_resume.setText(getBaseContext().getString(R.string.pause_service));
+        pause_resume.setImageResource(R.mipmap.pause_icon);
         Constants.isPause = false;
         Constants.isWorking = true;
+        countDownTimer.start();
     }
 
     private void makeDataBase() {
