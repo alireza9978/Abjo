@@ -20,10 +20,13 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
-import android.widget.Button;
 import android.widget.ImageView;
 
+import com.android.volley.VolleyError;
 import com.robinhood.ticker.TickerView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +42,18 @@ public class Constants {
 
     public static final double fuckingRatio = 1.351543942992874;
     public static final double fuckingRatioTop = 1.653934300993125;
+
+    private final static String TOKEN_STORAGE = "someWhereInDarkness";
+    private final static String TOKEN_DATA = "someWhereInDarkness12";
+    private final static String NO_TOKEN = "nothingInTheBag";
+
+    //url
+    private final static String Base_Url = "http://api.zimaapp.ir/api";
+    public static final String URL_CHECK_PHONE = Base_Url + "/citizen/current_state/";
+    public static final String URL_SEND_CODE = Base_Url + "/citizen/current_state/";
+
+
+
 
     //timer Text view
     public static TickerView hour;
@@ -309,6 +324,31 @@ public class Constants {
         Point size = new Point();
         display.getSize(size);
         return size.y;
+    }
+
+    public static void setToken(Context context, String token) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(TOKEN_STORAGE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(TOKEN_DATA, token);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(TOKEN_STORAGE, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(TOKEN_DATA, NO_TOKEN);
+    }
+
+    public static String getErrorMessage(VolleyError error) {
+        String temp = new String(error.networkResponse.data);
+        try {
+            JSONObject json = new JSONObject(temp);
+            temp = json.getString("error_message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            temp = "خطای سرور";
+        }
+        return temp;
     }
 
 }

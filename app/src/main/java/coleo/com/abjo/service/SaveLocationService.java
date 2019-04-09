@@ -3,6 +3,7 @@ package coleo.com.abjo.service;
 import android.Manifest;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -26,10 +27,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.room.Room;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
+import coleo.com.abjo.dialogs.ReportDialog;
 import coleo.com.abjo.dialogs.SendJsonDialog;
 
 import static coleo.com.abjo.constants.Constants.context;
@@ -311,8 +314,22 @@ public class SaveLocationService extends Service implements SensorEventListener 
         //todo make json and send to server
         SendJsonDialog dialog = new SendJsonDialog(context);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                ReportDialog temp = new ReportDialog(context);
+                temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        ((MainActivity) context).backToMain();
+                    }
+                });
+                temp.show();
+            }
+        });
         dialog.show();
-        //todo go next page
     }
 
     private void pauseService() {

@@ -19,4 +19,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="phone_number">شماره همراه</string>
+    <string name="login">ورود</string>
+    <string name="background">it is a background</string>
+    <string name="code">کد تایید</string>
+    <string name="ok">تایید</string>
 </resources>

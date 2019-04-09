@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/dialog_back"
+    android:padding="5dp">
+
+
+    <TextView
+        android:id="@+id/title_report"
+        style="@style/AppTheme.TextView.Profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/report_long_gray_back"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:text="گزارش فعالیت"
+        android:textAlignment="center"
+        android:textColor="@color/bootstrap_gray"
+        android:textSize="25sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dialog_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_report">
+
+
+        <ImageView
+            android:id="@+id/report_time_image"
+            style="@style/AppTheme.report.image"
+            android:src="@mipmap/time"
+            app:layout_constraintBottom_toTopOf="@id/report_time_text"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/report_distance_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/report_time_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="86 min"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/report_time_image"
+            app:layout_constraintRight_toRightOf="@id/report_time_image"
+            app:layout_constraintTop_toBottomOf="@id/report_time_image" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/line_vertical"
+            app:layout_constraintBottom_toBottomOf="@id/report_time_text"
+            app:layout_constraintLeft_toRightOf="@id/report_time_image"
+            app:layout_constraintRight_toLeftOf="@id/report_distance_image"
+            app:layout_constraintTop_toTopOf="@id/report_time_image" />
+
+        <ImageView
+            android:id="@+id/report_distance_image"
+            style="@style/AppTheme.report.image"
+            android:src="@mipmap/distance"
+            app:layout_constraintBottom_toTopOf="@+id/report_distance_text"
+            app:layout_constraintLeft_toRightOf="@id/report_time_image"
+            app:layout_constraintRight_toLeftOf="@id/report_speed_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/report_distance_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1450 m"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/report_distance_image"
+            app:layout_constraintRight_toRightOf="@id/report_distance_image"
+            app:layout_constraintTop_toBottomOf="@+id/report_distance_image" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/line_vertical"
+            app:layout_constraintBottom_toBottomOf="@id/report_time_text"
+            app:layout_constraintLeft_toRightOf="@id/report_distance_image"
+            app:layout_constraintRight_toLeftOf="@id/report_speed_image"
+            app:layout_constraintTop_toTopOf="@id/report_time_image" />
+
+        <ImageView
+            android:id="@+id/report_speed_image"
+            style="@style/AppTheme.report.image"
+            android:src="@mipmap/speed"
+            app:layout_constraintBottom_toTopOf="@+id/report_speed_text"
+            app:layout_constraintLeft_toRightOf="@id/report_distance_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/report_speed_text"
+            style="@style/AppTheme.TextView.Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5.2 km/h"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/report_speed_image"
+            app:layout_constraintRight_toRightOf="@id/report_speed_image"
+            app:layout_constraintTop_toBottomOf="@+id/report_speed_image" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/line"
+            app:layout_constraintBottom_toTopOf="@id/report_distance_text"
+            app:layout_constraintLeft_toLeftOf="@id/report_time_image"
+            app:layout_constraintRight_toRightOf="@id/report_speed_image"
+            app:layout_constraintTop_toBottomOf="@id/report_time_image" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/hour_of_activity_text"
+        style="@style/AppTheme.TextView.Profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/profile_long_gray_back"
+        android:maxHeight="50dp"
+        android:paddingLeft="45dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="+25"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@id/ok_report_button_id"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/coin_of_activity_text"
+        app:layout_constraintTop_toBottomOf="@id/dialog_layout" />
+
+    <ImageView
+        android:id="@+id/hour_of_activity_image"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
+        app:layout_constraintLeft_toLeftOf="@id/hour_of_activity_text"
+        app:layout_constraintRight_toLeftOf="@id/hour_of_activity_text"
+        app:layout_constraintTop_toTopOf="@id/hour_of_activity_text"
+        app:srcCompat="@mipmap/heart_profile" />
+
+
+    <TextView
+        android:id="@+id/coin_of_activity_text"
+        style="@style/AppTheme.TextView.Profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/profile_long_gray_back"
+        android:maxHeight="50dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="45dp"
+        android:paddingBottom="5dp"
+        android:text="+85"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
+        app:layout_constraintLeft_toRightOf="@id/hour_of_activity_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hour_of_activity_text" />
+
+    <ImageView
+        android:id="@+id/coin_of_activity_image"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="@id/hour_of_activity_text"
+        app:layout_constraintLeft_toRightOf="@id/coin_of_activity_text"
+        app:layout_constraintRight_toRightOf="@id/coin_of_activity_text"
+        app:layout_constraintTop_toTopOf="@id/hour_of_activity_text"
+        app:srcCompat="@mipmap/coin_white" />
+
+    <Button
+        android:id="@+id/ok_report_button_id"
+        style="@style/AppTheme.TextView.Profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/report_submit_icon_back"
+        android:text="خوبه"
+        android:textColor="@color/colorWhite"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

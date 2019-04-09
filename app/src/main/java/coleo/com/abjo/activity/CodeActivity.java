@@ -36,4 +36,16 @@ public class CodeActivity extends AppCompatActivity {
         }
     }
 
+    public void goMainPage() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constants.FROM_NOTIFICATION, false);
+        startActivity(intent);
+        finish();
+    }
+
+    public void wrongCode(){
+
+    }
+
+    public void goSignUp{}
 }

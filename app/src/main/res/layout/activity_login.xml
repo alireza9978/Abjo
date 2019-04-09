@@ -8,6 +8,7 @@
     >
 
     <ImageView
+        android:contentDescription="@string/background"
         android:id="@+id/back_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,13 +25,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/login_phone_input_back"
-        android:hint="شماره همراه"
+        android:hint="@string/phone_number"
         android:inputType="phone"
         app:layout_constraintBottom_toTopOf="@id/submit_login_id"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9"
         android:nextFocusDown="@id/submit_login_id"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="Autofill" />
 
     <Button
         android:id="@+id/submit_login_id"
@@ -39,7 +41,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/login_submit_back"
         android:minHeight="50dp"
-        android:text="ورود"
+        android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/phone_input_id"
         app:layout_constraintRight_toRightOf="@id/phone_input_id"

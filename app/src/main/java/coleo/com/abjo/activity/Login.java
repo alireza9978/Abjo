@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.server_class.ServerClass;
 
 public class Login extends AppCompatActivity {
 
@@ -30,10 +31,7 @@ public class Login extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case (R.id.submit_login_id): {
-                findViewById(R.id.submit_login_id).setEnabled(false);
-                Intent intent = new Intent(this, CodeActivity.class);
-                startActivity(intent);
-                finish();
+                ServerClass.checkPhone(this, getPhoneNumber());
             }
         }
     }
@@ -42,4 +40,10 @@ public class Login extends AppCompatActivity {
         return phone.getText().toString().trim();
     }
 
+    public void goCode() {
+        findViewById(R.id.submit_login_id).setEnabled(false);
+        Intent intent = new Intent(this, CodeActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

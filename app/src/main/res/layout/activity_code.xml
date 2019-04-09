@@ -7,6 +7,7 @@
     tools:context=".activity.Login">
 
     <ImageView
+        android:contentDescription="@string/background"
         android:id="@+id/code_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/code_input_back"
-        android:hint="کد تایید"
+        android:hint="@string/code"
         android:inputType="number"
         android:nextFocusForward="@id/submit_code_id"
         app:layout_constraintBottom_toTopOf="@id/submit_code_id"
@@ -36,7 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/code_submit_back"
-        android:text="تایید"
+        android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/code_input_id"
         app:layout_constraintRight_toRightOf="@id/code_input_id"
