@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -11,16 +12,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import coleo.com.abjo.activity.CodeActivity;
 import coleo.com.abjo.activity.Login;
 import coleo.com.abjo.activity.Splash;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.User;
 
 import static coleo.com.abjo.constants.Constants.getErrorMessage;
 
 public class ServerClass {
+
+    private static final String TAG = "server class";
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -53,18 +57,17 @@ public class ServerClass {
         }
     }
 
-    public static void checkPhone(final Context context, String phone) {
+    public static void checkPhone(final Context context, final String phone) {
 
         String url = Constants.URL_CHECK_PHONE;
-
-        //todo make json object and send phone
+        url += phone;
+        url += "/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        saveToken(context, response);
-                        ((Login) context).goCode();
+                        ((Login) context).goCode(phone);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -77,23 +80,23 @@ public class ServerClass {
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
-    public static void sendCode(final Context context, final String code) {
-        String url = Constants.URL_SEND_CODE;
+    public static void sendCode(final Context context, final String phone, final String code) {
 
-        JSONObject temp = new JSONObject();
-        try {
-            JSONObject developer = new JSONObject();
-            developer.put("code", code);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String url = Constants.URL_SEND_CODE;
+        url += phone;
+        url += "/";
+        url += code;
+        url += "/";
 
         ObjectRequest jsonObjectRequest = new ObjectRequest
-                (context, Request.Method.POST, url, temp,
+                (context, Request.Method.GET, url, null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                saveToken(context, response);
+                                //todo do some thing with this code
+//                                saveToken(context, response);
+                                User user = parseUser(response);
+                                ((CodeActivity) context).goMainPage();
                             }
                         }
                         , new Response.ErrorListener() {
@@ -106,6 +109,23 @@ public class ServerClass {
 
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
 
+    }
+
+    private static User parseUser(JSONObject response) {
+        Log.i(TAG, "parseUser: " + response.toString());
+        String first,last,number;
+        boolean isWoman;
+        try {
+            JSONObject user = response.getJSONObject("user");
+            first = user.getString("first_name");
+            last = user.getString("last_name");
+            number = user.getString("phone");
+            isWoman = user.getBoolean("is_woman");
+            return new User(first,last,number,isWoman);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

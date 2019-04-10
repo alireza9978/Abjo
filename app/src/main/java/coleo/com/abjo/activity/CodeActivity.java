@@ -9,13 +9,19 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.server_class.ServerClass;
 
 public class CodeActivity extends AppCompatActivity {
+
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code);
+
+        Bundle extra = getIntent().getExtras();
+        phone = extra.getString(Constants.PHONE_FROM_LOGIN," ");
 
         ImageView back = findViewById(R.id.code_back);
         back.getLayoutParams().width = Constants.getScreenWidth(this);
@@ -29,9 +35,7 @@ public class CodeActivity extends AppCompatActivity {
             case R.id.submit_code_id: {
                 findViewById(R.id.submit_code_id).setEnabled(false);
                 String temp = ((EditText) findViewById(R.id.code_input_id)).getText().toString().trim();
-                Intent intent = new Intent(this, SignUpActivity.class);
-                startActivity(intent);
-                finish();
+                ServerClass.sendCode(this,phone,temp);
             }
         }
     }
@@ -47,5 +51,9 @@ public class CodeActivity extends AppCompatActivity {
 
     }
 
-    public void goSignUp(){}
+    public void goSignUp(){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

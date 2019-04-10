@@ -24,19 +24,19 @@ public class Splash extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String token = Constants.getToken(this);
-        final boolean goPhone = token == null;
+        final boolean goPhone = token.equals(Constants.NO_TOKEN);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-//                Intent intent;
-//                if (goPhone) {
-//                    intent = new Intent(context, Login.class);
-//                } else {
-//                    intent = new Intent(context, MainActivity.class);
-//                    intent.putExtra(Constants.FROM_NOTIFICATION, false);
-//                }
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra(Constants.FROM_NOTIFICATION, false);
+                Intent intent;
+                if (goPhone) {
+                    intent = new Intent(context, Login.class);
+                } else {
+                    intent = new Intent(context, MainActivity.class);
+                    intent.putExtra(Constants.FROM_NOTIFICATION, false);
+                }
+//                Intent intent = new Intent(context, MainActivity.class);
+//                intent.putExtra(Constants.FROM_NOTIFICATION, false);
                 startActivity(intent);
                 finish();
             }

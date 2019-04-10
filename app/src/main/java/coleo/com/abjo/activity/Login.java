@@ -40,9 +40,10 @@ public class Login extends AppCompatActivity {
         return phone.getText().toString().trim();
     }
 
-    public void goCode() {
+    public void goCode(String phone) {
         findViewById(R.id.submit_login_id).setEnabled(false);
         Intent intent = new Intent(this, CodeActivity.class);
+        intent.putExtra(Constants.PHONE_FROM_LOGIN,phone);
         startActivity(intent);
         finish();
     }

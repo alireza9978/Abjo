@@ -45,15 +45,15 @@ public class Constants {
 
     private final static String TOKEN_STORAGE = "someWhereInDarkness";
     private final static String TOKEN_DATA = "someWhereInDarkness12";
-    private final static String NO_TOKEN = "nothingInTheBag";
+    public final static String NO_TOKEN = "nothingInTheBag";
 
     //url
-    private final static String Base_Url = "http://api.zimaapp.ir/api";
-    public static final String URL_CHECK_PHONE = Base_Url + "/citizen/current_state/";
-    public static final String URL_SEND_CODE = Base_Url + "/citizen/current_state/";
+    private final static String Base_Url = "http://abjo.coleo.me/api/v1/";
+    public static final String URL_CHECK_PHONE = Base_Url + "auth/check_phone/";
+    public static final String URL_SEND_CODE = Base_Url + "auth/check_code/";
 
-
-
+    //intent
+    public static final String PHONE_FROM_LOGIN = "code data";
 
     //timer Text view
     public static TickerView hour;
