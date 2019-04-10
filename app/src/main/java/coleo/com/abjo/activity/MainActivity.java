@@ -2,6 +2,7 @@ package coleo.com.abjo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
@@ -101,6 +102,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+
+        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Heart) fragment2).openNavigation();
             }
         });
 

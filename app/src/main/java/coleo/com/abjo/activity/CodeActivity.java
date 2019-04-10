@@ -47,5 +47,5 @@ public class CodeActivity extends AppCompatActivity {
 
     }
 
-    public void goSignUp{}
+    public void goSignUp(){}
 }

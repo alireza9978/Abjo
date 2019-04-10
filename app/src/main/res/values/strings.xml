@@ -24,4 +24,6 @@
     <string name="background">it is a background</string>
     <string name="code">کد تایید</string>
     <string name="ok">تایید</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

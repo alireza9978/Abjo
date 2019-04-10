@@ -28,13 +28,15 @@ public class Splash extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Intent intent;
-                if (goPhone) {
-                    intent = new Intent(context, Login.class);
-                } else {
-                    intent = new Intent(context, MainActivity.class);
-                    intent.putExtra(Constants.FROM_NOTIFICATION, false);
-                }
+//                Intent intent;
+//                if (goPhone) {
+//                    intent = new Intent(context, Login.class);
+//                } else {
+//                    intent = new Intent(context, MainActivity.class);
+//                    intent.putExtra(Constants.FROM_NOTIFICATION, false);
+//                }
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra(Constants.FROM_NOTIFICATION, false);
                 startActivity(intent);
                 finish();
             }

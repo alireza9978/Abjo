@@ -169,7 +169,7 @@
         app:layout_constraintLeft_toLeftOf="@id/hour_of_activity_text"
         app:layout_constraintRight_toLeftOf="@id/hour_of_activity_text"
         app:layout_constraintTop_toTopOf="@id/hour_of_activity_text"
-        app:srcCompat="@mipmap/heart_profile" />
+        app:srcCompat="@mipmap/coin_white_back" />
 
 
     <TextView
@@ -199,7 +199,7 @@
         app:layout_constraintLeft_toRightOf="@id/coin_of_activity_text"
         app:layout_constraintRight_toRightOf="@id/coin_of_activity_text"
         app:layout_constraintTop_toTopOf="@id/hour_of_activity_text"
-        app:srcCompat="@mipmap/coin_white" />
+        app:srcCompat="@mipmap/point_white_back" />
 
     <Button
         android:id="@+id/ok_report_button_id"

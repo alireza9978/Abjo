@@ -26,7 +26,7 @@ public class ObjectRequest extends JsonObjectRequest {
     }
 
     @Override
-    public Map getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() throws AuthFailureError {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json");
         headers.put("token", Constants.getToken(context));
