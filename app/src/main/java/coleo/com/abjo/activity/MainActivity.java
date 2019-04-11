@@ -18,6 +18,8 @@ import coleo.com.abjo.activity.fragments.Heart;
 import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.ProfileData;
+import coleo.com.abjo.server_class.ServerClass;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
 
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_main);
         TypefaceProvider.registerDefaultIconSets();
         Constants.context = this;
+
+        ServerClass.getProfile(this);
 
         fm.beginTransaction().add(R.id.main_container, fragment1, "1").hide(fragment1).commit();
         fm.beginTransaction().add(R.id.main_container, fragment2, "2").commit();
@@ -171,4 +175,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     public void onBackPressed() {
 
     }
+
+    public void updateProfile(ProfileData data) {
+        ((Heart) fragment2).updateProfile(data);
+    }
+
 }

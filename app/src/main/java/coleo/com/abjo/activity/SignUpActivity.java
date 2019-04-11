@@ -12,12 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.NewUserForServer;
+import coleo.com.abjo.server_class.ServerClass;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText name;
     private EditText lastName;
     private EditText studentNumber;
+    private EditText introduceInput;
 
     private ImageView manImage;
     private TextView manText;
@@ -35,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         name = findViewById(R.id.name_input_id);
         lastName = findViewById(R.id.family_input_id);
         studentNumber = findViewById(R.id.student_number_input_id);
+        introduceInput = findViewById(R.id.introducer_input_id);
 
         manImage = findViewById(R.id.man_image_view);
         womanImage = findViewById(R.id.woman_image_view);
@@ -105,17 +109,32 @@ public class SignUpActivity extends AppCompatActivity {
                 String firstName = name.getText().toString().trim();
                 String family = lastName.getText().toString().trim();
                 String student = studentNumber.getText().toString().trim();
-                //todo send to server
+                String introduceCode = introduceInput.getText().toString().trim();
+                if (firstName.isEmpty() || family.isEmpty() || student.isEmpty()) {
+                    Toast.makeText(this, "check input", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (isSelected) {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    NewUserForServer user = new NewUserForServer(firstName, family, ""
+                            , isMen, introduceCode, student);
+                    ServerClass.makeNewUser(this, user);
                 } else {
                     findViewById(R.id.submit_sign_up_id).setEnabled(true);
                     Toast.makeText(this, "select gender", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+
+    public void goMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constants.FROM_NOTIFICATION, false);
+        startActivity(intent);
+        finish();
+    }
+
+    public void enable() {
+        findViewById(R.id.submit_sign_up_id).setEnabled(true);
     }
 
 }

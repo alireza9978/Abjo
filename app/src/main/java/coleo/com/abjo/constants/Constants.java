@@ -40,7 +40,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Constants {
 
+    public static final String VERSION = "0.0.1";
+
     public static final double fuckingRatio = 1.351543942992874;
+    public static final double fuckingRatioHoshyar = 1.34261444077;
     public static final double fuckingRatioTop = 1.653934300993125;
 
     private final static String TOKEN_STORAGE = "someWhereInDarkness";
@@ -51,6 +54,8 @@ public class Constants {
     private final static String Base_Url = "http://abjo.coleo.me/api/v1/";
     public static final String URL_CHECK_PHONE = Base_Url + "auth/check_phone/";
     public static final String URL_SEND_CODE = Base_Url + "auth/check_code/";
+    public static final String URL_MAKE_USER = Base_Url + "users_store/";
+    public static final String URL_GET_USER_PROFILE = Base_Url + "users_store/";
 
     //intent
     public static final String PHONE_FROM_LOGIN = "code data";

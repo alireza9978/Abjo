@@ -26,6 +26,7 @@ import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.adapter.NavigationAdapter;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
+import coleo.com.abjo.data_class.ProfileData;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
@@ -42,7 +43,7 @@ public class Heart extends Fragment implements Serializable {
 
     private DuoDrawerLayout drawerLayout;
     private NavigationAdapter adapter;
-
+    private BootstrapProgressBar progressBar;
     public Heart() {
     }
 
@@ -82,7 +83,7 @@ public class Heart extends Fragment implements Serializable {
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        BootstrapProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setBootstrapBrand(new ColorOfProgress());
         name = view.findViewById(R.id.user_name_text_view_id);
         coin = view.findViewById(R.id.coin_of_activity_text);
@@ -116,5 +117,15 @@ public class Heart extends Fragment implements Serializable {
     }
 
 
+    public void updateProfile(ProfileData data) {
+        name.setText(data.getUser().getFirstName() + " " + data.getUser().getLastName());
+        coin.setText("" + data.getCoins());
+        hour.setText("" + data.getHours());
+        progressBar.setMaxProgress(data.getLevel().getLevelMaxPoint());
+        progressBar.setProgress(data.getLevel().getPoint());
+        point.setText("" + data.getLevel().getPoint() + "امتیاز");
+        level.setText("سطح" + data.getLevel().getLevel());
+
+    }
 
 }

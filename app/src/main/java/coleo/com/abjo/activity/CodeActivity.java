@@ -3,6 +3,8 @@ package coleo.com.abjo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -18,14 +20,15 @@ public class CodeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_code);
 
         Bundle extra = getIntent().getExtras();
         phone = extra.getString(Constants.PHONE_FROM_LOGIN," ");
 
         ImageView back = findViewById(R.id.code_back);
-        back.getLayoutParams().width = Constants.getScreenWidth(this);
-        back.getLayoutParams().height = (int) (Constants.getScreenWidth(this) * Constants.fuckingRatio);
+        back.getLayoutParams().height = (int) (Constants.getScreenHeight(this) - Constants.dpToPx(this, 150));
         back.requestLayout();
 
     }

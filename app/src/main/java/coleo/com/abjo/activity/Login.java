@@ -3,8 +3,12 @@ package coleo.com.abjo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
@@ -20,17 +24,26 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         ImageView back = findViewById(R.id.back_login);
         phone = findViewById(R.id.phone_input_id);
 
-        back.getLayoutParams().width = Constants.getScreenWidth(this);
-        back.getLayoutParams().height = (int) (Constants.getScreenWidth(this) * Constants.fuckingRatio);
+//
+//        Glide.with(this).load(R.mipmap.temp_pic)
+//                .override(back., back.getLayoutParams().height)
+//                .into(back);
+//        back.getLayoutParams().width = Constants.getScreenWidth(this);
+        back.getLayoutParams().height = (int) (Constants.getScreenHeight(this) - Constants.dpToPx(this, 150));
         back.requestLayout();
+
+
+
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case (R.id.submit_login_id): {
+                findViewById(R.id.submit_login_id).setEnabled(false);
                 ServerClass.checkPhone(this, getPhoneNumber());
             }
         }
@@ -47,4 +60,9 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void enable(){
+        findViewById(R.id.submit_login_id).setEnabled(true);
+    }
+
 }

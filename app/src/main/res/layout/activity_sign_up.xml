@@ -33,6 +33,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/code_input_back"
             android:hint="نام"
+            android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@id/family_input_id"
             app:layout_constraintTop_toTopOf="@id/top_image_id"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -47,9 +48,25 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:inputType="textPersonName"
             android:hint="نام خانوادگی"
-            app:layout_constraintBottom_toTopOf="@id/student_number_input_id"
+            app:layout_constraintBottom_toTopOf="@id/introducer_input_id"
             app:layout_constraintTop_toBottomOf="@id/name_input_id" />
+
+        <EditText
+            android:id="@+id/introducer_input_id"
+            style="@style/AppTheme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/code_input_back"
+            android:hint="کد معرف"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@id/student_number_input_id"
+            app:layout_constraintTop_toBottomOf="@id/family_input_id" />
 
         <EditText
             android:id="@+id/student_number_input_id"
@@ -64,7 +81,7 @@
             android:layout_marginBottom="10dp"
             android:hint="شماره دانشجویی"
             app:layout_constraintBottom_toTopOf="@id/gender_layout"
-            app:layout_constraintTop_toBottomOf="@id/family_input_id" />
+            app:layout_constraintTop_toBottomOf="@id/introducer_input_id" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/gender_layout"
