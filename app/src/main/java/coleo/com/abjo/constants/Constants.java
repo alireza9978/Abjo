@@ -56,6 +56,8 @@ public class Constants {
     public static final String URL_SEND_CODE = Base_Url + "auth/check_code/";
     public static final String URL_MAKE_USER = Base_Url + "users_store/";
     public static final String URL_GET_USER_PROFILE = Base_Url + "users_store/";
+    public static final String URL_GET_LEADER_BOARD = Base_Url + "leader_board/";
+    public static final String URL_GET_HISTORY = Base_Url + "user_records_store/";
 
     //intent
     public static final String PHONE_FROM_LOGIN = "code data";
@@ -269,14 +271,15 @@ public class Constants {
         builder.create().show();
     }
 
-    public static void checkPermission(AppCompatActivity context) {
+    public static boolean checkPermission(AppCompatActivity context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Constants.displayPromptForGettingPermission(context);
         }
+        return true;
     }
 
-    public static void checkLocation(AppCompatActivity context) {
+    public static boolean checkLocation(AppCompatActivity context) {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
@@ -295,6 +298,9 @@ public class Constants {
 
         if (!gps_enabled && !network_enabled) {
             Constants.displayPromptForEnablingGPS(context);
+            return false;
+        } else {
+            return true;
         }
     }
 

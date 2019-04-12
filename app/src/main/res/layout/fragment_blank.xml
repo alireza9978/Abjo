@@ -13,17 +13,9 @@
             android:id="@+id/point"
             style="@style/AppTheme.LeaderBoardTop"
             android:layout_height="wrap_content"
-            android:text="امتیاز"
+            android:layout_width="100dp"
+            android:text="امتیاز کل "
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/level"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/level"
-            style="@style/AppTheme.LeaderBoardTop"
-            android:layout_height="wrap_content"
-            android:text="سطح"
-            app:layout_constraintLeft_toRightOf="@id/point"
             app:layout_constraintRight_toLeftOf="@id/name"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="شهروند"
-            app:layout_constraintLeft_toRightOf="@id/level"
+            app:layout_constraintLeft_toRightOf="@id/point"
             app:layout_constraintRight_toLeftOf="@id/rank"
             app:layout_constraintTop_toTopOf="parent" />
 

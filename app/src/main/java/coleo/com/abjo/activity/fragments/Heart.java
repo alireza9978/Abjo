@@ -39,10 +39,12 @@ public class Heart extends Fragment implements Serializable {
     private TextView level;
     private TextView point;
     private TextView coin;
+    private TextView funnyText;
     private TextView hour;
 
+    private ProfileData data;
+
     private DuoDrawerLayout drawerLayout;
-    private NavigationAdapter adapter;
     private BootstrapProgressBar progressBar;
     public Heart() {
     }
@@ -63,7 +65,7 @@ public class Heart extends Fragment implements Serializable {
         frame.removeAllViews();
         frame.addView(contentOfDrawer);
 
-        drawerLayout = (DuoDrawerLayout) view.findViewById(R.id.drawer_layout);
+        drawerLayout = view.findViewById(R.id.drawer_layout);
         Toolbar toolbar = new Toolbar(Constants.context);
         DuoDrawerToggle drawerToggle = new DuoDrawerToggle(((Activity) Constants.context), drawerLayout, toolbar,
                 R.string.navigation_drawer_open,
@@ -73,10 +75,14 @@ public class Heart extends Fragment implements Serializable {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
         nav_list_view.setLayoutManager(mLayoutManager);
         ArrayList<NavigationDrawerItem> arrayList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            arrayList.add(new NavigationDrawerItem());
-        }
-        adapter = new NavigationAdapter(arrayList, getContext());
+
+        arrayList.add(new NavigationDrawerItem(" معرفی به دوستان ", R.mipmap.share_app));
+        arrayList.add(new NavigationDrawerItem(" درباره ما ", R.mipmap.about_us));
+        arrayList.add(new NavigationDrawerItem(" پیام ها ", R.mipmap.massage));
+        arrayList.add(new NavigationDrawerItem(" قوانین و ضوابط ", R.mipmap.laws));
+        arrayList.add(new NavigationDrawerItem(" خروج از حساب کاربری ", R.mipmap.exit));
+
+        NavigationAdapter adapter = new NavigationAdapter(arrayList, getContext());
         nav_list_view.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -90,6 +96,7 @@ public class Heart extends Fragment implements Serializable {
         point = view.findViewById(R.id.point_text_id);
         level = view.findViewById(R.id.level_text_id);
         hour = view.findViewById(R.id.hour_of_activity_text);
+        funnyText = view.findViewById(R.id.funnyText_id);
 
         Button start = view.findViewById(R.id.start_button_id);
         Switch switchUI = view.findViewById(R.id.switch_id);
@@ -103,7 +110,7 @@ public class Heart extends Fragment implements Serializable {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) container.getContext()).showAfterStart(walk);
+                ((MainActivity) container.getContext()).showAfterStart(walk, data);
             }
         });
 
@@ -118,14 +125,18 @@ public class Heart extends Fragment implements Serializable {
 
 
     public void updateProfile(ProfileData data) {
-        name.setText(data.getUser().getFirstName() + " " + data.getUser().getLastName());
-        coin.setText("" + data.getCoins());
-        hour.setText("" + data.getHours());
+        this.data = data;
+        name.setText(data.getUser().getFullName());
+        coin.setText(data.getCoinsText());
+        hour.setText(data.getHoursText());
         progressBar.setMaxProgress(data.getLevel().getLevelMaxPoint());
         progressBar.setProgress(data.getLevel().getPoint());
-        point.setText("" + data.getLevel().getPoint() + "امتیاز");
-        level.setText("سطح" + data.getLevel().getLevel());
-
+        point.setText(" " + data.getLevel().getPoint() + " امتیاز ");
+        level.setText(" سطح " + data.getLevel().getLevel() + " ");
+        funnyText.setText(data.getNote());
+        if (data.getLevel().getPoint() < 10) {
+            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_right));
+        }
     }
 
 }

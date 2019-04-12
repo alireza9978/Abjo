@@ -2,12 +2,15 @@ package coleo.com.abjo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -18,6 +21,7 @@ import coleo.com.abjo.activity.fragments.Heart;
 import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
 
@@ -32,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     int mainFragmentNumber = 0;
     Context context = this;
 
-    TabLayout tabLayout;
+    private TabLayout tabLayout;
+    private ImageView menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_main);
         TypefaceProvider.registerDefaultIconSets();
         Constants.context = this;
-
-        ServerClass.getProfile(this);
 
         fm.beginTransaction().add(R.id.main_container, fragment1, "1").hide(fragment1).commit();
         fm.beginTransaction().add(R.id.main_container, fragment2, "2").commit();
@@ -55,9 +58,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 int icon = 0;
                 switch (tab.getPosition()) {
                     case 0: {
+                        ServerClass.getLeaderBoard(context);
                         icon = R.drawable.leader_board_selected;
                         fm.beginTransaction().hide(active).show(fragment3).commit();
                         active = fragment3;
+                        menuButton.setVisibility(View.INVISIBLE);
                         break;
                     }
                     case 1: {
@@ -65,10 +70,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         if (mainFragmentNumber == 0) {
                             fm.beginTransaction().hide(active).show(fragment2).commit();
                             active = fragment2;
+                            menuButton.setVisibility(View.VISIBLE);
                         } else {
                             if (mainFragmentNumber == 1) {
                                 fm.beginTransaction().hide(active).show(fragment4).commit();
                                 active = fragment4;
+                                menuButton.setVisibility(View.INVISIBLE);
                             }
                         }
                         break;
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         icon = R.drawable.profile_selected;
                         fm.beginTransaction().hide(active).show(fragment1).commit();
                         active = fragment1;
+                        menuButton.setVisibility(View.INVISIBLE);
                         break;
                     }
                 }
@@ -109,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             }
         });
 
-        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+        menuButton = findViewById(R.id.menu_button);
+        menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((Heart) fragment2).openNavigation();
@@ -123,8 +132,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         tabLayout.getTabAt(2).setText("");
         tabLayout.getTabAt(2).setIcon(R.drawable.profile);
 
-        Constants.checkPermission(this);
-        Constants.checkLocation(this);
 
         tabLayout.selectTab(tabLayout.getTabAt(1));
 
@@ -139,6 +146,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onResume() {
         super.onResume();
         Constants.context = this;
+        if (Constants.checkPermission(this)) {
+            if (Constants.checkLocation(this)) {
+                Log.i("MAIN_ACTIVITY", "onResume: have permission");
+            }
+        }
+        ServerClass.getProfile(this);
     }
 
     public void noPermission() {
@@ -151,11 +164,16 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 //        super.onSaveInstanceState(outState);
     }
 
-    public void showAfterStart(boolean isStep) {
+    public void showAfterStart(boolean isStep, ProfileData data) {
         mainFragmentNumber = 1;
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
-        ((AfterStartFragment) fragment4).startServiceFromOut(isStep);
+        ((AfterStartFragment) fragment4).startServiceFromOut(isStep, data);
+        menuButton.setVisibility(View.INVISIBLE);
+    }
+
+    public void updateLeaderBoard(ArrayList<LeaderBoardData> arrayList) {
+        ((LeaderBoard) fragment3).update(arrayList);
     }
 
     public void showAfterStartFromNotification() {
@@ -163,12 +181,15 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
         ((AfterStartFragment) fragment4).startServiceFromNotification();
+        menuButton.setVisibility(View.INVISIBLE);
+
     }
 
     public void backToMain() {
         mainFragmentNumber = 0;
         fm.beginTransaction().hide(active).show(fragment2).commit();
         active = fragment2;
+        menuButton.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -13,8 +13,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import coleo.com.abjo.activity.CodeActivity;
 import coleo.com.abjo.activity.Login;
@@ -22,6 +25,7 @@ import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.SignUpActivity;
 import coleo.com.abjo.activity.Splash;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.NewUserForServer;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.data_class.User;
@@ -122,6 +126,7 @@ public class ServerClass {
                                 }
                             }
                         }
+                        ((CodeActivity) context).wrongCode();
                         ServerClass.handleError(context, error);
                     }
                 }
@@ -211,16 +216,71 @@ public class ServerClass {
 
     }
 
+    public static void getLeaderBoard(final Context context) {
+        String url = Constants.URL_GET_LEADER_BOARD;
+
+        ObjectRequest jsonObjectRequest = new ObjectRequest
+                (context, Request.Method.GET, url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.i(TAG, "getLeaderBoard: " + response.toString());
+                                saveToken(context, response);
+                                ArrayList<LeaderBoardData> arrayList = new ArrayList<>();
+                                try {
+                                    JSONArray users = response.getJSONArray("users");
+                                    for (int i = 0; i < users.length(); i++) {
+                                        LeaderBoardData temp = parseLeaderBoardUser(users.getJSONObject(i));
+                                        if (temp != null)
+                                            arrayList.add(temp);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                ((MainActivity) context).updateLeaderBoard(arrayList);
+                            }
+                        }
+                        , new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ServerClass.handleError(context, error);
+                    }
+                }
+                );
+
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private static LeaderBoardData parseLeaderBoardUser(JSONObject raw) {
+        try {
+            String first = raw.getString("first_name");
+            String last = raw.getString("last_name");
+            int point = raw.getInt("point");
+            int rank = raw.getInt("rank");
+            User user = new User(first, last, "", false);
+            return new LeaderBoardData(user, rank, point);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static ProfileData parseProfile(JSONObject response) {
         Log.i(TAG, "parseProfile: " + response.toString());
         int coins, hours;
+        String note;
         try {
             User user = parseUser(response, "user_data");
             JSONObject user_data = response.getJSONObject("user_data");
-            coins = response.getInt("coins");
-            hours = response.getInt("hours");
+            coins = user_data.getInt("coins");
+            hours = user_data.getInt("hours");
+            try {
+                note = user_data.getString("note");
+            } catch (JSONException e) {
+                note = " ";
+            }
             UserLevel level = parseLevel(user_data);
-            return new ProfileData(user, coins, hours, level);
+            return new ProfileData(user, coins, hours, level, note);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -235,11 +295,10 @@ public class ServerClass {
         UserLevel level = new UserLevel();
         try {
             JSONObject data = response.getJSONObject(from);
-            JSONObject user_level = response.getJSONObject("user_level");
             level.setPoint(data.getInt("user_point"));
+            JSONObject user_level = data.getJSONObject("user_level");
             level.setLevelMaxPoint(user_level.getInt("capacity"));
             level.setRank(user_level.getInt("number"));
-            level.setLevel(user_level.getInt("id"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,5 +325,6 @@ public class ServerClass {
         }
         return null;
     }
+
 
 }

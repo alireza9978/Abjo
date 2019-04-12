@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import androidx.fragment.app.Fragment;
 import coleo.com.abjo.R;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.service.SaveLocationService;
 
 import static coleo.com.abjo.constants.Constants.hour;
@@ -33,6 +35,13 @@ public class AfterStartFragment extends Fragment {
     private String lastAction = "";
 
 
+    private TextView name;
+    private TextView level;
+    private TextView point;
+    private TextView coin;
+    private TextView hourText;
+    private BootstrapProgressBar progressBar;
+
     public AfterStartFragment() {
         // Required empty public constructor
     }
@@ -42,7 +51,7 @@ public class AfterStartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_after_start, container, false);
-        BootstrapProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setBootstrapBrand(new ColorOfProgress());
         hour = view.findViewById(R.id.hour);
         hour.setAnimationDuration(1500);
@@ -53,6 +62,12 @@ public class AfterStartFragment extends Fragment {
         second = view.findViewById(R.id.second);
         second.setAnimationDuration(500);
         second.setCharacterLists(TickerUtils.provideNumberList());
+
+        name = view.findViewById(R.id.user_name_text_view_id);
+        coin = view.findViewById(R.id.coin_of_activity_text);
+        point = view.findViewById(R.id.point_text_id);
+        level = view.findViewById(R.id.level_text_id);
+        hourText = view.findViewById(R.id.hour_of_activity_text);
 
         Constants.start_stop = view.findViewById(R.id.start_service_button_id);
         Constants.pause_resume = view.findViewById(R.id.pause_service_button_id);
@@ -116,10 +131,12 @@ public class AfterStartFragment extends Fragment {
         lastAction = Constants.getLastAction(getContext());
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
+//        updateProfile(ServerClass.getProfile(getContext()));
     }
 
-    public void startServiceFromOut(boolean isStep) {
+    public void startServiceFromOut(boolean isStep, ProfileData data) {
         setActionKind(isStep);
+        updateProfile(data);
         startService();
     }
 
@@ -157,6 +174,19 @@ public class AfterStartFragment extends Fragment {
         Intent resumeIntent = new Intent(getActivity(), SaveLocationService.class);
         resumeIntent.setAction(resumeActionKind);
         Objects.requireNonNull(getActivity()).startService(resumeIntent);
+    }
+
+    private void updateProfile(ProfileData data) {
+        name.setText(data.getUser().getFullName());
+        coin.setText(data.getCoinsText());
+        hourText.setText(data.getHoursText());
+        progressBar.setMaxProgress(data.getLevel().getLevelMaxPoint());
+        progressBar.setProgress(data.getLevel().getPoint());
+        point.setText(" " + data.getLevel().getPoint() + " امتیاز ");
+        level.setText(" سطح " + data.getLevel().getLevel() + " ");
+        if (data.getLevel().getPoint() < 10) {
+            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_right));
+        }
     }
 
 }

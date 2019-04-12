@@ -39,7 +39,10 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull LeaderBoardItem holder, int position) {
-        //todo fill data
+        LeaderBoardData temp = list.get(position);
+        holder.getName().setText(temp.getUser().getFullName());
+        holder.getNumber().setText(" " + temp.getRank());
+        holder.getPoint().setText(" " + temp.getPoint());
     }
 
     @Override
@@ -58,24 +61,18 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
     class LeaderBoardItem extends RecyclerView.ViewHolder {
         private TextView point;
-        private TextView level;
         private TextView name;
         private TextView number;
 
         public LeaderBoardItem(@NonNull View itemView) {
             super(itemView);
             point = itemView.findViewById(R.id.point);
-            level = itemView.findViewById(R.id.level);
             name = itemView.findViewById(R.id.name);
             number = itemView.findViewById(R.id.rank);
         }
 
         public TextView getPoint() {
             return point;
-        }
-
-        public TextView getLevel() {
-            return level;
         }
 
         public TextView getName() {

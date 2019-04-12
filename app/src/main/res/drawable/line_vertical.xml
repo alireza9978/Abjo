@@ -8,32 +8,32 @@
     <path
         android:fillColor="#00000000"
         android:pathData="M50,0 L50,100"
-        android:strokeWidth="0.5"
+        android:strokeWidth="1.5"
         android:strokeColor="@color/colorText" />
 
     <path
         android:fillColor="#00000000"
         android:pathData="M50,10 L50,90"
-        android:strokeWidth="1"
+        android:strokeWidth="2"
         android:strokeColor="@color/colorText" />
 
     <path
         android:fillColor="#00000000"
         android:pathData="M50,20 L50,80"
-        android:strokeWidth="1.5"
+        android:strokeWidth="2.5"
         android:strokeColor="@color/colorText" />
 
 
     <path
         android:fillColor="#00000000"
         android:pathData="M50,30 L50,70"
-        android:strokeWidth="2"
+        android:strokeWidth="3"
         android:strokeColor="@color/colorText" />
 
     <path
         android:fillColor="#00000000"
         android:pathData="M50,40 L50,60"
-        android:strokeWidth="2.5"
+        android:strokeWidth="3.5"
         android:strokeColor="@color/colorText" />
 
 </vector>

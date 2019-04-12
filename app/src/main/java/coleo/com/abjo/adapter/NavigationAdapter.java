@@ -34,7 +34,9 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     @Override
     public void onBindViewHolder(@NonNull NavigationItem holder, int position) {
-        //todo fill data
+        NavigationDrawerItem temp = list.get(position);
+        holder.description.setText(temp.getName());
+        holder.icon.setImageResource(temp.getIcon());
     }
 
     @Override

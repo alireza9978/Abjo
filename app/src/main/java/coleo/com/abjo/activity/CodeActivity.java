@@ -3,8 +3,6 @@ package coleo.com.abjo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -51,7 +49,7 @@ public class CodeActivity extends AppCompatActivity {
     }
 
     public void wrongCode(){
-
+        findViewById(R.id.submit_code_id).setEnabled(true);
     }
 
     public void goSignUp(){

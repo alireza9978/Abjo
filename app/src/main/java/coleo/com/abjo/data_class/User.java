@@ -45,4 +45,9 @@ public class User {
     public boolean isWoman() {
         return isWoman;
     }
+
+    public String getFullName() {
+        return " " + firstName + " " + lastName + " ";
+    }
+
 }

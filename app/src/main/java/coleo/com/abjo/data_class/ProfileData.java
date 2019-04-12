@@ -5,13 +5,30 @@ public class ProfileData {
     private User user;
     private int coins;
     private int hours;
+    private String note;
     private UserLevel level;
 
-    public ProfileData(User user, int coins, int hours, UserLevel level) {
+    public ProfileData(User user, int coins, int hours, UserLevel level, String note) {
         this.user = user;
         this.coins = coins;
         this.hours = hours;
         this.level = level;
+        setNote(note);
+    }
+
+    public void setNote(String note) {
+        if (note == null) {
+            this.note = " ";
+        } else {
+            if (note.isEmpty()) {
+                this.note = " ";
+            } else
+                this.note = note;
+        }
+    }
+
+    public String getNote() {
+        return note;
     }
 
     public void setUser(User user) {
@@ -36,6 +53,14 @@ public class ProfileData {
 
     public int getCoins() {
         return coins;
+    }
+
+    public String getCoinsText() {
+        return " " + coins + " سکه ";
+    }
+
+    public String getHoursText() {
+        return " " + hours + " ساعت ";
     }
 
     public int getHours() {

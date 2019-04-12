@@ -40,14 +40,7 @@ public class LeaderBoard extends Fragment implements Serializable {
         leaderBoardList = view.findViewById(R.id.leader_board_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
         leaderBoardList.setLayoutManager(mLayoutManager);
-        for (int i = 0; i < 5; i++) {
-            arrayList.add(new LeaderBoardData());
-        }
-        arrayList.add(new LeaderBoardData());
-        arrayList.get(5).setMine(true);
-        for (int i = 0; i < 5; i++) {
-            arrayList.add(new LeaderBoardData());
-        }
+
         adapter = new LeaderBoardAdapter(arrayList, getContext());
         leaderBoardList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -55,7 +48,9 @@ public class LeaderBoard extends Fragment implements Serializable {
         return view;
     }
 
-    public void update() {
+    public void update(ArrayList<LeaderBoardData> arrayList) {
+        this.arrayList.clear();
+        this.arrayList.addAll(arrayList);
         adapter.notifyDataSetChanged();
     }
 
