@@ -131,7 +131,7 @@ public class Heart extends Fragment implements Serializable {
         hour.setText(data.getHoursText());
         progressBar.setMaxProgress(data.getLevel().getLevelMaxPoint());
         progressBar.setProgress(data.getLevel().getPoint());
-        point.setText(" " + data.getLevel().getPoint() + " امتیاز ");
+        point.setText(" " + data.getLevel().getPoint() + "  امتیاز  ");
         level.setText(" سطح " + data.getLevel().getLevel() + " ");
         funnyText.setText(data.getNote());
         if (data.getLevel().getPoint() < 10) {

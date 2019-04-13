@@ -257,8 +257,9 @@ public class ServerClass {
             String last = raw.getString("last_name");
             int point = raw.getInt("point");
             int rank = raw.getInt("rank");
+            boolean is_mine = raw .getBoolean("is_you");
             User user = new User(first, last, "", false);
-            return new LeaderBoardData(user, rank, point);
+            return new LeaderBoardData(user, rank, point,is_mine,false);//todo blur
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -298,7 +299,7 @@ public class ServerClass {
             level.setPoint(data.getInt("user_point"));
             JSONObject user_level = data.getJSONObject("user_level");
             level.setLevelMaxPoint(user_level.getInt("capacity"));
-            level.setRank(user_level.getInt("number"));
+            level.setLevel(user_level.getInt("number"));
         } catch (Exception e) {
             e.printStackTrace();
         }
