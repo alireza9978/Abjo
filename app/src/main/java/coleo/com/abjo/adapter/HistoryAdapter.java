@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
+import coleo.com.abjo.data_class.ActivityKind;
 import coleo.com.abjo.data_class.History;
 import coleo.com.abjo.data_class.Transition;
 
@@ -43,7 +44,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
 
     @Override
     public void onBindViewHolder(@NonNull HistoryItem holder, int position) {
-        //todo fill data on view type
+        if (getItemViewType(position) == 0) {
+            History history = histories.get(position);
+            if (histories.get(position).getKind() == ActivityKind.bike) {
+                holder.bike_step_tran.setImageResource(R.mipmap.bike);
+            } else {
+                holder.bike_step_tran.setImageResource(R.mipmap.step);
+            }
+            holder.coin.setText("" + history.getCoin());
+            holder.getPoint().setText("" + history.getPoint());
+            holder.distance_transitionName.setText("" + history.getDistance());
+            holder.date.setText(history.getString());
+        } else {
+            int tempPos = position - histories.size();
+            Transition transition = transitions.get(tempPos);
+            holder.bike_step_tran.setImageResource(R.mipmap.transition_big_icon);
+            holder.date.setText(transition.getString());
+            holder.coin.setText("" + transition.getCoin());
+            holder.distance_transitionName.setText(transition.getTitle());
+        }
     }
 
     @Override
@@ -63,7 +82,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
     class HistoryItem extends RecyclerView.ViewHolder {
         private TextView date;
         private TextView coin;
-        private TextView level;
+        private TextView point;
         private TextView distance_transitionName;
         private ImageView bike_step_tran;
         private int type;
@@ -73,9 +92,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
             this.type = type;
             bike_step_tran = itemView.findViewById(R.id.bike_or_step_icon);
             date = itemView.findViewById(R.id.bike_time_text);
-            coin = itemView.findViewById(R.id.point_text);
+            coin = itemView.findViewById(R.id.coin_text);
             if (type == 0) {
-                level = itemView.findViewById(R.id.score_text);
+                point = itemView.findViewById(R.id.coin_text);
                 distance_transitionName = itemView.findViewById(R.id.distant_text);
             } else {
                 distance_transitionName = itemView.findViewById(R.id.transition_name_id);
@@ -94,8 +113,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
             return coin;
         }
 
-        public TextView getLevel() {
-            return level;
+        public TextView getPoint() {
+            return point;
         }
 
         public TextView getDistance_transitionName() {

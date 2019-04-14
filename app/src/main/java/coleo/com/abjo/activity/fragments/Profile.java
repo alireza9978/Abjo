@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
 import coleo.com.abjo.adapter.HistoryAdapter;
+import coleo.com.abjo.data_class.DateAction;
 import coleo.com.abjo.data_class.History;
 import coleo.com.abjo.data_class.Transition;
 
@@ -45,20 +46,33 @@ public class Profile extends Fragment implements Serializable {
         list = view.findViewById(R.id.history_and_transition_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
         list.setLayoutManager(mLayoutManager);
+
         historyArrayList = new ArrayList<>();
         transitionArrayList = new ArrayList<>();
-        historyArrayList.add(new History());
-        historyArrayList.add(new History());
-        transitionArrayList.add(new Transition());
+
 
         adapter = new HistoryAdapter(historyArrayList, transitionArrayList, getContext());
         list.setAdapter(adapter);
-        update();
 
         return view;
     }
 
-    public void update() {
+    public void update(ArrayList<DateAction> dateActions) {
+        historyArrayList.clear();
+        transitionArrayList.clear();
+
+        for (DateAction temp : dateActions) {
+            if (temp instanceof History) {
+                historyArrayList.add((History) temp);
+            }
+            if (temp instanceof Transition) {
+                transitionArrayList.add((Transition) temp);
+            }
+//            if (temp instanceof History) {
+//                historyArrayList.add((History) temp);
+//            }//todo with other kind
+        }
+
         adapter.notifyDataSetChanged();
     }
 

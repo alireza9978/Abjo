@@ -21,6 +21,7 @@ import coleo.com.abjo.activity.fragments.Heart;
 import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.DateAction;
 import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         break;
                     }
                     case 2: {
+                        ServerClass.getHistory(context, 0);
                         icon = R.drawable.profile_selected;
                         fm.beginTransaction().hide(active).show(fragment1).commit();
                         active = fragment1;
@@ -174,6 +176,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     public void updateLeaderBoard(ArrayList<LeaderBoardData> arrayList) {
         ((LeaderBoard) fragment3).update(arrayList);
+    }
+
+    public void updateHistory(ArrayList<DateAction> dateActions) {
+        ((Profile) fragment1).update(dateActions);
     }
 
     public void showAfterStartFromNotification() {

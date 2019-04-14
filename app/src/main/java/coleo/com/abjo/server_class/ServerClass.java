@@ -25,9 +25,14 @@ import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.SignUpActivity;
 import coleo.com.abjo.activity.Splash;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_class.ActivityKind;
+import coleo.com.abjo.data_class.DateAction;
+import coleo.com.abjo.data_class.History;
+import coleo.com.abjo.data_class.Introduce;
 import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.NewUserForServer;
 import coleo.com.abjo.data_class.ProfileData;
+import coleo.com.abjo.data_class.Transition;
 import coleo.com.abjo.data_class.User;
 import coleo.com.abjo.data_class.UserLevel;
 
@@ -249,6 +254,103 @@ public class ServerClass {
                 );
 
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public static void getHistory(final Context context, int page) {
+        String url = Constants.URL_GET_HISTORY;
+        url += page;
+        url += "/";
+
+        ObjectRequest jsonObjectRequest = new ObjectRequest
+                (context, Request.Method.GET, url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.i(TAG, "get history: " + response.toString());
+                                saveToken(context, response);
+                                ArrayList<DateAction> actions = new ArrayList<>();
+                                try {
+                                    JSONArray records = response.getJSONArray("user_records");
+                                    for (int i = 0; i < records.length(); i++) {
+                                        DateAction temp = historyParser(records.getJSONObject(i));
+                                        if (temp != null)
+                                            actions.add(temp);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                ((MainActivity) context).updateHistory(actions);
+                            }
+                        }
+                        , new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ServerClass.handleError(context, error);
+                    }
+                }
+                );
+
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private static DateAction historyParser(JSONObject object) {
+        DateAction date = DateParser(object, "date_created");
+        int coin = 0, point = 0;
+        boolean work = false;
+        try {
+            //"user_spend"
+            coin = object.getInt("coin");
+            point = object.getInt("point");
+            work = true;
+
+            JSONObject spend = object.getJSONObject("user_spend");
+            JSONObject store = spend.getJSONObject("store");
+            String title = store.getString("title");
+            return new Transition(date, title, coin);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            if (work) {
+                try {
+                    //"user_activity"
+                    JSONObject information = object.getJSONObject("user_introduce_point");
+//                    information = object.getJSONObject("user_activity");
+                    return new Introduce(date);
+                } catch (Exception se) {
+                    se.printStackTrace();
+                    try {
+                        //"user_activity"
+                        JSONObject info = object.getJSONObject("user_activity");
+                        JSONObject type = info.getJSONObject("activity_type");
+                        int id = type.getInt("id");
+                        ActivityKind kind;
+                        if (id == 1) {
+                            kind = ActivityKind.walk;
+                        } else
+                            kind = ActivityKind.bike;
+
+                        int distance = info.getInt("distance");
+                        return new History(date, coin, point, distance, kind);
+                    } catch (Exception te) {
+                        te.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private static DateAction DateParser(JSONObject object, String key) {
+        try {
+            JSONObject date = object.getJSONObject(key);
+            return new DateAction(date.getInt("day"), date.getInt("month"), date.getInt("year"),
+                    date.getInt("hour"), date.getInt("minute"), date.getInt("second"),
+                    date.getString("day_name"), date.getString("month_name"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static LeaderBoardData parseLeaderBoardUser(JSONObject raw) {

@@ -4,7 +4,7 @@
     android:id="@+id/profile_bike_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="25dp"
+    android:layout_margin="15dp"
     android:background="@drawable/profile_constraint_back"
     android:minHeight="100dp"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -17,7 +17,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="15dp"
-        android:src="@mipmap/profile_big_icon"
+        android:background="@drawable/history_icon_back"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +37,7 @@
             android:id="@+id/bike_point_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/profile_big_icon"
+            android:src="@mipmap/coin_white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/bike_time_text"
             app:layout_constraintTop_toTopOf="@+id/bike_score_image" />
@@ -53,7 +54,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/point_text"
+            android:id="@+id/coin_text"
             style="@style/AppTheme.TextView.Profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,7 +68,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginBottom="5dp"
-            android:src="@mipmap/profile_big_icon"
+            android:src="@mipmap/date"
             app:layout_constraintBottom_toTopOf="@id/bike_time_text"
             app:layout_constraintLeft_toLeftOf="@id/bike_time_text"
             app:layout_constraintRight_toRightOf="@id/bike_time_text"
@@ -80,7 +81,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="1397/2/10 \n 13:12"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/bike_point_image"

@@ -18,8 +18,8 @@
         android:layout_height="80dp"
         android:layout_margin="15dp"
         android:background="@drawable/history_icon_back"
-        android:paddingTop="10dp"
-        android:src="@mipmap/bike"
+        android:src="@mipmap/step"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/point_text"
+            android:id="@+id/coin_text"
             style="@style/AppTheme.TextView.Profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/score_text"
+            android:id="@+id/coin_text"
             style="@style/AppTheme.TextView.Profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
