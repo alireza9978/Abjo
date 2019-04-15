@@ -24,7 +24,7 @@ public class Splash extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String token = Constants.getToken(this);
-        final boolean goPhone = token.equals(Constants.NO_TOKEN);
+        final boolean goPhone = token.equals(Constants.NO_TOKEN) || token.isEmpty();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

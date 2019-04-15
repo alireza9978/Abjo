@@ -68,7 +68,6 @@ public class Constants {
     public static TickerView second;
     public static final int ONE_HOUR = 3_600_000;
 
-
     public static Context context = null;
 
     private static final String LAST_ACTION_PRE_NAME = "unknown";

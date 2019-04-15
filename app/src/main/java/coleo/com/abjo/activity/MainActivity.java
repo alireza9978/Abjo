@@ -1,6 +1,7 @@
 package coleo.com.abjo.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     private TabLayout tabLayout;
     private ImageView menuButton;
+    private ImageView share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,19 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             }
         });
 
+        share = findViewById(R.id.share_button_id);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share.setEnabled(false);
+                Intent intent = new Intent(context, ShareActivity.class);
+                //todo put code
+                startActivity(intent);
+            }
+        });
+
+
+
         tabLayout.getTabAt(0).setText("");
         tabLayout.getTabAt(0).setIcon(R.drawable.leader_board_selected);
         tabLayout.getTabAt(1).setText("");
@@ -148,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onResume() {
         super.onResume();
         Constants.context = this;
+        share.setEnabled(true);
         if (Constants.checkPermission(this)) {
             if (Constants.checkLocation(this)) {
                 Log.i("MAIN_ACTIVITY", "onResume: have permission");

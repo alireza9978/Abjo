@@ -47,7 +47,7 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/coin_text"
+            android:id="@+id/point_text"
             style="@style/AppTheme.TextView.Profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

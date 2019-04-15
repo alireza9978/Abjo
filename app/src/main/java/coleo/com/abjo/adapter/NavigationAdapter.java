@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.MainActivity;
+import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.NavigationItem> {
@@ -33,10 +35,20 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NavigationItem holder, int position) {
-        NavigationDrawerItem temp = list.get(position);
+    public void onBindViewHolder(@NonNull NavigationItem holder, final int position) {
+        final NavigationDrawerItem temp = list.get(position);
         holder.description.setText(temp.getName());
         holder.icon.setImageResource(temp.getIcon());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position == 4) {
+                    Constants.setToken(context, "");
+                    ((MainActivity) context).finish();
+                }
+                context.startActivity(temp.getIntent());
+            }
+        });
     }
 
     @Override
@@ -53,8 +65,6 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
             icon = itemView.findViewById(R.id.image_navigation_icon);
             description = itemView.findViewById(R.id.navigation_text_view_id);
         }
-
-
 
     }
 

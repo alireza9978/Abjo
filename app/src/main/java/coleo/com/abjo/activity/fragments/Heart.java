@@ -1,6 +1,7 @@
 package coleo.com.abjo.activity.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.AboutActivity;
 import coleo.com.abjo.activity.MainActivity;
+import coleo.com.abjo.activity.MassageActivity;
+import coleo.com.abjo.activity.RuleActivity;
+import coleo.com.abjo.activity.ShareActivity;
+import coleo.com.abjo.activity.Splash;
 import coleo.com.abjo.adapter.NavigationAdapter;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
@@ -76,11 +82,11 @@ public class Heart extends Fragment implements Serializable {
         nav_list_view.setLayoutManager(mLayoutManager);
         ArrayList<NavigationDrawerItem> arrayList = new ArrayList<>();
 
-        arrayList.add(new NavigationDrawerItem(" معرفی به دوستان ", R.mipmap.share_app));
-        arrayList.add(new NavigationDrawerItem(" درباره ما ", R.mipmap.about_us));
-        arrayList.add(new NavigationDrawerItem(" پیام ها ", R.mipmap.massage));
-        arrayList.add(new NavigationDrawerItem(" قوانین و ضوابط ", R.mipmap.laws));
-        arrayList.add(new NavigationDrawerItem(" خروج از حساب کاربری ", R.mipmap.exit));
+        arrayList.add(new NavigationDrawerItem(" معرفی به دوستان ", R.mipmap.share_app, new Intent(getContext(), ShareActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" درباره ما ", R.mipmap.about_us, new Intent(getContext(), AboutActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" پیام ها ", R.mipmap.massage, new Intent(getContext(), MassageActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" قوانین و ضوابط ", R.mipmap.laws, new Intent(getContext(), RuleActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" خروج از حساب کاربری ", R.mipmap.exit, new Intent(getContext(), Splash.class)));
 
         NavigationAdapter adapter = new NavigationAdapter(arrayList, getContext());
         nav_list_view.setAdapter(adapter);
@@ -120,7 +126,10 @@ public class Heart extends Fragment implements Serializable {
     }
 
     public void openNavigation() {
-        drawerLayout.openDrawer();
+        if (drawerLayout.isDrawerOpen())
+            drawerLayout.closeDrawer();
+        else
+            drawerLayout.openDrawer();
     }
 
 

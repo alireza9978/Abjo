@@ -188,6 +188,56 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lineTwo" />
 
+        <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+            android:id="@+id/bottom_navigation_view_linear"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/profile_long_gray_back"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintBottom_toTopOf="@id/start_button_id"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lineTwo">
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/l_item_home"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:bt_active="true"
+                app:bt_badgeBackgroundColor="@color/colorRed"
+                app:bt_badgeTextColor="@color/colorRed"
+                app:bt_colorInactive="@color/colorRed"
+                app:bt_icon="@android:color/transparent"
+                app:bt_iconHeight="0dp"
+                app:bt_iconWidth="0dp"
+                app:bt_shapeColor="@color/colorRed"
+                app:bt_title="دوچرخه" />
+
+            <com.gauravk.bubblenavigation.BubbleToggleView
+                android:id="@+id/walk"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                app:bt_active="false"
+                app:bt_badgeBackgroundColor="@color/colorRed"
+                app:bt_badgeTextColor="@color/colorRed"
+                app:bt_colorActive="@color/login_submit_gradient_right"
+                app:bt_colorInactive="@color/colorRed"
+                app:bt_icon="@android:color/transparent"
+                app:bt_iconHeight="0dp"
+                app:bt_iconWidth="0dp"
+                app:bt_shapeColor="@color/colorRed"
+                app:bt_title="پیاده" />
+
+
+        </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+
         <Button
             android:id="@+id/start_button_id"
             style="@style/AppTheme.Button"

@@ -111,7 +111,7 @@ public class ServerClass {
                             @Override
                             public void onResponse(JSONObject response) {
                                 saveToken(context, response);
-                                ((CodeActivity) context).goSignUp();
+                                ((CodeActivity) context).goMainPage();
                             }
                         }
                         , new Response.ErrorListener() {
@@ -123,7 +123,7 @@ public class ServerClass {
                                     String jsonString = new String(error.networkResponse.data);
                                     try {
                                         saveToken(context, new JSONObject(jsonString));
-                                        ((CodeActivity) context).goMainPage();
+                                        ((CodeActivity) context).goSignUp();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -198,20 +198,19 @@ public class ServerClass {
                         , new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error != null) {
-                            if (error.networkResponse != null) {
-                                if (error.networkResponse.statusCode == 201) {
-                                    String jsonString = new String(error.networkResponse.data);
-                                    try {
-                                        saveToken(context, new JSONObject(jsonString));
-                                        ((CodeActivity) context).goSignUp();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    ((CodeActivity) context).finish();
-                                }
-                            }
-                        }
+//                        if (error != null) {
+//                            if (error.networkResponse != null) {
+//                                if (error.networkResponse.statusCode == 201) {
+//                                    String jsonString = new String(error.networkResponse.data);
+//                                    try {
+//                                        saveToken(context, new JSONObject(jsonString));
+//                                        ((CodeActivity) context).goSignUp();
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            }
+//                        }
                         ServerClass.handleError(context, error);
                     }
                 }
