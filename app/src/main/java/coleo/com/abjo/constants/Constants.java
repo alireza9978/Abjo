@@ -309,7 +309,7 @@ public class Constants {
         editor.apply();
     }
 
-    public static String getLastAction(Context context){
+    public static String getLastAction(){
         SharedPreferences sharedPreferences = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE);
         return sharedPreferences.getString(LAST_ACTION_SAVE_NAME, ACTION.STOP_FOREGROUND_ACTION);
     }

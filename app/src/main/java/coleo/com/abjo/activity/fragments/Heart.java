@@ -7,13 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
+import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
+import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -105,13 +105,18 @@ public class Heart extends Fragment implements Serializable {
         funnyText = view.findViewById(R.id.funnyText_id);
 
         Button start = view.findViewById(R.id.start_button_id);
-        Switch switchUI = view.findViewById(R.id.switch_id);
-        switchUI.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                walk = isChecked;
+        BubbleNavigationLinearView switchUI = view.findViewById(R.id.bottom_navigation_view_linear);
+        switchUI.setNavigationChangeListener(new BubbleNavigationChangeListener() {
+            @Override
+            public void onNavigationChanged(View view, int position) {
+                if (position == 1) {
+                    walk = true;
+                } else {
+                    walk = false;
+                }
             }
         });
-        switchUI.setChecked(true);
+        switchUI.setCurrentActiveItem(1);
         walk = true;
         start.setOnClickListener(new View.OnClickListener() {
             @Override

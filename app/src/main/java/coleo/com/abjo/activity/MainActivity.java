@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         fm.beginTransaction().hide(active).show(fragment2).commit();
         active = fragment2;
         menuButton.setVisibility(View.VISIBLE);
+        ((Heart) fragment2).openNavigation();
     }
 
     @Override

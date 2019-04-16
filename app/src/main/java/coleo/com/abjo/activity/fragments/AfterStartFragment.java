@@ -114,7 +114,7 @@ public class AfterStartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String lastAction = Constants.getLastAction(Constants.context);
+        String lastAction = Constants.getLastAction();
 
 //        if (!lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
 //            getView().findViewById(R.id.start_service_button_id).setVisibility(View.INVISIBLE);
@@ -128,7 +128,7 @@ public class AfterStartFragment extends Fragment {
     }
 
     public void startServiceFromNotification() {
-        lastAction = Constants.getLastAction(getContext());
+        lastAction = Constants.getLastAction();
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
 //        updateProfile(ServerClass.getProfile(getContext()));
