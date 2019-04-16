@@ -21,13 +21,17 @@
         app:menuAlphaClosed="0.0"
         app:menuAlphaOpen="1.0"
         app:menuScaleClosed="0.3"
-        app:menuScaleOpen="0.7">
+        app:menuScaleOpen="0.7"
+        android:rotationY="180"
+        >
 
         <FrameLayout
             android:id="@+id/content_menu_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:tag="menu">
+            android:tag="menu"
+            android:rotationY="180"
+            >
 
 
         </FrameLayout>
@@ -36,7 +40,8 @@
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:tag="content">
+            android:tag="content"
+            android:rotationY="180">
 
 
         </FrameLayout>

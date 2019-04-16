@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/user_info_layout_id"
@@ -218,7 +220,8 @@
                 app:bt_icon="@mipmap/bike"
                 app:bt_iconHeight="30dp"
                 app:bt_iconWidth="30dp"
-                app:bt_title="دوچرخه سواری" />
+                app:bt_titleSize="20sp"
+                app:bt_title=" دوچرخه سواری " />
 
             <com.gauravk.bubblenavigation.BubbleToggleView
                 android:id="@+id/walk"
@@ -229,8 +232,9 @@
                 app:bt_colorInactive="@color/colorText"
                 app:bt_icon="@mipmap/step"
                 app:bt_iconHeight="30dp"
+                app:bt_titleSize="20sp"
                 app:bt_iconWidth="30dp"
-                app:bt_title="پیاده روی" />
+                app:bt_title=" پیاده روی " />
 
 
         </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
@@ -241,17 +245,19 @@
             android:layout_margin="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="شروع"
+            android:fontFamily="@font/big_main_font"
+            android:text=" شروع "
             android:background="@drawable/history_icon_back_round"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
+            android:textSize="25sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_id" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <ImageView
         android:id="@+id/app_icon_profile_id"
@@ -262,40 +268,5 @@
         app:layout_constraintRight_toRightOf="@id/user_info_layout_id"
         app:layout_constraintTop_toTopOf="@id/user_info_layout_id"
         app:srcCompat="@mipmap/profile_big_icon" />
-
-
-    <!--<Button-->
-    <!--android:id="@+id/start_step_button_id"-->
-    <!--android:layout_width="75dp"-->
-    <!--android:layout_height="75dp"-->
-    <!--android:layout_marginTop="150dp"-->
-    <!--style="@style/AppTheme.Button"-->
-    <!--android:text="@string/step_count_button_text"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toLeftOf="@id/start_bycicle_button_id"-->
-    <!--app:layout_constraintTop_toBottomOf="@id/app_name_text_view_id" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/start_bycicle_button_id"-->
-    <!--android:layout_width="75dp"-->
-    <!--android:layout_height="75dp"-->
-    <!--style="@style/AppTheme.Button"-->
-    <!--android:text="@string/bike_button_text"-->
-    <!--app:layout_constraintLeft_toRightOf="@id/start_step_button_id"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="@id/start_step_button_id" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/continue_last_action_id"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="75dp"-->
-    <!--style="@style/AppTheme.Button"-->
-    <!--android:text="@string/menu_last_action_button_text"-->
-    <!--app:layout_constraintLeft_toLeftOf="@id/start_step_button_id"-->
-    <!--app:layout_constraintRight_toRightOf="@id/start_bycicle_button_id"-->
-    <!--app:layout_constraintTop_toTopOf="@id/start_step_button_id"-->
-    <!--android:visibility="invisible"-->
-    <!--/>-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
