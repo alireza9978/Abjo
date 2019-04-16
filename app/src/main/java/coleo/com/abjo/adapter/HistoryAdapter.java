@@ -1,6 +1,7 @@
 package coleo.com.abjo.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryI
             holder.coin.setText("" + transition.getCoin());
             holder.distance_transitionName.setText(transition.getTitle());
         }
+        holder.bike_step_tran.setColorFilter(Color.WHITE);
     }
 
     @Override

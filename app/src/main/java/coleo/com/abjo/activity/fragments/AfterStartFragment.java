@@ -97,7 +97,6 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void manageButton() {
-        //todo change here
         start_stop.setVisibility(View.VISIBLE);
         start_stop.setImageResource(R.mipmap.stop_icon);
         if (lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE) ||
@@ -108,13 +107,18 @@ public class AfterStartFragment extends Fragment {
                 lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP)) {
             pause_resume.setImageResource(R.mipmap.play_icon);
         }
+        if (lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_BIKE)
+                || lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.pause_icon);
+        }
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        String lastAction = Constants.getLastAction();
+        lastAction = Constants.getLastAction();
+        manageButton();
 
 //        if (!lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
 //            getView().findViewById(R.id.start_service_button_id).setVisibility(View.INVISIBLE);
@@ -127,10 +131,14 @@ public class AfterStartFragment extends Fragment {
 //        }
     }
 
-    public void startServiceFromNotification() {
+    public void startServiceFromNotification(ProfileData data) {
         lastAction = Constants.getLastAction();
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
+        updateProfile(data);
+        Intent startIntent = new Intent(getActivity(), SaveLocationService.class);
+        startIntent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
+        Objects.requireNonNull(getActivity()).startService(startIntent);
 //        updateProfile(ServerClass.getProfile(getContext()));
     }
 

@@ -109,22 +109,16 @@ public class Heart extends Fragment implements Serializable {
         switchUI.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
-                if (position == 1) {
-                    walk = true;
-                } else {
-                    walk = false;
-                }
+                walk = position == 1;
             }
         });
-        switchUI.setCurrentActiveItem(1);
-        walk = true;
+        walk = false;
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity) container.getContext()).showAfterStart(walk, data);
             }
         });
-
         drawerLayout.openDrawer();
         drawerLayout.closeDrawer();
         return view;

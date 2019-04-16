@@ -182,7 +182,7 @@ public class ServerClass {
 
     }
 
-    public static void getProfile(final Context context) {
+    public static void getProfile(final Context context, final boolean fromNotif) {
 
         String url = Constants.URL_GET_USER_PROFILE;
 
@@ -192,7 +192,10 @@ public class ServerClass {
                             @Override
                             public void onResponse(JSONObject response) {
                                 saveToken(context, response);
-                                ((MainActivity) context).updateProfile(parseProfile(response));
+                                if (fromNotif)
+                                    ((MainActivity) context).updateProfile(parseProfile(response));
+                                else
+                                    ((MainActivity) context).updateProfileFromNotif(parseProfile(response));
                             }
                         }
                         , new Response.ErrorListener() {

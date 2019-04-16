@@ -36,6 +36,7 @@ import coleo.com.abjo.dialogs.ReportDialog;
 import coleo.com.abjo.dialogs.SendJsonDialog;
 
 import static coleo.com.abjo.constants.Constants.context;
+import static coleo.com.abjo.constants.Constants.getLastAction;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.pause_resume;
 import static coleo.com.abjo.constants.Constants.start_stop;
@@ -167,11 +168,42 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
     private NotificationCompat.Builder notification = null;
 
+    private void manageButton() {
+        String lastAction = getLastAction();
+        start_stop.setVisibility(View.VISIBLE);
+        start_stop.setImageResource(R.mipmap.stop_icon);
+        if (lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE) ||
+                lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.pause_icon);
+        }
+        if (lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE) ||
+                lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.play_icon);
+        }
+        if (lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_BIKE)
+                || lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.pause_icon);
+        }
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            Constants.saveLastAction(getBaseContext(), intent.getAction());
+            if (!Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION.UPDATE_FOREGROUND_ACTION))
+                Constants.saveLastAction(getBaseContext(), intent.getAction());
             switch (Objects.requireNonNull(intent.getAction())) {
+                case Constants.ACTION.UPDATE_FOREGROUND_ACTION: {
+                    if (countDownTimer != null) {
+                        countDownTimer.cancel();
+                        countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, OnCount.getNew());
+                    } else {
+                        countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, OnCount.getNew());
+                    }
+                    if (!getLastAction().equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE) &&
+                            !getLastAction().equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP))
+                        countDownTimer.start();
+
+                    break;
+                }
                 case Constants.ACTION.START_FOREGROUND_ACTION_STEP: {
 //                    Log.i(LOG_TAG, "Received Start Foreground Intent step");
 
@@ -181,8 +213,6 @@ public class SaveLocationService extends Service implements SensorEventListener 
                             notification.build());
                     startService();
                     isStep = true;
-
-
                     break;
                 }
                 case Constants.ACTION.START_FOREGROUND_ACTION_BIKE: {
@@ -236,6 +266,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
                     break;
             }
         }
+        manageButton();
         return START_STICKY;
     }
 
@@ -253,52 +284,12 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
     }
 
-    class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
 
-        private int second;
-        private int minute;
-        private int hour;
+    public FinalCountDownTimer countDownTimer;
 
-        private OnCount(int second, int minute, int hour) {
-            this.second = second;
-            this.minute = minute;
-            this.hour = hour;
-            Constants.second.setText("" + second);
-            Constants.minute.setText("" + minute);
-            Constants.hour.setText("" + hour);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            second++;
-            if (second >= 60) {
-                second = 0;
-                minute++;
-                if (minute >= 60) {
-                    minute = 0;
-                    hour++;
-                    Constants.second.setText("" + second);
-                    Constants.minute.setText("" + minute);
-                    Constants.hour.setText("" + hour);
-                } else {
-                    Constants.second.setText("" + second);
-                    Constants.minute.setText("" + minute);
-                }
-            } else {
-                Constants.second.setText("" + second);
-            }
-        }
-
-        @Override
-        public void onFinish() {
-            countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(second, minute, hour));
-        }
-    }
-
-    private FinalCountDownTimer countDownTimer;
     private void startService() {
         makeDataBase();
-        countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(0, 0, 0));
+        countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(0, 0, 0, this));
         countDownTimer.start();
         start_stop.setImageResource(R.mipmap.stop_icon);
         pause_resume.setVisibility(View.VISIBLE);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         });
 
 
-
         tabLayout.getTabAt(0).setText("");
         tabLayout.getTabAt(0).setIcon(R.drawable.leader_board_selected);
         tabLayout.getTabAt(1).setText("");
@@ -154,8 +154,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         Bundle extra = getIntent().getExtras();
         boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+        if (!Constants.getLastAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
+            temp = true;
+        }
         if (temp) {
-            showAfterStartFromNotification();
+            if (ServerClass.isNetworkConnected(context))
+                showAfterStartFromNotification();
+            else
+                Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -169,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 Log.i("MAIN_ACTIVITY", "onResume: have permission");
             }
         }
-        ServerClass.getProfile(this);
+        ServerClass.getProfile(this, true);
     }
 
     public void noPermission() {
@@ -202,9 +208,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         mainFragmentNumber = 1;
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
-        ((AfterStartFragment) fragment4).startServiceFromNotification();
+        ServerClass.getProfile(context, false);
         menuButton.setVisibility(View.INVISIBLE);
-
     }
 
     public void backToMain() {
@@ -222,6 +227,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     public void updateProfile(ProfileData data) {
         ((Heart) fragment2).updateProfile(data);
+    }
+
+    public void updateProfileFromNotif(ProfileData data) {
+        ((AfterStartFragment) fragment4).startServiceFromNotification(data);
     }
 
 }

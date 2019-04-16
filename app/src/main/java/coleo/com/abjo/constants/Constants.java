@@ -73,6 +73,7 @@ public class Constants {
     private static final String LAST_ACTION_PRE_NAME = "unknown";
     private static final String LAST_ACTION_SAVE_NAME = "noName";
     public interface ACTION {
+        String UPDATE_FOREGROUND_ACTION = "com.coleo.foreground.service.action.update.foreground.step";
         String START_FOREGROUND_ACTION_STEP = "com.coleo.foreground.service.action.start.foreground.step";
         String START_FOREGROUND_ACTION_BIKE = "com.coleo.foreground.service.action.start.foreground.bike";
         String PAUSE_FOREGROUND_ACTION_STEP = "com.coleo.foreground.service.action.pause.foreground.step";
