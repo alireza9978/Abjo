@@ -587,7 +587,6 @@ public class BootstrapProgressBar extends View implements ProgressView, Bootstra
                     String.format("MaxProgress cant be smaller than the current progress %d<%d", getProgress(), newMaxProgress));
         }
         invalidate();
-        BootstrapProgressBarGroup parent = (BootstrapProgressBarGroup) getParent();
     }
 
     void setCornerRounding(boolean left, boolean right) {

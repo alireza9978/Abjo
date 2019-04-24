@@ -6,19 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
 import coleo.com.abjo.adapter.HistoryAdapter;
 import coleo.com.abjo.data_class.DateAction;
-import coleo.com.abjo.data_class.History;
-import coleo.com.abjo.data_class.Transition;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,10 +28,7 @@ public class Profile extends Fragment implements Serializable {
 
     private BootstrapProgressBar progressBar;
     private HistoryAdapter adapter;
-    private ArrayList<History> historyArrayList;
-    private ArrayList<Transition> transitionArrayList;
-
-
+    private ArrayList<DateAction> historyArrayList;
 
     public Profile() {
         // Required empty public constructor
@@ -48,10 +44,8 @@ public class Profile extends Fragment implements Serializable {
         list.setLayoutManager(mLayoutManager);
 
         historyArrayList = new ArrayList<>();
-        transitionArrayList = new ArrayList<>();
 
-
-        adapter = new HistoryAdapter(historyArrayList, transitionArrayList, getContext());
+        adapter = new HistoryAdapter(historyArrayList, getContext());
         list.setAdapter(adapter);
 
         return view;
@@ -59,20 +53,7 @@ public class Profile extends Fragment implements Serializable {
 
     public void update(ArrayList<DateAction> dateActions) {
         historyArrayList.clear();
-        transitionArrayList.clear();
-
-        for (DateAction temp : dateActions) {
-            if (temp instanceof History) {
-                historyArrayList.add((History) temp);
-            }
-            if (temp instanceof Transition) {
-                transitionArrayList.add((Transition) temp);
-            }
-//            if (temp instanceof History) {
-//                historyArrayList.add((History) temp);
-//            }//todo with other kind
-        }
-
+        historyArrayList.addAll(dateActions);
         adapter.notifyDataSetChanged();
     }
 

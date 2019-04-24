@@ -59,6 +59,7 @@ public class ServerClass {
 
 
     private static void handleError(Context context, VolleyError error) {
+        error.printStackTrace();
         if (error.networkResponse == null) {
             Toast.makeText(context, "اتصال اینترنت خود را بررسی کنید", Toast.LENGTH_SHORT).show();
         } else {
@@ -316,8 +317,7 @@ public class ServerClass {
                 try {
                     //"user_activity"
                     JSONObject information = object.getJSONObject("user_introduce_point");
-//                    information = object.getJSONObject("user_activity");
-                    return new Introduce(date);
+                    return new Introduce(date, coin, point);
                 } catch (Exception se) {
                     se.printStackTrace();
                     try {

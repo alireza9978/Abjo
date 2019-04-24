@@ -11,6 +11,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
@@ -19,11 +25,6 @@ import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.AboutActivity;
 import coleo.com.abjo.activity.MainActivity;
@@ -109,7 +110,8 @@ public class Heart extends Fragment implements Serializable {
         Button start = view.findViewById(R.id.start_button_id);
         BubbleNavigationLinearView switchUI = view.findViewById(R.id.bottom_navigation_view_linear);
         Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.big_main_font);
-        switchUI.setTypeface(typeface);
+        switchUI.setTypeface(Typeface.create(typeface, Typeface.BOLD));
+
         switchUI.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
@@ -120,7 +122,9 @@ public class Heart extends Fragment implements Serializable {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) container.getContext()).showAfterStart(walk, data);
+                if (((MainActivity) container.getContext()).checkFullPermission()) {
+                    ((MainActivity) container.getContext()).showAfterStart(walk, data);
+                }
             }
         });
         drawerLayout.openDrawer();
@@ -147,7 +151,7 @@ public class Heart extends Fragment implements Serializable {
         level.setText(" سطح " + data.getLevel().getLevel() + " ");
         funnyText.setText(data.getNote());
         if (data.getLevel().getPoint() < 10) {
-            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_right));
+            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_left));
         }
     }
 

@@ -193,7 +193,7 @@ public class AfterStartFragment extends Fragment {
         point.setText(" " + data.getLevel().getPoint() + " امتیاز ");
         level.setText(" سطح " + data.getLevel().getLevel() + " ");
         if (data.getLevel().getPoint() < 10) {
-            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_right));
+            point.setTextColor(getResources().getColor(R.color.login_submit_gradient_left));
         }
     }
 

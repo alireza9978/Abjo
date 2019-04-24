@@ -18,7 +18,7 @@
     </style>
 
     <style name="AppTheme.TextView.Profile" parent="AppTheme">
-        <item name="android:textColor">@color/login_submit_gradient_right</item>
+        <item name="android:textColor">@color/login_submit_gradient_left</item>
         <item name="fontFamily">@font/big_main_font</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>

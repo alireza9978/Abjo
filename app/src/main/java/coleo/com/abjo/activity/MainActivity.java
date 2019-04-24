@@ -8,15 +8,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.fragments.AfterStartFragment;
 import coleo.com.abjo.activity.fragments.Heart;
@@ -170,16 +171,24 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onResume();
         Constants.context = this;
         share.setEnabled(true);
-        if (Constants.checkPermission(this)) {
-            if (Constants.checkLocation(this)) {
-                Log.i("MAIN_ACTIVITY", "onResume: have permission");
-            }
-        }
+        checkPermission();
         ServerClass.getProfile(this, true);
     }
 
+    public boolean checkFullPermission() {
+        if (Constants.checkPermission(this)) {
+            return Constants.checkLocation(this);
+        }
+        return false;
+    }
+
+    public void checkPermission() {
+        if (Constants.checkPermission(this)) {
+            Log.i("MAIN_ACTIVITY", "onResume: have permission");
+        }
+    }
+
     public void noPermission() {
-        finish();
     }
 
     @Override

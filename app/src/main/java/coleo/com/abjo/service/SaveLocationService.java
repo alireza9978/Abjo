@@ -19,13 +19,14 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.room.Room;
+
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
 import java.util.Objects;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.room.Room;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
@@ -335,6 +336,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isPause = false;
         Constants.isWorking = true;
         countDownTimer.start();
+        //todo disable button
     }
 
     private void makeDataBase() {
