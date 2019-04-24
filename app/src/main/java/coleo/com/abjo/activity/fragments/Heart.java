@@ -53,7 +53,6 @@ public class Heart extends Fragment implements Serializable {
 
     private ProfileData data;
 
-    private DuoDrawerLayout drawerLayout;
     private BootstrapProgressBar progressBar;
     public Heart() {
     }
@@ -62,41 +61,7 @@ public class Heart extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_operation, container, false);
-        View contentOfDrawer = inflater.inflate(R.layout.inside_of_drawer_layout, container, false);
-        View menu = inflater.inflate(R.layout.navigation_menu_layout, container, false);
-
-        FrameLayout menuFrame = view.findViewById(R.id.content_menu_frame);
-        menuFrame.removeAllViews();
-        menuFrame.addView(menu);
-
-        FrameLayout frame = view.findViewById(R.id.content_frame);
-        frame.removeAllViews();
-        frame.addView(contentOfDrawer);
-
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        Toolbar toolbar = new Toolbar(Constants.context);
-        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(((Activity) Constants.context), drawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-
-        RecyclerView nav_list_view = menu.findViewById(R.id.navigation_list);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
-        nav_list_view.setLayoutManager(mLayoutManager);
-        ArrayList<NavigationDrawerItem> arrayList = new ArrayList<>();
-
-        arrayList.add(new NavigationDrawerItem(" معرفی به دوستان ", R.mipmap.share_app, new Intent(getContext(), ShareActivity.class)));
-        arrayList.add(new NavigationDrawerItem(" درباره ما ", R.mipmap.about_us, new Intent(getContext(), AboutActivity.class)));
-        arrayList.add(new NavigationDrawerItem(" پیام ها ", R.mipmap.massage, new Intent(getContext(), MassageActivity.class)));
-        arrayList.add(new NavigationDrawerItem(" قوانین و ضوابط ", R.mipmap.laws, new Intent(getContext(), RuleActivity.class)));
-        arrayList.add(new NavigationDrawerItem(" خروج از حساب کاربری ", R.mipmap.exit, new Intent(getContext(), Splash.class)));
-
-        NavigationAdapter adapter = new NavigationAdapter(arrayList, getContext());
-        nav_list_view.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        drawerLayout.setDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+        View view = inflater.inflate(R.layout.inside_of_drawer_layout, container, false);
 
         progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setBootstrapBrand(new ColorOfProgress());
@@ -127,17 +92,11 @@ public class Heart extends Fragment implements Serializable {
                 }
             }
         });
-        drawerLayout.openDrawer();
-        drawerLayout.closeDrawer();
+
         return view;
     }
 
-    public void openNavigation() {
-        if (drawerLayout.isDrawerOpen())
-            drawerLayout.closeDrawer();
-        else
-            drawerLayout.openDrawer();
-    }
+
 
 
     public void updateProfile(ProfileData data) {

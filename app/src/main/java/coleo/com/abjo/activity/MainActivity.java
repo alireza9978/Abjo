@@ -1,16 +1,22 @@
 package coleo.com.abjo.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
@@ -23,11 +29,15 @@ import coleo.com.abjo.activity.fragments.AfterStartFragment;
 import coleo.com.abjo.activity.fragments.Heart;
 import coleo.com.abjo.activity.fragments.LeaderBoard;
 import coleo.com.abjo.activity.fragments.Profile;
+import coleo.com.abjo.adapter.NavigationAdapter;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.DateAction;
 import coleo.com.abjo.data_class.LeaderBoardData;
+import coleo.com.abjo.data_class.NavigationDrawerItem;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
+import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
+import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
 
@@ -43,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private TabLayout tabLayout;
     private ImageView menuButton;
     private ImageView share;
+    private DuoDrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,36 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_main);
         TypefaceProvider.registerDefaultIconSets();
         Constants.context = this;
+        LayoutInflater inflater = getLayoutInflater();
+        View menu = inflater.inflate(R.layout.navigation_menu_layout, null, false);
+
+        FrameLayout menuFrame = findViewById(R.id.content_menu_frame);
+        menuFrame.removeAllViews();
+        menuFrame.addView(menu);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = new Toolbar(Constants.context);
+        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(((Activity) Constants.context), drawerLayout, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        RecyclerView nav_list_view = menu.findViewById(R.id.navigation_list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        nav_list_view.setLayoutManager(mLayoutManager);
+        ArrayList<NavigationDrawerItem> arrayList = new ArrayList<>();
+
+        arrayList.add(new NavigationDrawerItem(" معرفی به دوستان ", R.mipmap.share_app, new Intent(this, ShareActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" درباره ما ", R.mipmap.about_us, new Intent(this, AboutActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" پیام ها ", R.mipmap.massage, new Intent(this, MassageActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" قوانین و ضوابط ", R.mipmap.laws, new Intent(this, RuleActivity.class)));
+        arrayList.add(new NavigationDrawerItem(" خروج از حساب کاربری ", R.mipmap.exit, new Intent(this, Splash.class)));
+
+        NavigationAdapter adapter = new NavigationAdapter(arrayList, this);
+        nav_list_view.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        drawerLayout.setDrawerListener(drawerToggle);
+        drawerToggle.syncState();
 
         fm.beginTransaction().add(R.id.main_container, fragment1, "1").hide(fragment1).commit();
         fm.beginTransaction().add(R.id.main_container, fragment2, "2").commit();
@@ -67,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         icon = R.drawable.leader_board_selected;
                         fm.beginTransaction().hide(active).show(fragment3).commit();
                         active = fragment3;
-                        menuButton.setVisibility(View.INVISIBLE);
                         break;
                     }
                     case 1: {
@@ -75,12 +115,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         if (mainFragmentNumber == 0) {
                             fm.beginTransaction().hide(active).show(fragment2).commit();
                             active = fragment2;
-                            menuButton.setVisibility(View.VISIBLE);
                         } else {
                             if (mainFragmentNumber == 1) {
                                 fm.beginTransaction().hide(active).show(fragment4).commit();
                                 active = fragment4;
-                                menuButton.setVisibility(View.INVISIBLE);
                             }
                         }
                         break;
@@ -90,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         icon = R.drawable.profile_selected;
                         fm.beginTransaction().hide(active).show(fragment1).commit();
                         active = fragment1;
-                        menuButton.setVisibility(View.INVISIBLE);
                         break;
                     }
                 }
@@ -127,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Heart) fragment2).openNavigation();
+                openNavigation();
             }
         });
 
@@ -152,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
 
         tabLayout.selectTab(tabLayout.getTabAt(1));
+        drawerLayout.openDrawer();
+        drawerLayout.closeDrawer();
 
         Bundle extra = getIntent().getExtras();
         boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
@@ -164,6 +203,15 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             else
                 Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
         }
+
+
+    }
+
+    public void openNavigation() {
+        if (drawerLayout.isDrawerOpen())
+            drawerLayout.closeDrawer();
+        else
+            drawerLayout.openDrawer();
     }
 
     @Override
@@ -226,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         fm.beginTransaction().hide(active).show(fragment2).commit();
         active = fragment2;
         menuButton.setVisibility(View.VISIBLE);
-        ((Heart) fragment2).openNavigation();
+        openNavigation();
     }
 
     @Override
