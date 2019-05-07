@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         tabLayout.getTabAt(2).setText("");
         tabLayout.getTabAt(2).setIcon(R.drawable.profile);
 
-
         tabLayout.selectTab(tabLayout.getTabAt(1));
         drawerLayout.openDrawer();
         drawerLayout.closeDrawer();

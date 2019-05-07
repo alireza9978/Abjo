@@ -9,8 +9,10 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 
@@ -19,10 +21,12 @@ public class SendJsonDialog extends Dialog {
 
     AnimationDrawable watchAnimationDrawable;
 
-    public SendJsonDialog(@NonNull final Context context) {
+    public SendJsonDialog(@NonNull final Context context, String length) {
         super(context);
         setContentView(R.layout.upload_json_layout);
 
+        TextView temp = findViewById(R.id.description_upload_text_view_id);
+        temp.setText("length is : " + length.length() + " \n" + length);
         ImageView watch = findViewById(R.id.sand_watch_image_view_id);
         watch.setBackgroundResource(R.drawable.sand_watch_animation);
         watchAnimationDrawable = (AnimationDrawable) watch.getBackground();
@@ -43,7 +47,7 @@ public class SendJsonDialog extends Dialog {
                 ((MainActivity) context).backToMain();
             }
         };
-        new Handler().postDelayed(runnable, 2000);
+        new Handler().postDelayed(runnable, 5000);
         View view = findViewById(R.id.dialog_layout);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

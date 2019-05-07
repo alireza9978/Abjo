@@ -15,8 +15,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -26,6 +30,8 @@ import androidx.room.Room;
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
@@ -44,7 +50,7 @@ import static coleo.com.abjo.constants.Constants.start_stop;
 
 public class SaveLocationService extends Service implements SensorEventListener {
 
-//    private static final String LOG_TAG = "ForegroundService";
+    private static final String TAG = "ForegroundService";
 
     private boolean isStep = false;
 
@@ -54,7 +60,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
     public Location previousBestLocation = null;
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            if (isPause) {
+            if (!isPause) {
                 if (isBetterLocation(location, previousBestLocation)) {
                     repository.insert(new UserLocation(location.getLatitude(), location.getLongitude(),
                             "" + System.currentTimeMillis()));
@@ -67,6 +73,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
         public void onProviderDisabled(String provider) {
             Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
+
         }
 
         public void onProviderEnabled(String provider) {
@@ -104,7 +111,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 5, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
@@ -284,12 +291,11 @@ public class SaveLocationService extends Service implements SensorEventListener 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-
     public FinalCountDownTimer countDownTimer;
 
     private void startService() {
         makeDataBase();
+
         countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(0, 0, 0, this));
         countDownTimer.start();
         start_stop.setImageResource(R.mipmap.stop_icon);
@@ -303,25 +309,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isPause = false;
         countDownTimer.cancel();
 //        ((MainActivity) context).backToMain();
-        //todo make json and send to server
-        SendJsonDialog dialog = new SendJsonDialog(context);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                ReportDialog temp = new ReportDialog(context);
-                temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        ((MainActivity) context).backToMain();
-                    }
-                });
-                temp.show();
-            }
-        });
-        dialog.show();
+        repository.makeJsonAndSend();
     }
 
     private void pauseService() {

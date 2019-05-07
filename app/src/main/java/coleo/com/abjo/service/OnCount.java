@@ -1,7 +1,19 @@
 package coleo.com.abjo.service;
 
+import android.content.Context;
+import android.location.Location;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+import coleo.com.abjo.MyLocation;
 import coleo.com.abjo.constants.Constants;
 
 class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
@@ -11,6 +23,8 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
     private int hour;
     private static SaveLocationService service;
     private static OnCount lastShape;
+    private MyLocation myLocation = new MyLocation();
+
 
     public OnCount(int second, int minute, int hour, SaveLocationService service) {
         this.second = second;
@@ -21,6 +35,7 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
         Constants.minute.setText("" + minute);
         Constants.hour.setText("" + hour);
         lastShape = this;
+
     }
 
     @Override
@@ -37,6 +52,37 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
         Constants.second.setText("" + second);
         Constants.minute.setText("" + minute);
         Constants.hour.setText("" + hour);
+
+        if (second % 2 == 0) {
+            MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+                @Override
+                public void gotLocation(Location location) {
+                    String temp = "{ 'lat':" + location.getLatitude() +
+                            " 'lng':" + location.getLongitude() +
+                            " 'time':" + System.currentTimeMillis() + " }";
+                    writeToFile(temp, Constants.context);
+                }
+            };
+
+            myLocation.getLocation(Constants.context, locationResult);
+        }
+
+    }
+
+    private void writeToFile(String data, Context context) {
+        try {
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS);
+            File myFile = new File(path, "secondMode.txt");
+            FileOutputStream fOut = new FileOutputStream(myFile,true);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(data);
+            myOutWriter.close();
+            fOut.close();
+        }
+        catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

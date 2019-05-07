@@ -1,5 +1,7 @@
 package coleo.com.abjo.data_base;
 
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,6 +10,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import coleo.com.abjo.activity.MainActivity;
+import coleo.com.abjo.dialogs.ReportDialog;
+import coleo.com.abjo.dialogs.SendJsonDialog;
+
+import static coleo.com.abjo.constants.Constants.context;
 
 public class locationRepository {
 
@@ -76,7 +84,24 @@ public class locationRepository {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            //todo send to server with server class
+            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    ReportDialog temp = new ReportDialog(context);
+                    temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            ((MainActivity) context).backToMain();
+                        }
+                    });
+                    temp.show();
+                }
+            });
+            dialog.show();
         }
 
         private JSONObject makeJson(List<UserLocation> locations) {
