@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     int mainFragmentNumber = 0;
     Context context = this;
 
+    private long lastTime = 0;
+
     private TabLayout tabLayout;
     private ImageView menuButton;
     private ImageView share;
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                drawerLayout.closeDrawer();
                 int icon = 0;
                 switch (tab.getPosition()) {
                     case 0: {
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openNavigation();
+                toggleNavigation();
             }
         });
 
@@ -174,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 share.setEnabled(false);
                 Intent intent = new Intent(context, ShareActivity.class);
-                //todo put code
+                //todo valid code
+                intent.putExtra(Constants.DATA_INVITE_CODE,"adadasdas");
                 startActivity(intent);
             }
         });
@@ -206,10 +210,20 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     }
 
-    public void openNavigation() {
+    public void toggleNavigation(){
         if (drawerLayout.isDrawerOpen())
             drawerLayout.closeDrawer();
         else
+            drawerLayout.openDrawer();
+    }
+
+    public void closeNavigation() {
+        if (drawerLayout.isDrawerOpen())
+            drawerLayout.closeDrawer();
+    }
+
+    public void openNavigation() {
+        if (!drawerLayout.isDrawerOpen())
             drawerLayout.openDrawer();
     }
 
@@ -236,6 +250,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     }
 
     public void noPermission() {
+        Toast.makeText(this, "برنامه برای عملکرد بهتر نیاز به دسترسی های لازم دارد",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -273,12 +289,18 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         fm.beginTransaction().hide(active).show(fragment2).commit();
         active = fragment2;
         menuButton.setVisibility(View.VISIBLE);
-        openNavigation();
+        closeNavigation();
     }
 
     @Override
     public void onBackPressed() {
-
+        long now = System.currentTimeMillis();
+        if (lastTime + 2000 > now) {
+            finish();
+        } else {
+            lastTime = now;
+            Toast.makeText(this, "برای خروج دوباره بازگشت را بزنید", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void updateProfile(ProfileData data) {

@@ -1,21 +1,15 @@
 package coleo.com.abjo.activity.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
@@ -23,21 +17,10 @@ import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import coleo.com.abjo.R;
-import coleo.com.abjo.activity.AboutActivity;
 import coleo.com.abjo.activity.MainActivity;
-import coleo.com.abjo.activity.MassageActivity;
-import coleo.com.abjo.activity.RuleActivity;
-import coleo.com.abjo.activity.ShareActivity;
-import coleo.com.abjo.activity.Splash;
-import coleo.com.abjo.adapter.NavigationAdapter;
-import coleo.com.abjo.constants.Constants;
-import coleo.com.abjo.data_class.NavigationDrawerItem;
 import coleo.com.abjo.data_class.ProfileData;
-import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
-import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class Heart extends Fragment implements Serializable {
 
@@ -112,6 +95,7 @@ public class Heart extends Fragment implements Serializable {
         if (data.getLevel().getPoint() < 10) {
             point.setTextColor(getResources().getColor(R.color.login_submit_gradient_left));
         }
+        ((MainActivity) getContext()).closeNavigation();
     }
 
 }

@@ -34,6 +34,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
+import coleo.com.abjo.activity.Splash;
 import coleo.com.abjo.service.MyReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -61,6 +62,7 @@ public class Constants {
 
     //intent
     public static final String PHONE_FROM_LOGIN = "code data";
+    public static final String DATA_INVITE_CODE = "invite data";
 
     //timer Text view
     public static TickerView hour;
@@ -114,7 +116,7 @@ public class Constants {
                                                               boolean canClose, boolean isStep,
                                                               boolean isPause) {
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, Splash.class);
         intent.putExtra(Constants.FROM_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

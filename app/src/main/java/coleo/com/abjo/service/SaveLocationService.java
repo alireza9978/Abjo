@@ -3,10 +3,8 @@ package coleo.com.abjo.service;
 import android.Manifest;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,12 +13,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
-import android.widget.Chronometer;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -30,19 +25,13 @@ import androidx.room.Room;
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import coleo.com.abjo.R;
-import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
-import coleo.com.abjo.dialogs.ReportDialog;
-import coleo.com.abjo.dialogs.SendJsonDialog;
 
-import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.getLastAction;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.pause_resume;
@@ -317,6 +306,15 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isWorking = true;
         Constants.isPause = true;
         countDownTimer.cancel();
+        pause_resume.setEnabled(false);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                pause_resume.setEnabled(true);
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 1000);
     }
 
     private void resumeService() {
@@ -324,7 +322,6 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isPause = false;
         Constants.isWorking = true;
         countDownTimer.start();
-        //todo disable button
     }
 
     private void makeDataBase() {
