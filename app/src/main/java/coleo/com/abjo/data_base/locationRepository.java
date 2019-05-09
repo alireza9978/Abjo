@@ -1,19 +1,18 @@
 package coleo.com.abjo.data_base;
 
-import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Environment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
-
-import coleo.com.abjo.activity.MainActivity;
-import coleo.com.abjo.dialogs.ReportDialog;
-import coleo.com.abjo.dialogs.SendJsonDialog;
 
 import static coleo.com.abjo.constants.Constants.context;
 
@@ -25,7 +24,7 @@ public class locationRepository {
         this.userLocationDao = travelDataBase.userDao();
     }
 
-    public void insert(UserLocation location) {
+    public void insert(UserLocation[] location) {
         new insertAsyncTask(userLocationDao).execute(location);
     }
 
@@ -47,8 +46,11 @@ public class locationRepository {
 
         @Override
         protected Void doInBackground(final UserLocation... params) {
-            if (params[0] != null)
-                mAsyncTaskDao.insertAll(params[0]);
+            int i = 0;
+            while (params[i] != null) {
+                mAsyncTaskDao.insertAll(params[i]);
+                i++;
+            }
             return null;
         }
     }
@@ -68,7 +70,7 @@ public class locationRepository {
         }
     }
 
-    private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject> {
+    private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject[]> {
 
         private UserLocationDao mAsyncTaskDao;
 
@@ -77,50 +79,86 @@ public class locationRepository {
         }
 
         @Override
-        protected JSONObject doInBackground(Void... voids) {
+        protected JSONObject[] doInBackground(Void... voids) {
             return makeJson(mAsyncTaskDao.getAll());
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(JSONObject[] jsonObject) {
             super.onPostExecute(jsonObject);
-            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    ReportDialog temp = new ReportDialog(context);
-                    temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            ((MainActivity) context).backToMain();
-                        }
-                    });
-                    temp.show();
-                }
-            });
-            dialog.show();
+            //todo save jsons in file
+//            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
+//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//            dialog.setCanceledOnTouchOutside(false);
+//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialog) {
+//                    ReportDialog temp = new ReportDialog(context);
+//                    temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                    temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                        @Override
+//                        public void onDismiss(DialogInterface dialog) {
+//                            ((MainActivity) context).backToMain();
+//                        }
+//                    });
+//                    temp.show();
+//                }
+//            });
+//            dialog.show();
         }
 
-        private JSONObject makeJson(List<UserLocation> locations) {
-            JSONObject object = new JSONObject();
-            try {
-                JSONArray array = new JSONArray();
-                for (UserLocation location : locations) {
-                    JSONObject locationJsonObject = new JSONObject();
+        private JSONObject[] makeJson(List<UserLocation> locations) {
+            ArrayList<JSONObject> arrayList = new ArrayList<>();
+            onLoc:
+            for (UserLocation location : locations) {
+                JSONObject locationJsonObject = new JSONObject();
+                try {
                     locationJsonObject.put("lat", location.latitude);
                     locationJsonObject.put("lng", location.longitude);
+                    locationJsonObject.put("acc", location.accuracy);
                     locationJsonObject.put("time", location.time);
-                    array.put(locationJsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                object.put("locations", array);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                for (JSONObject object : arrayList) {
+                    try {
+                        if (object.getInt("method") == location.method) {
+                            object.getJSONArray("locations").put(locationJsonObject);
+                            continue onLoc;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                JSONObject method = new JSONObject();
+                try {
+                    method.put("method", location.method);
+                    JSONArray temp = new JSONArray();
+                    method.put("locations", temp);
+                    arrayList.add(method);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            Log.i("location rep", "makeJson: " + object.toString());
-            return object;
+            writeToFile(arrayList, context);
+            return (JSONObject[]) arrayList.toArray();
+        }
+
+        private void writeToFile(ArrayList<JSONObject> data, Context context) {
+            for (JSONObject temp : data) {
+                try {
+                    File path = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOWNLOADS);
+                    File myFile = new File(path, "Location" + System.currentTimeMillis() + ".txt");
+                    FileOutputStream fOut = new FileOutputStream(myFile, true);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                    myOutWriter.append(temp.toString());
+                    myOutWriter.close();
+                    fOut.close();
+                } catch (java.io.IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

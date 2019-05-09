@@ -52,7 +52,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
             if (!isPause) {
                 if (isBetterLocation(location, previousBestLocation)) {
                     repository.insert(new UserLocation(location.getLatitude(), location.getLongitude(),
-                            "" + System.currentTimeMillis()));
+                            "" + System.currentTimeMillis(), location.getAccuracy(),0));
                 }
             }
         }
@@ -284,7 +284,6 @@ public class SaveLocationService extends Service implements SensorEventListener 
 
     private void startService() {
         makeDataBase();
-
         countDownTimer = FinalCountDownTimer.createDefault(Constants.ONE_HOUR, new OnCount(0, 0, 0, this));
         countDownTimer.start();
         start_stop.setImageResource(R.mipmap.stop_icon);
@@ -331,5 +330,8 @@ public class SaveLocationService extends Service implements SensorEventListener 
         repository.nukeTable();
     }
 
+    public locationRepository getRepository() {
+        return repository;
+    }
 }
 
