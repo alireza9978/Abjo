@@ -58,15 +58,13 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
             MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
                 @Override
                 public void gotLocation(Location location) {
-                    service.getRepository().insert(makeDataBaseData(location));
+                    service.getRepository().insert(new UserLocation(location.getLatitude(),
+                            location.getLongitude(), "" + timeQueue.poll(),
+                            location.getAccuracy(), 2));
                 }
             };
             myLocation.getLocation(Constants.context, locationResult);
         }
-
-    }
-
-    private UserLocation[] makeDataBaseData(Location location) {
 
     }
 

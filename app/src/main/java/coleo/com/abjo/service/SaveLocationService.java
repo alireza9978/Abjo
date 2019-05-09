@@ -27,11 +27,13 @@ import com.mrq.android.ibrary.FinalCountDownTimer;
 import java.util.Objects;
 
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
 
+import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.getLastAction;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.pause_resume;
@@ -296,8 +298,8 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isWorking = false;
         Constants.isPause = false;
         countDownTimer.cancel();
-//        ((MainActivity) context).backToMain();
         repository.makeJsonAndSend();
+        ((MainActivity) context).backToMain();
     }
 
     private void pauseService() {

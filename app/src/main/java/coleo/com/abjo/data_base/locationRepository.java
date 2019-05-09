@@ -24,7 +24,7 @@ public class locationRepository {
         this.userLocationDao = travelDataBase.userDao();
     }
 
-    public void insert(UserLocation[] location) {
+    public void insert(UserLocation location) {
         new insertAsyncTask(userLocationDao).execute(location);
     }
 
@@ -46,11 +46,7 @@ public class locationRepository {
 
         @Override
         protected Void doInBackground(final UserLocation... params) {
-            int i = 0;
-            while (params[i] != null) {
-                mAsyncTaskDao.insertAll(params[i]);
-                i++;
-            }
+            mAsyncTaskDao.insertAll(params[0]);
             return null;
         }
     }
@@ -136,12 +132,18 @@ public class locationRepository {
                     JSONArray temp = new JSONArray();
                     method.put("locations", temp);
                     arrayList.add(method);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             writeToFile(arrayList, context);
-            return (JSONObject[]) arrayList.toArray();
+            JSONObject[] tempArray = new JSONObject[arrayList.size()];
+            int i = 0;
+            for (JSONObject object : arrayList) {
+                tempArray[i] = object;
+                i++;
+            }
+            return tempArray;
         }
 
         private void writeToFile(ArrayList<JSONObject> data, Context context) {
