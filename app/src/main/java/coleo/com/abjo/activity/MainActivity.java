@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onResume();
         Constants.context = this;
         share.setEnabled(true);
-        checkPermission();
+//        checkPermission();
         ServerClass.getProfile(this, true);
     }
 

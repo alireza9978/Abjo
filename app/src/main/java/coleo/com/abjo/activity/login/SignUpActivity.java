@@ -114,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String introduceCode = introduceInput.getText().toString().trim();
                 if (firstName.isEmpty() || family.isEmpty() || student.isEmpty()) {
                     Toast.makeText(this, "check input", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.submit_sign_up_id).setEnabled(true);
                     return;
                 }
                 if (isSelected) {
@@ -123,6 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     findViewById(R.id.submit_sign_up_id).setEnabled(true);
                     Toast.makeText(this, "select gender", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.submit_sign_up_id).setEnabled(true);
                 }
             }
         }

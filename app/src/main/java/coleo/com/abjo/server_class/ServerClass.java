@@ -10,11 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
@@ -22,10 +23,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.CodeActivity;
 import coleo.com.abjo.activity.login.Login;
-import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.SignUpActivity;
 import coleo.com.abjo.activity.login.Splash;
 import coleo.com.abjo.constants.Constants;
@@ -84,8 +87,8 @@ public class ServerClass {
         url += phone;
         url += "/";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        FirstObjectRequest jsonObjectRequest = new FirstObjectRequest
+                (context, Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         ((Login) context).goCode(phone);
@@ -108,6 +111,14 @@ public class ServerClass {
 
         public StrImplRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
             super(method, url, listener, errorListener);
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            HashMap<String, String> headers = new HashMap<String, String>();
+            headers.put("Content-Type", "application/json");
+            headers.put("role", "user");
+            return headers;
         }
 
         @Override
@@ -156,7 +167,8 @@ public class ServerClass {
 
             }
         });
-
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(request);
 
     }
