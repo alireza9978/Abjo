@@ -22,19 +22,20 @@ import android.util.Log;
 import android.view.Display;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.VolleyError;
 import com.robinhood.ticker.TickerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
-import coleo.com.abjo.activity.Splash;
+import coleo.com.abjo.activity.login.Splash;
 import coleo.com.abjo.service.MyReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -247,7 +248,7 @@ public class Constants {
     private static void displayPromptForGettingPermission(final AppCompatActivity activity) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        final String message = "A need your permission to work probebly\n" +
+        final String message = "A need your permission to work probably\n" +
                 "Do you want open App setting?";
         final Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

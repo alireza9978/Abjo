@@ -1,29 +1,27 @@
 package coleo.com.abjo.service;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.room.Room;
 
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Objects;
 
 import coleo.com.abjo.R;
@@ -32,10 +30,10 @@ import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
+import im.delight.android.location.SimpleLocation;
 
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.getLastAction;
-import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.pause_resume;
 import static coleo.com.abjo.constants.Constants.start_stop;
 
@@ -48,40 +46,50 @@ public class SaveLocationService extends Service implements SensorEventListener 
     private locationRepository repository;
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     private LocationManager locationManager;
-    public Location previousBestLocation = null;
-    LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            if (!isPause) {
-                if (isBetterLocation(location, previousBestLocation)) {
-                    repository.insert(new UserLocation(location.getLatitude(), location.getLongitude(),
-                            "" + System.currentTimeMillis(), location.getAccuracy(),0));
-                }
-            }
-        }
+    private SimpleLocation location;
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
+    public boolean isStep() {
+        return isStep;
+    }
 
-        public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
-
+    private void writeToFile(String data, Context context) {
+        try {
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS);
+            File myFile = new File(path, "secondMode" + System.currentTimeMillis() + ".txt");
+            FileOutputStream fOut = new FileOutputStream(myFile, true);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(data);
+            myOutWriter.close();
+            fOut.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
-
-        public void onProviderEnabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
-        }
-    };
+    }
 
     @Override
     public void onCreate() {
 
-        if (isStep) {
-            startStepCounting();
-        }
-
-        startLocationWithNetwork();
-
+//        if (isStep) {
+//            startStepCounting();
+//        }
         super.onCreate();
+    }
+
+    private void startAction() {
+        if (isStep()) {
+            Log.i(TAG, "startAction: ");
+            location = new SimpleLocation(getApplicationContext(), true, false, 2000, true);
+            location.setListener(new SimpleLocation.Listener() {
+                @Override
+                public void onPositionChanged() {
+                    Log.i(TAG, "onPositionChanged: SimpleLocation");
+                    repository.insert(UserLocation.makeDifference(location.getLatitude(),
+                            location.getLongitude(), "" + System.currentTimeMillis(), 6));
+                }
+            });
+            location.beginUpdates();
+        }
     }
 
     private void startStepCounting() {
@@ -93,67 +101,12 @@ public class SaveLocationService extends Service implements SensorEventListener 
         }
     }
 
-    private void startLocationWithNetwork() {
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    }
-
-    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
-        if (currentBestLocation == null) {
-            return true;
-        }
-
-        // Check whether the new location fix is newer or older
-        long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-        boolean isNewer = timeDelta > 0;
-
-        // If it's been more than two minutes since the current location, use the new location
-        // because the user has likely moved
-        if (isSignificantlyNewer) {
-            return true;
-            // If the new location is more than two minutes older, it must be worse
-        } else if (isSignificantlyOlder) {
-            return false;
-        }
-
-        // Check whether the new location fix is more or less accurate
-        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
-        boolean isLessAccurate = accuracyDelta > 0;
-        boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-        // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = isSameProvider(location.getProvider(),
-                currentBestLocation.getProvider());
-
-        // Determine location quality using a combination of timeliness and accuracy
-        if (isMoreAccurate) {
-            return true;
-        } else if (isNewer && !isLessAccurate) {
-            return true;
-        } else return isNewer && !isSignificantlyLessAccurate && isFromSameProvider;
-    }
-
-    private boolean isSameProvider(String provider1, String provider2) {
-        if (provider1 == null) {
-            return provider2 == null;
-        }
-        return provider1.equals(provider2);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        locationManager.removeUpdates(locationListener);
+        if (location != null) {
+            location.endUpdates();
+        }
 //        if (isStep) {
 //            Constants.start_stop.setText("" + stepCounted);
 //        }
@@ -210,8 +163,8 @@ public class SaveLocationService extends Service implements SensorEventListener 
                             , this, true, false, true, false);
                     startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                             notification.build());
-                    startService();
                     isStep = true;
+                    startService();
                     break;
                 }
                 case Constants.ACTION.START_FOREGROUND_ACTION_BIKE: {
@@ -220,8 +173,8 @@ public class SaveLocationService extends Service implements SensorEventListener 
                             , this, true, false, false, false);
                     startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                             notification.build());
-                    startService();
                     isStep = false;
+                    startService();
                     break;
                 }
                 case Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP: {
@@ -254,7 +207,6 @@ public class SaveLocationService extends Service implements SensorEventListener 
                     Constants.updateNotification(notification, "wow", "we are calculating your steps"
                             , this, false, false);
                     resumeService();
-
                     break;
                 }
                 case Constants.ACTION.STOP_FOREGROUND_ACTION:
@@ -292,6 +244,7 @@ public class SaveLocationService extends Service implements SensorEventListener 
         pause_resume.setVisibility(View.VISIBLE);
         Constants.isWorking = true;
         Constants.isPause = false;
+        startAction();
     }
 
     private void stopService() {
@@ -299,6 +252,9 @@ public class SaveLocationService extends Service implements SensorEventListener 
         Constants.isPause = false;
         countDownTimer.cancel();
         repository.makeJsonAndSend();
+        if (location != null) {
+            location.endUpdates();
+        }
         ((MainActivity) context).backToMain();
     }
 

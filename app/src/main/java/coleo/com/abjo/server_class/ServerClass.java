@@ -8,10 +8,14 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,11 +23,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import coleo.com.abjo.activity.CodeActivity;
-import coleo.com.abjo.activity.Login;
+import coleo.com.abjo.activity.login.CodeActivity;
+import coleo.com.abjo.activity.login.Login;
 import coleo.com.abjo.activity.MainActivity;
-import coleo.com.abjo.activity.SignUpActivity;
-import coleo.com.abjo.activity.Splash;
+import coleo.com.abjo.activity.login.SignUpActivity;
+import coleo.com.abjo.activity.login.Splash;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.ActivityKind;
 import coleo.com.abjo.data_class.DateAction;
@@ -98,6 +102,27 @@ public class ServerClass {
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
+    public static class StrImplRequest extends StringRequest {
+
+        static boolean isNewUser = false;
+
+        public StrImplRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
+            super(method, url, listener, errorListener);
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            int temp = response.statusCode;
+            Log.i(TAG, "parseNetworkResponse: ");
+            if (temp == 201) {
+                isNewUser = true;
+            }
+            return super.parseNetworkResponse(response);
+        }
+
+
+    }
+
     public static void sendCode(final Context context, final String phone, final String code) {
 
         String url = Constants.URL_SEND_CODE;
@@ -106,39 +131,33 @@ public class ServerClass {
         url += code;
         url += "/";
 
-        ObjectRequest jsonObjectRequest = new ObjectRequest
-                (context, Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                saveToken(context, response);
-                                ((CodeActivity) context).goMainPage();
-                            }
-                        }
-                        , new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error != null) {
-                            if (error.networkResponse != null) {
-                                if (error.networkResponse.statusCode == 201) {
-                                    String jsonString = new String(error.networkResponse.data);
-                                    try {
-                                        saveToken(context, new JSONObject(jsonString));
-                                        ((CodeActivity) context).goSignUp();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    ((CodeActivity) context).finish();
-                                }
-                            }
-                        }
-                        ((CodeActivity) context).wrongCode();
-                        ServerClass.handleError(context, error);
+        StrImplRequest request = new StrImplRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (StrImplRequest.isNewUser) {
+                    ((CodeActivity) context).goSignUp();
+                    ((CodeActivity) context).finish();
+                } else {
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                    saveToken(context, object);
+                    ((CodeActivity) context).goMainPage();
                 }
-                );
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ((CodeActivity) context).wrongCode();
+                ServerClass.handleError(context, error);
 
-        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+            }
+        });
+
+        MySingleton.getInstance(context).addToRequestQueue(request);
 
     }
 

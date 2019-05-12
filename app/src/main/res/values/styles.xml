@@ -135,7 +135,7 @@
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textColorHint">@color/colorHintEditText</item>
         <item name="background">@drawable/code_input_back</item>
-        <item name="android:minHeight">60dp</item>
+        <item name="android:minHeight">50dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center</item>
         <item name="textAllCaps">false</item>

@@ -1,4 +1,4 @@
-package coleo.com.abjo.activity;
+package coleo.com.abjo.activity.menu;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -24,7 +24,7 @@ public class locationRepository {
         this.userLocationDao = travelDataBase.userDao();
     }
 
-    public void insert(UserLocation location) {
+    public void insert(UserLocation[] location) {
         new insertAsyncTask(userLocationDao).execute(location);
     }
 
@@ -36,7 +36,7 @@ public class locationRepository {
         new getAsyncTask(userLocationDao).execute();
     }
 
-    private static class insertAsyncTask extends AsyncTask<UserLocation, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<UserLocation[], Void, Void> {
 
         private UserLocationDao mAsyncTaskDao;
 
@@ -45,8 +45,11 @@ public class locationRepository {
         }
 
         @Override
-        protected Void doInBackground(final UserLocation... params) {
-            mAsyncTaskDao.insertAll(params[0]);
+        protected Void doInBackground(final UserLocation[]... params) {
+            UserLocation[] temp = params[0];
+            for (int i = 0; i < 3; i++) {
+                mAsyncTaskDao.insertAll(temp[i]);
+            }
             return null;
         }
     }

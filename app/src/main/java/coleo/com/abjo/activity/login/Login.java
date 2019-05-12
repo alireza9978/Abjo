@@ -1,14 +1,10 @@
-package coleo.com.abjo.activity;
+package coleo.com.abjo.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;

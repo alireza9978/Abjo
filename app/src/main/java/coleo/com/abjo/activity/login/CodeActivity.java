@@ -1,4 +1,4 @@
-package coleo.com.abjo.activity;
+package coleo.com.abjo.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.server_class.ServerClass;
 

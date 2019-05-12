@@ -1,20 +1,22 @@
 package coleo.com.abjo.service;
 
-import android.content.Context;
+import android.app.Activity;
 import android.location.Location;
-import android.os.Environment;
+import android.util.Log;
 
 import com.mrq.android.ibrary.FinalCountDownTimer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 import coleo.com.abjo.MyLocation;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.UserLocation;
+import mumayank.com.airlocationlibrary.AirLocation;
+
+import static coleo.com.abjo.constants.Constants.context;
+import static coleo.com.abjo.constants.Constants.saveLastAction;
 
 class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
 
@@ -26,7 +28,6 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
     private MyLocation myLocation = new MyLocation();
     private Queue<Long> timeQueue = new ArrayDeque<>();
 
-
     public OnCount(int second, int minute, int hour, SaveLocationService service) {
         this.second = second;
         this.minute = minute;
@@ -36,10 +37,16 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
         Constants.minute.setText("" + minute);
         Constants.hour.setText("" + hour);
         lastShape = this;
+
     }
 
     @Override
     public void onTick(long millisUntilFinished) {
+        if (service == null) {
+            saveLastAction(context, Constants.ACTION.STOP_FOREGROUND_ACTION);
+            ((MainActivity)context).backToMain();
+        }
+
         second++;
         if (second >= 60) {
             second = 0;
@@ -54,33 +61,26 @@ class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
         Constants.hour.setText("" + hour);
 
         if (second % 2 == 0) {
-            timeQueue.add(System.currentTimeMillis());
-            MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
-                @Override
-                public void gotLocation(Location location) {
-                    service.getRepository().insert(new UserLocation(location.getLatitude(),
-                            location.getLongitude(), "" + timeQueue.poll(),
-                            location.getAccuracy(), 2));
-                }
-            };
-            myLocation.getLocation(Constants.context, locationResult);
-        }
+            if (!service.isStep()) {
+                timeQueue.add(System.currentTimeMillis());
+                AirLocation airLocation = new AirLocation((Activity) context, true, true, new AirLocation.Callbacks() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        Log.i("ONCount", "onSuccess: ");
+                        if (location != null) {
+                            service.getRepository().insert(UserLocation.makeDifference(location, "" + timeQueue.poll(), 0));
+                        }
+                    }
 
-    }
-
-    private void writeToFile(String data, Context context) {
-        try {
-            File path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS);
-            File myFile = new File(path, "secondMode" + System.currentTimeMillis() + ".txt");
-            FileOutputStream fOut = new FileOutputStream(myFile,true);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(data);
-            myOutWriter.close();
-            fOut.close();
+                    @Override
+                    public void onFailed(AirLocation.LocationFailedEnum locationFailedEnum) {
+                        // do something
+                    }
+                });
+            }
         }
-        catch (java.io.IOException e) {
-            e.printStackTrace();
+        if (second % 30 == 0) {
+            System.gc();
         }
     }
 
