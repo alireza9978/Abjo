@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 int icon = 0;
                 switch (tab.getPosition()) {
                     case 0: {
-                        ServerClass.getLeaderBoard(context);
+//                        ServerClass.getLeaderBoard(context);
                         icon = R.drawable.leader_board_selected;
                         fm.beginTransaction().hide(active).show(fragment3).commit();
                         active = fragment3;
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         break;
                     }
                     case 2: {
-                        ServerClass.getHistory(context, 0);
+//                        ServerClass.getHistory(context, 0);
                         icon = R.drawable.profile_selected;
                         fm.beginTransaction().hide(active).show(fragment1).commit();
                         active = fragment1;
@@ -201,7 +201,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         drawerLayout.closeDrawer();
 
         Bundle extra = getIntent().getExtras();
-        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+//        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+        boolean temp = false;
         if (!Constants.getLastAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             temp = true;
         }
@@ -238,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         Constants.context = this;
         share.setEnabled(true);
 //        checkPermission();
-        ServerClass.getProfile(this, true);
+//        ServerClass.getProfile(this, true);
     }
 
     public boolean checkFullPermission() {
@@ -285,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         mainFragmentNumber = 1;
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
-        ServerClass.getProfile(context, false);
+//        ServerClass.getProfile(context, false);
         menuButton.setVisibility(View.INVISIBLE);
     }
 

@@ -135,7 +135,7 @@ public class AfterStartFragment extends Fragment {
         lastAction = Constants.getLastAction();
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
-        updateProfile(data);
+//        updateProfile(data);
         Intent startIntent = new Intent(getActivity(), SaveLocationService.class);
         startIntent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
         Objects.requireNonNull(getActivity()).startService(startIntent);
@@ -144,7 +144,7 @@ public class AfterStartFragment extends Fragment {
 
     public void startServiceFromOut(boolean isStep, ProfileData data) {
         setActionKind(isStep);
-        updateProfile(data);
+//        updateProfile(data);
         startService();
     }
 

@@ -25,7 +25,15 @@
         <activity android:name=".activity.menu.ShareActivity" />
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity android:name=".activity.login.SignUpActivity" />
         <activity
             android:name=".activity.login.CodeActivity"
@@ -34,11 +42,7 @@
             android:name=".activity.login.Login"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.login.Splash">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".service.SaveLocationService" />
