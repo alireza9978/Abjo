@@ -19,9 +19,28 @@ import static coleo.com.abjo.constants.Constants.context;
 public class locationRepository {
 
     private UserLocationDao userLocationDao;
+    private TravelDataBase travelDataBase;
+    private static locationRepository repository;
 
-    public locationRepository(TravelDataBase travelDataBase) {
+    public void close() {
+        travelDataBase.close();
+    }
+
+    private locationRepository(TravelDataBase travelDataBase) {
+        this.travelDataBase = travelDataBase;
         this.userLocationDao = travelDataBase.userDao();
+    }
+
+    public static locationRepository get(TravelDataBase travelDataBase) {
+        if (repository != null) {
+            return repository;
+        } else {
+            if (travelDataBase != null) {
+                repository = new locationRepository(travelDataBase);
+                return repository;
+            }
+            return null;
+        }
     }
 
     public void insert(UserLocation[] location) {
@@ -33,7 +52,7 @@ public class locationRepository {
     }
 
     public void makeJsonAndSend() {
-        new getAsyncTask(userLocationDao).execute();
+        new getAsyncTask(userLocationDao, travelDataBase).execute();
     }
 
     private static class insertAsyncTask extends AsyncTask<UserLocation[], Void, Void> {
@@ -72,8 +91,10 @@ public class locationRepository {
     private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject[]> {
 
         private UserLocationDao mAsyncTaskDao;
+        private TravelDataBase travelDataBase;
 
-        getAsyncTask(UserLocationDao dao) {
+        getAsyncTask(UserLocationDao dao, TravelDataBase db) {
+            travelDataBase = db;
             mAsyncTaskDao = dao;
         }
 
@@ -85,6 +106,7 @@ public class locationRepository {
         @Override
         protected void onPostExecute(JSONObject[] jsonObject) {
             super.onPostExecute(jsonObject);
+            travelDataBase.close();
             //todo save jsons in file
 //            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
 //            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

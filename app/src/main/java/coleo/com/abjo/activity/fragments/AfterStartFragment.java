@@ -1,11 +1,16 @@
 package coleo.com.abjo.activity.fragments;
 
-import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.room.Room;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
@@ -13,12 +18,18 @@ import com.robinhood.ticker.TickerUtils;
 
 import java.util.Objects;
 
-import androidx.fragment.app.Fragment;
 import coleo.com.abjo.R;
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_base.TravelDataBase;
+import coleo.com.abjo.data_base.UserLocation;
+import coleo.com.abjo.data_base.locationRepository;
 import coleo.com.abjo.data_class.ProfileData;
-import coleo.com.abjo.service.SaveLocationService;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.config.LocationParams;
 
+import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.hour;
 import static coleo.com.abjo.constants.Constants.minute;
 import static coleo.com.abjo.constants.Constants.pause_resume;
@@ -34,6 +45,9 @@ public class AfterStartFragment extends Fragment {
     private String resumeActionKind = "";
     private String lastAction = "";
 
+    private long startTime;
+    private long sumOfPause = 0;
+    private long lastPause;
 
     private TextView name;
     private TextView level;
@@ -119,16 +133,6 @@ public class AfterStartFragment extends Fragment {
         super.onResume();
         lastAction = Constants.getLastAction();
         manageButton();
-
-//        if (!lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
-//            getView().findViewById(R.id.start_service_button_id).setVisibility(View.INVISIBLE);
-//            getView().findViewById(R.id.pause_service_button_id).setVisibility(View.INVISIBLE);
-////            getView().findViewById(R.id.continue_last_action_id).setVisibility(View.VISIBLE);
-//        } else {
-//            getView().findViewById(R.id.start_service_button_id).setVisibility(View.VISIBLE);
-//            getView().findViewById(R.id.pause_service_button_id).setVisibility(View.VISIBLE);
-////            getView().findViewById(R.id.continue_last_action_id).setVisibility(View.INVISIBLE);
-//        }
     }
 
     public void startServiceFromNotification(ProfileData data) {
@@ -136,9 +140,6 @@ public class AfterStartFragment extends Fragment {
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
 //        updateProfile(data);
-        Intent startIntent = new Intent(getActivity(), SaveLocationService.class);
-        startIntent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
-        Objects.requireNonNull(getActivity()).startService(startIntent);
 //        updateProfile(ServerClass.getProfile(getContext()));
     }
 
@@ -160,28 +161,78 @@ public class AfterStartFragment extends Fragment {
         }
     }
 
+
+    private void startJob() {
+        SmartLocation.with(context).location().config(LocationParams.NAVIGATION)
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+                        Log.i("Location", "onLocationUpdated: ");
+                        Objects.requireNonNull(locationRepository.get(null))
+                                .insert(UserLocation.makeDifference(location,
+                                        "" + System.currentTimeMillis(), 0));
+                    }
+                });
+    }
+
     private void startService() {
-        Intent startIntent = new Intent(getActivity(), SaveLocationService.class);
-        startIntent.setAction(startActionKind);
-        Objects.requireNonNull(getActivity()).startService(startIntent);
+        startTime = System.currentTimeMillis();
+        makeDataBase();
+        startJob();
+        start_stop.setImageResource(R.mipmap.stop_icon);
+        pause_resume.setVisibility(View.VISIBLE);
+        Constants.isWorking = true;
+        Constants.isPause = false;
     }
 
     private void stopService() {
-        Intent stopIntent = new Intent(getActivity(), SaveLocationService.class);
-        stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
-        Objects.requireNonNull(getActivity()).startService(stopIntent);
-    }
-
-    private void pauseService() {
-        Intent pauseIntent = new Intent(getActivity(), SaveLocationService.class);
-        pauseIntent.setAction(pauseActionKind);
-        Objects.requireNonNull(getActivity()).startService(pauseIntent);
+        Constants.isWorking = false;
+        Constants.isPause = false;
+        locationRepository repository = locationRepository.get(null);
+        if (repository != null)
+            repository.makeJsonAndSend();
+        ((MainActivity) Constants.context).backToMain();
+        SmartLocation.with(context).location().stop();
     }
 
     private void resumeService() {
-        Intent resumeIntent = new Intent(getActivity(), SaveLocationService.class);
-        resumeIntent.setAction(resumeActionKind);
-        Objects.requireNonNull(getActivity()).startService(resumeIntent);
+        pause_resume.setImageResource(R.mipmap.pause_icon);
+        Constants.isPause = false;
+        Constants.isWorking = true;
+
+        long now = System.currentTimeMillis();
+        sumOfPause += now - lastPause;
+        long past = now - startTime - sumOfPause;
+        Log.i("FRAGMENT", "resumeService: past time is" + past);
+    }
+
+    private void pauseService() {
+        pause_resume.setImageResource(R.mipmap.play_icon);
+        Constants.isWorking = true;
+        Constants.isPause = true;
+        pause_resume.setEnabled(false);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                pause_resume.setEnabled(true);
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 1000);
+
+        lastPause = System.currentTimeMillis();
+
+    }
+
+    private void makeDataBase() {
+        TravelDataBase dataBase = Room.databaseBuilder(context.getApplicationContext(),
+                TravelDataBase.class, "database-name").build();
+        locationRepository repository = locationRepository.get(dataBase);
+        if (repository != null)
+            repository.nukeTable();
+        else {
+
+        }
     }
 
     private void updateProfile(ProfileData data) {

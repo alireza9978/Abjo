@@ -1,10 +1,7 @@
 package coleo.com.abjo.activity.fragments;
 
-import android.app.Activity;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +20,7 @@ import java.io.Serializable;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
-import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_class.ProfileData;
-import mumayank.com.airlocationlibrary.AirLocation;
-
-import static coleo.com.abjo.constants.Constants.context;
 
 public class Heart extends Fragment implements Serializable {
 

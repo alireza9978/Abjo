@@ -36,7 +36,6 @@ import org.json.JSONObject;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.Splash;
-import coleo.com.abjo.service.MyReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -111,115 +110,115 @@ public class Constants {
     public static String STEP_OR_BIKE = "start counting";
     public static String LAST_ACTION_INTENT = "twoInOne";//true == step & false == bike
     public static String FROM_NOTIFICATION = "fromOtherSide";
-
-    public static NotificationCompat.Builder showNotification(String title, String message,
-                                                              Context context, boolean makeSound,
-                                                              boolean canClose, boolean isStep,
-                                                              boolean isPause) {
-
-        Intent intent = new Intent(context, Splash.class);
-        intent.putExtra(Constants.FROM_NOTIFICATION, true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent pause = new Intent(context, MyReceiver.class);
-        if (isPause) {
-            if (isStep) {
-                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
-            } else {
-                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
-            }
-        } else {
-            if (isStep) {
-                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
-            } else {
-                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
-            }
-        }
-        PendingIntent snoozePendingIntent =
-                PendingIntent.getBroadcast(context, 0, pause, 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setOnlyAlertOnce(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setOngoing(!canClose)
-                .addAction(android.R.drawable.ic_media_pause, context.getString(R.string.pause_service), snoozePendingIntent);
-
-        builder.setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel(notificationManager);
-            builder.setChannelId(NOTIFICATION_CHANEL_ID);
-            if (makeSound) {
-                builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
-            } else {
-                builder.setPriority(NotificationManager.IMPORTANCE_MIN);
-            }
-        }
-
-        return builder;
-    }
-
-    @TargetApi(26)
-    private static void createChannel(NotificationManager notificationManager) {
-        String name = NOTIFICATION_CHANEL_ID;
-        String description = "Notifications for download status";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-        NotificationChannel mChannel = new NotificationChannel(name, name, importance);
-        mChannel.setDescription(description);
-        mChannel.enableLights(true);
-        mChannel.setLightColor(Color.BLUE);
-        notificationManager.createNotificationChannel(mChannel);
-    }
-
-    @SuppressLint("RestrictedApi")
-    public static void updateNotification(NotificationCompat.Builder notification,
-                                          String title, String message,
-                                          Context context,
-                                          boolean isPause, boolean isStep) {
-
-        Intent pause = new Intent(context, MyReceiver.class);
-        int drawable;
-        String actionName;
-        if (isPause) {
-            actionName = "resume";
-            drawable = android.R.drawable.ic_media_play;
-            if (isStep) {
-                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
-            } else {
-                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
-            }
-        } else {
-            actionName = "pause";
-            drawable = android.R.drawable.ic_media_pause;
-            if (isStep) {
-                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
-            } else {
-                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
-            }
-        }
-        PendingIntent pausePendingIntent =
-                PendingIntent.getBroadcast(context, 0, pause, 0);
-
-        if (notification != null) {
-            Log.i("Constants", "updateNotification: ");
-            if (notification.mActions != null)
-                notification.mActions.clear();
-
-            notification.addAction(drawable, actionName, pausePendingIntent);
-            notification.setContentTitle(title);
-            notification.setContentText(message);
-
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
-        }
-    }
+//
+//    public static NotificationCompat.Builder showNotification(String title, String message,
+//                                                              Context context, boolean makeSound,
+//                                                              boolean canClose, boolean isStep,
+//                                                              boolean isPause) {
+//
+//        Intent intent = new Intent(context, Splash.class);
+//        intent.putExtra(Constants.FROM_NOTIFICATION, true);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        Intent pause = new Intent(context, MyReceiver.class);
+//        if (isPause) {
+//            if (isStep) {
+//                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
+//            } else {
+//                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
+//            }
+//        } else {
+//            if (isStep) {
+//                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
+//            } else {
+//                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
+//            }
+//        }
+//        PendingIntent snoozePendingIntent =
+//                PendingIntent.getBroadcast(context, 0, pause, 0);
+//
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANEL_ID)
+//                .setSmallIcon(R.mipmap.ic_launcher)
+//                .setContentTitle(title)
+//                .setContentText(message)
+//                .setOnlyAlertOnce(true)
+//                .setDefaults(Notification.DEFAULT_ALL)
+//                .setPriority(NotificationCompat.PRIORITY_MIN)
+//                .setOngoing(!canClose)
+//                .addAction(android.R.drawable.ic_media_pause, context.getString(R.string.pause_service), snoozePendingIntent);
+//
+//        builder.setContentIntent(pendingIntent);
+//
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            createChannel(notificationManager);
+//            builder.setChannelId(NOTIFICATION_CHANEL_ID);
+//            if (makeSound) {
+//                builder.setPriority(NotificationManager.IMPORTANCE_DEFAULT);
+//            } else {
+//                builder.setPriority(NotificationManager.IMPORTANCE_MIN);
+//            }
+//        }
+//
+//        return builder;
+//    }
+//
+//    @TargetApi(26)
+//    private static void createChannel(NotificationManager notificationManager) {
+//        String name = NOTIFICATION_CHANEL_ID;
+//        String description = "Notifications for download status";
+//        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//
+//        NotificationChannel mChannel = new NotificationChannel(name, name, importance);
+//        mChannel.setDescription(description);
+//        mChannel.enableLights(true);
+//        mChannel.setLightColor(Color.BLUE);
+//        notificationManager.createNotificationChannel(mChannel);
+//    }
+//
+//    @SuppressLint("RestrictedApi")
+//    public static void updateNotification(NotificationCompat.Builder notification,
+//                                          String title, String message,
+//                                          Context context,
+//                                          boolean isPause, boolean isStep) {
+//
+//        Intent pause = new Intent(context, MyReceiver.class);
+//        int drawable;
+//        String actionName;
+//        if (isPause) {
+//            actionName = "resume";
+//            drawable = android.R.drawable.ic_media_play;
+//            if (isStep) {
+//                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_STEP);
+//            } else {
+//                pause.setAction(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
+//            }
+//        } else {
+//            actionName = "pause";
+//            drawable = android.R.drawable.ic_media_pause;
+//            if (isStep) {
+//                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_STEP);
+//            } else {
+//                pause.setAction(ACTION.PAUSE_FOREGROUND_ACTION_BIKE);
+//            }
+//        }
+//        PendingIntent pausePendingIntent =
+//                PendingIntent.getBroadcast(context, 0, pause, 0);
+//
+//        if (notification != null) {
+//            Log.i("Constants", "updateNotification: ");
+//            if (notification.mActions != null)
+//                notification.mActions.clear();
+//
+//            notification.addAction(drawable, actionName, pausePendingIntent);
+//            notification.setContentTitle(title);
+//            notification.setContentText(message);
+//
+//            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.notify(NOTIFICATION_ID.FOREGROUND_SERVICE, notification.build());
+//        }
+//    }
 
     private static void displayPromptForEnablingGPS(final AppCompatActivity activity) {
 

@@ -213,8 +213,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
         }
 
-
     }
+
+
 
     public void toggleNavigation(){
         if (drawerLayout.isDrawerOpen())
