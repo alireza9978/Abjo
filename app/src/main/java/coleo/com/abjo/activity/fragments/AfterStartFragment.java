@@ -1,6 +1,7 @@
 package coleo.com.abjo.activity.fragments;
 
-import android.location.Location;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,18 +17,13 @@ import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
 import com.robinhood.ticker.TickerUtils;
 
-import java.util.Objects;
-
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.TravelDataBase;
-import coleo.com.abjo.data_base.UserLocation;
 import coleo.com.abjo.data_base.locationRepository;
 import coleo.com.abjo.data_class.ProfileData;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.location.config.LocationParams;
+import coleo.com.abjo.service.SaverService;
 
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.hour;
@@ -163,16 +159,13 @@ public class AfterStartFragment extends Fragment {
 
 
     private void startJob() {
-        SmartLocation.with(context).location().config(LocationParams.NAVIGATION)
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-                        Log.i("Location", "onLocationUpdated: ");
-                        Objects.requireNonNull(locationRepository.get(null))
-                                .insert(UserLocation.makeDifference(location,
-                                        "" + System.currentTimeMillis(), 0));
-                    }
-                });
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(Constants.ACTION.START_FOREGROUND_ACTION_BIKE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
     }
 
     private void startService() {
@@ -191,15 +184,20 @@ public class AfterStartFragment extends Fragment {
         locationRepository repository = locationRepository.get(null);
         if (repository != null)
             repository.makeJsonAndSend();
-        ((MainActivity) Constants.context).backToMain();
-        SmartLocation.with(context).location().stop();
+        ((MainActivity) context).backToMain();
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
     }
 
     private void resumeService() {
         pause_resume.setImageResource(R.mipmap.pause_icon);
         Constants.isPause = false;
         Constants.isWorking = true;
-
         long now = System.currentTimeMillis();
         sumOfPause += now - lastPause;
         long past = now - startTime - sumOfPause;
@@ -219,9 +217,7 @@ public class AfterStartFragment extends Fragment {
         };
         Handler handler = new Handler();
         handler.postDelayed(runnable, 1000);
-
         lastPause = System.currentTimeMillis();
-
     }
 
     private void makeDataBase() {

@@ -1,8 +1,10 @@
 package coleo.com.abjo.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +43,7 @@ import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
+import coleo.com.abjo.service.SaverReceiver;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
@@ -212,6 +215,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             else
                 Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
         }
+
+        ComponentName receiver = new ComponentName(context, SaverReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
 
     }
 

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.hardware.location.gps" />
@@ -43,6 +44,11 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.login.Splash" />
 
+        <service android:name=".service.SaverService"
+            />
+        <receiver android:name=".service.SaverReceiver"
+            >
+        </receiver>
     </application>
 
 </manifest>
