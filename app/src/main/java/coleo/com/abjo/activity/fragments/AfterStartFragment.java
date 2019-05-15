@@ -224,11 +224,9 @@ public class AfterStartFragment extends Fragment {
         TravelDataBase dataBase = Room.databaseBuilder(context.getApplicationContext(),
                 TravelDataBase.class, "database-name").build();
         locationRepository repository = locationRepository.get(dataBase);
-        if (repository != null)
-            repository.nukeTable();
-        else {
-
-        }
+        assert repository != null;
+        repository.setUserLocationDao(dataBase.userDao());
+        repository.nukeTable();
     }
 
     private void updateProfile(ProfileData data) {

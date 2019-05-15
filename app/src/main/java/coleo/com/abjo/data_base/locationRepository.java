@@ -26,6 +26,10 @@ public class locationRepository {
         travelDataBase.close();
     }
 
+    public void setUserLocationDao(UserLocationDao userLocationDao) {
+        this.userLocationDao = userLocationDao;
+    }
+
     private locationRepository(TravelDataBase travelDataBase) {
         this.travelDataBase = travelDataBase;
         this.userLocationDao = travelDataBase.userDao();
