@@ -1,9 +1,11 @@
 package coleo.com.abjo.activity.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import com.beardedhen.androidbootstrap.ColorOfProgress;
 import com.mrq.android.ibrary.FinalCountDownTimer;
 import com.robinhood.ticker.TickerUtils;
 
+import java.util.Objects;
+
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
@@ -27,9 +31,12 @@ import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.service.OnCount;
 import coleo.com.abjo.service.SaverService;
 
+import static android.content.Context.MODE_PRIVATE;
 import static coleo.com.abjo.constants.Constants.ONE_HOUR;
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.hour;
+import static coleo.com.abjo.constants.Constants.isPause;
+import static coleo.com.abjo.constants.Constants.manageButton;
 import static coleo.com.abjo.constants.Constants.minute;
 import static coleo.com.abjo.constants.Constants.pause_resume;
 import static coleo.com.abjo.constants.Constants.second;
@@ -86,7 +93,7 @@ public class AfterStartFragment extends Fragment {
         Constants.start_stop = view.findViewById(R.id.start_service_button_id);
         Constants.pause_resume = view.findViewById(R.id.pause_service_button_id);
 
-        manageButton();
+        manageButton(lastAction);
 
         Constants.start_stop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,33 +117,18 @@ public class AfterStartFragment extends Fragment {
         return view;
     }
 
-    private void manageButton() {
-        start_stop.setVisibility(View.VISIBLE);
-        start_stop.setImageResource(R.mipmap.stop_icon);
-        if (lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE) ||
-                lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP)) {
-            pause_resume.setImageResource(R.mipmap.pause_icon);
-        }
-        if (lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE) ||
-                lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP)) {
-            pause_resume.setImageResource(R.mipmap.play_icon);
-        }
-        if (lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_BIKE)
-                || lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_STEP)) {
-            pause_resume.setImageResource(R.mipmap.pause_icon);
-        }
-    }
+
 
 
     @Override
     public void onResume() {
         super.onResume();
+        getLastTime();
         lastAction = Constants.getLastAction();
-        manageButton();
-        if (startTime == 0) {
-            startTimer();
-        } else {
+        manageButton(lastAction);
+        if (!isPause) {
             continueTimer();
+        } else {
             updateTextViews();
         }
     }
@@ -144,6 +136,7 @@ public class AfterStartFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        saveLastStartTime();
         if (timer != null) {
             timer.cancel();
         }
@@ -156,13 +149,36 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void startTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        startTime = System.currentTimeMillis();
+        lastPause = 0;
+        sumOfPause = 0;
         timer = FinalCountDownTimer.createDefault(ONE_HOUR, new OnCount(0, 0, 0));
         timer.start();
     }
 
+    public void pauseFromNotification() {
+        if (timer != null) {
+            timer.cancel();
+        }
+    }
+
+    public void resumeFromNotification() {
+        if (timer != null) {
+            timer.start();
+        }
+    }
+
     private void continueTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        getLastTime();
         long now = System.currentTimeMillis();
         long past = now - startTime - sumOfPause;
+        past /= 1000;
         int min = 0;
         int hour = 0;
         if (past > 3_600) {
@@ -178,6 +194,25 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void updateTextViews() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        getLastTime();
+        long past = lastPause - startTime - sumOfPause;
+        past /= 1000;
+        int min = 0;
+        int hour = 0;
+        if (past > 3_600) {
+            hour = (int) (past / 3600);
+            past -= (hour * 3600);
+        }
+        if (past > 60) {
+            min = (int) (past / 60);
+            past -= (min * 60);
+        }
+        Constants.second.setText("" + past + 1);
+        Constants.minute.setText("" + min);
+        Constants.hour.setText("" + hour);
 
     }
 
@@ -202,6 +237,7 @@ public class AfterStartFragment extends Fragment {
     private void startJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(startActionKind);
+        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -212,6 +248,7 @@ public class AfterStartFragment extends Fragment {
     private void stopJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
+        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -222,6 +259,7 @@ public class AfterStartFragment extends Fragment {
     private void resumeJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(resumeActionKind);
+        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -232,6 +270,7 @@ public class AfterStartFragment extends Fragment {
     private void pauseJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(pauseActionKind);
+        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -239,10 +278,26 @@ public class AfterStartFragment extends Fragment {
         }
     }
 
+    private void saveLastStartTime() {
+        SharedPreferences.Editor editor = context.getSharedPreferences("LAST_TIME", MODE_PRIVATE).edit();
+        editor.putString("START", "" + startTime);
+        editor.putString("SUM", "" + sumOfPause);
+        editor.putString("PAUSE", "" + lastPause);
+        editor.apply();
+    }
+
+    private void getLastTime() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LAST_TIME", MODE_PRIVATE);
+        startTime = Long.valueOf(Objects.requireNonNull(sharedPreferences.getString("START", "0")));
+        sumOfPause = Long.valueOf(Objects.requireNonNull(sharedPreferences.getString("SUM", "0")));
+        lastPause = Long.valueOf(Objects.requireNonNull(sharedPreferences.getString("PAUSE", "0")));
+    }
+
     private void startService() {
         startTime = System.currentTimeMillis();
         makeDataBase();
         startJob();
+        startTimer();
         start_stop.setImageResource(R.mipmap.stop_icon);
         pause_resume.setVisibility(View.VISIBLE);
         Constants.isWorking = true;
@@ -262,6 +317,9 @@ public class AfterStartFragment extends Fragment {
             repository.insert(new Action("" + System.currentTimeMillis(), "stop"));
             repository.makeJsonAndSend();
         }
+        startTime = 0;
+        sumOfPause = 0;
+        lastPause = 0;
         ((MainActivity) context).backToMain();
     }
 
@@ -275,6 +333,15 @@ public class AfterStartFragment extends Fragment {
             timer.start();
         }
         resumeJob();
+        pause_resume.setEnabled(false);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                pause_resume.setEnabled(true);
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable, 1000);
     }
 
     private void pauseService() {

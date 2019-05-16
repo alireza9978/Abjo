@@ -271,6 +271,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 Toast.LENGTH_LONG).show();
     }
 
+    public void stopTimer(){
+        ((AfterStartFragment) fragment4).pauseFromNotification();
+    }
+
+    public void startTimer(){
+        ((AfterStartFragment) fragment4).resumeFromNotification();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //Do not call super class method here.

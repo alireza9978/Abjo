@@ -20,6 +20,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -139,7 +140,7 @@ public class Constants {
                 PendingIntent.getBroadcast(context, 0, pause, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.profile_big_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setOnlyAlertOnce(true)
@@ -314,8 +315,12 @@ public class Constants {
     }
 
     public static String getLastAction(){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE);
-        return sharedPreferences.getString(LAST_ACTION_SAVE_NAME, ACTION.STOP_FOREGROUND_ACTION);
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(LAST_ACTION_PRE_NAME, MODE_PRIVATE);
+            return sharedPreferences.getString(LAST_ACTION_SAVE_NAME, ACTION.STOP_FOREGROUND_ACTION);
+        }else{
+            return "NOT_FOUND";
+        }
     }
 
     public static float pxToDp(final Context context, final float px) {
@@ -363,6 +368,23 @@ public class Constants {
             temp = "خطای سرور";
         }
         return temp;
+    }
+
+    public static void manageButton(String lastAction) {
+        start_stop.setVisibility(View.VISIBLE);
+        start_stop.setImageResource(R.mipmap.stop_icon);
+        if (lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE) ||
+                lastAction.equals(Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.pause_icon);
+        }
+        if (lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE) ||
+                lastAction.equals(Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.play_icon);
+        }
+        if (lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_BIKE)
+                || lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_STEP)) {
+            pause_resume.setImageResource(R.mipmap.pause_icon);
+        }
     }
 
 }
