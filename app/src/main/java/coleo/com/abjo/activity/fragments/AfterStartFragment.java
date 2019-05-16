@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +14,20 @@ import androidx.room.Room;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
+import com.mrq.android.ibrary.FinalCountDownTimer;
 import com.robinhood.ticker.TickerUtils;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
+import coleo.com.abjo.data_base.Action;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.locationRepository;
 import coleo.com.abjo.data_class.ProfileData;
+import coleo.com.abjo.service.OnCount;
 import coleo.com.abjo.service.SaverService;
 
+import static coleo.com.abjo.constants.Constants.ONE_HOUR;
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.hour;
 import static coleo.com.abjo.constants.Constants.minute;
@@ -41,9 +44,10 @@ public class AfterStartFragment extends Fragment {
     private String resumeActionKind = "";
     private String lastAction = "";
 
-    private long startTime;
+    private long startTime = 0;
     private long sumOfPause = 0;
-    private long lastPause;
+    private long lastPause = 0;
+    private FinalCountDownTimer timer;
 
     private TextView name;
     private TextView level;
@@ -129,19 +133,56 @@ public class AfterStartFragment extends Fragment {
         super.onResume();
         lastAction = Constants.getLastAction();
         manageButton();
+        if (startTime == 0) {
+            startTimer();
+        } else {
+            continueTimer();
+            updateTextViews();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     public void startServiceFromNotification(ProfileData data) {
         lastAction = Constants.getLastAction();
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
-//        updateProfile(data);
-//        updateProfile(ServerClass.getProfile(getContext()));
+    }
+
+    private void startTimer() {
+        timer = FinalCountDownTimer.createDefault(ONE_HOUR, new OnCount(0, 0, 0));
+        timer.start();
+    }
+
+    private void continueTimer() {
+        long now = System.currentTimeMillis();
+        long past = now - startTime - sumOfPause;
+        int min = 0;
+        int hour = 0;
+        if (past > 3_600) {
+            hour = (int) (past / 3600);
+            past -= (hour * 3600);
+        }
+        if (past > 60) {
+            min = (int) (past / 60);
+            past -= (min * 60);
+        }
+        timer = FinalCountDownTimer.createDefault(ONE_HOUR, new OnCount((int) past, min, hour));
+        timer.start();
+    }
+
+    private void updateTextViews() {
+
     }
 
     public void startServiceFromOut(boolean isStep, ProfileData data) {
         setActionKind(isStep);
-//        updateProfile(data);
         startService();
     }
 
@@ -160,7 +201,37 @@ public class AfterStartFragment extends Fragment {
 
     private void startJob() {
         Intent intent = new Intent(context, SaverService.class);
-        intent.setAction(Constants.ACTION.START_FOREGROUND_ACTION_BIKE);
+        intent.setAction(startActionKind);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+    private void stopJob() {
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+    private void resumeJob() {
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(resumeActionKind);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+    private void pauseJob() {
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(pauseActionKind);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -176,22 +247,22 @@ public class AfterStartFragment extends Fragment {
         pause_resume.setVisibility(View.VISIBLE);
         Constants.isWorking = true;
         Constants.isPause = false;
+        locationRepository repository = locationRepository.get(null);
+        if (repository != null) {
+            repository.insert(new Action("" + System.currentTimeMillis(), "start"));
+        }
     }
 
     private void stopService() {
         Constants.isWorking = false;
         Constants.isPause = false;
+        stopJob();
         locationRepository repository = locationRepository.get(null);
-        if (repository != null)
+        if (repository != null) {
+            repository.insert(new Action("" + System.currentTimeMillis(), "stop"));
             repository.makeJsonAndSend();
-        ((MainActivity) context).backToMain();
-        Intent intent = new Intent(context, SaverService.class);
-        intent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
         }
+        ((MainActivity) context).backToMain();
     }
 
     private void resumeService() {
@@ -200,8 +271,10 @@ public class AfterStartFragment extends Fragment {
         Constants.isWorking = true;
         long now = System.currentTimeMillis();
         sumOfPause += now - lastPause;
-        long past = now - startTime - sumOfPause;
-        Log.i("FRAGMENT", "resumeService: past time is" + past);
+        if (timer != null) {
+            timer.start();
+        }
+        resumeJob();
     }
 
     private void pauseService() {
@@ -218,6 +291,10 @@ public class AfterStartFragment extends Fragment {
         Handler handler = new Handler();
         handler.postDelayed(runnable, 1000);
         lastPause = System.currentTimeMillis();
+        if (timer != null) {
+            timer.cancel();
+        }
+        pauseJob();
     }
 
     private void makeDataBase() {
@@ -226,6 +303,7 @@ public class AfterStartFragment extends Fragment {
         locationRepository repository = locationRepository.get(dataBase);
         assert repository != null;
         repository.setUserLocationDao(dataBase.userDao());
+        repository.setActionDao(dataBase.actionDao());
         repository.nukeTable();
     }
 

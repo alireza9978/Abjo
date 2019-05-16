@@ -4,23 +4,18 @@ import com.mrq.android.ibrary.FinalCountDownTimer;
 
 import coleo.com.abjo.constants.Constants;
 
-class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
+public class OnCount implements FinalCountDownTimer.OnTimeDownCallBack {
 
     private int second;
     private int minute;
     private int hour;
-    private static OnCount lastShape;
 
+    private static OnCount lastShape;
 
     public OnCount(int second, int minute, int hour) {
         this.second = second;
         this.minute = minute;
         this.hour = hour;
-        Constants.second.setText("" + second);
-        Constants.minute.setText("" + minute);
-        Constants.hour.setText("" + hour);
-        lastShape = this;
-
     }
 
     @Override
