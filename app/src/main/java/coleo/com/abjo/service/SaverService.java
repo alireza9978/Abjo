@@ -23,6 +23,8 @@ import io.nlopez.smartlocation.location.config.LocationParams;
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.getLastAction;
 import static coleo.com.abjo.constants.Constants.isActionKindStep;
+import static coleo.com.abjo.constants.Constants.isPause;
+import static coleo.com.abjo.constants.Constants.isWorking;
 import static coleo.com.abjo.constants.Constants.manageButton;
 import static coleo.com.abjo.constants.Constants.showNotification;
 import static coleo.com.abjo.constants.Constants.updateNotification;
@@ -53,7 +55,8 @@ public class SaverService extends Service {
                 switch (action) {
                     case Constants.ACTION.START_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.START_FOREGROUND_ACTION_STEP: {
-                        Log.i("Receiver", "onReceive: ");
+                        Constants.isWorking = true;
+                        Constants.isPause = false;
                         boolean isStep = isActionKindStep(action);
                         String title = "دوچرخه";
                         if (isStep) {
@@ -66,6 +69,8 @@ public class SaverService extends Service {
                     }
                     case Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP:
+                        Constants.isWorking = true;
+                        Constants.isPause = true;
                         Objects.requireNonNull(locationRepository.get(null)).insert(new Action("" + System.currentTimeMillis(), "pause"));
                         stopJob();
                         updateNotification(builder, "توقف", "در حال حاضر امتیاز شما محاسبه نمی شود.", context, true, isActionKindStep(action));
@@ -75,6 +80,8 @@ public class SaverService extends Service {
                         break;
                     case Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP: {
+                        Constants.isPause = false;
+                        Constants.isWorking = true;
                         startJob();
                         Objects.requireNonNull(locationRepository.get(null)).insert(new Action("" + System.currentTimeMillis(), "resume"));
                         boolean isStep = isActionKindStep(action);
@@ -89,6 +96,8 @@ public class SaverService extends Service {
                         break;
                     }
                     case (Constants.ACTION.STOP_FOREGROUND_ACTION):
+                        Constants.isWorking = false;
+                        Constants.isPause = false;
                         stopJob();
                         stopForeground(true);
                         stopSelf(id);
@@ -106,10 +115,11 @@ public class SaverService extends Service {
                 .start(new OnLocationUpdatedListener() {
                     @Override
                     public void onLocationUpdated(Location location) {
-                        Log.i("Location", "onLocationUpdated: ");
-                        Objects.requireNonNull(locationRepository.get(null))
-                                .insert(UserLocation.makeDifference(location,
-                                        "" + System.currentTimeMillis(), 0));
+                        if (!isPause && isWorking)
+                            Objects.requireNonNull(locationRepository.get(null))
+                                    .insert(UserLocation.makeDifference(location,
+                                            "" + System.currentTimeMillis(), 0));
+
                     }
                 });
     }

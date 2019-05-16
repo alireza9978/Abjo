@@ -1,6 +1,7 @@
 package coleo.com.abjo.data_base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -13,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import coleo.com.abjo.service.SaverReceiver;
 
 import static coleo.com.abjo.constants.Constants.context;
 
@@ -152,6 +155,8 @@ public class locationRepository {
         protected void onPostExecute(JSONObject[] jsonObject) {
             super.onPostExecute(jsonObject);
             travelDataBase.close();
+            Intent intent = new Intent(context, SaverReceiver.class);
+            context.stopService(intent);
             //todo save jsons in file
 //            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
 //            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

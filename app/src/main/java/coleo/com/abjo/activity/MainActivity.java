@@ -212,8 +212,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         if (temp) {
             if (ServerClass.isNetworkConnected(context))
                 showAfterStartFromNotification();
-            else
+            else {
                 Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
+            }
         }
 
         ComponentName receiver = new ComponentName(context, SaverReceiver.class);

@@ -300,8 +300,7 @@ public class AfterStartFragment extends Fragment {
         startTimer();
         start_stop.setImageResource(R.mipmap.stop_icon);
         pause_resume.setVisibility(View.VISIBLE);
-        Constants.isWorking = true;
-        Constants.isPause = false;
+
         locationRepository repository = locationRepository.get(null);
         if (repository != null) {
             repository.insert(new Action("" + System.currentTimeMillis(), "start"));
@@ -309,14 +308,13 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void stopService() {
-        Constants.isWorking = false;
-        Constants.isPause = false;
-        stopJob();
+
         locationRepository repository = locationRepository.get(null);
         if (repository != null) {
             repository.insert(new Action("" + System.currentTimeMillis(), "stop"));
             repository.makeJsonAndSend();
         }
+        stopJob();
         startTime = 0;
         sumOfPause = 0;
         lastPause = 0;
@@ -325,8 +323,7 @@ public class AfterStartFragment extends Fragment {
 
     private void resumeService() {
         pause_resume.setImageResource(R.mipmap.pause_icon);
-        Constants.isPause = false;
-        Constants.isWorking = true;
+
         long now = System.currentTimeMillis();
         sumOfPause += now - lastPause;
         if (timer != null) {
@@ -346,8 +343,7 @@ public class AfterStartFragment extends Fragment {
 
     private void pauseService() {
         pause_resume.setImageResource(R.mipmap.play_icon);
-        Constants.isWorking = true;
-        Constants.isPause = true;
+
         pause_resume.setEnabled(false);
         Runnable runnable = new Runnable() {
             @Override
