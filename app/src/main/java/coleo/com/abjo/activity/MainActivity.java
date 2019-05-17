@@ -272,6 +272,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 Toast.LENGTH_LONG).show();
     }
 
+    public void manageTimer() {
+        ((AfterStartFragment) fragment4).manageTimer();
+    }
+
     public void stopTimer(){
         ((AfterStartFragment) fragment4).pauseFromNotification();
     }
@@ -306,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         mainFragmentNumber = 1;
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
+        ((AfterStartFragment) fragment4).setActionKind(Constants.isActionKindStep(Constants.getLastAction()));
 //        ServerClass.getProfile(context, false);
         menuButton.setVisibility(View.INVISIBLE);
     }

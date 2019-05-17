@@ -51,8 +51,15 @@ public class SaverService extends Service {
         if (intent != null) {
             String action = intent.getAction();
             if (action != null) {
-                Constants.saveLastAction(context, action);
+                if (!action.equals(Constants.ACTION.UPDATE_FOREGROUND_ACTION))
+                    Constants.saveLastAction(context, action);
                 switch (action) {
+                    case Constants.ACTION.UPDATE_FOREGROUND_ACTION: {
+                        if (context != null) {
+                            ((MainActivity) context).manageTimer();
+                        }
+                        break;
+                    }
                     case Constants.ACTION.START_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.START_FOREGROUND_ACTION_STEP: {
                         Constants.isWorking = true;

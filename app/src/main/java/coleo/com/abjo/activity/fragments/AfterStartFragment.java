@@ -34,6 +34,7 @@ import coleo.com.abjo.service.SaverService;
 import static android.content.Context.MODE_PRIVATE;
 import static coleo.com.abjo.constants.Constants.ONE_HOUR;
 import static coleo.com.abjo.constants.Constants.context;
+import static coleo.com.abjo.constants.Constants.getLastAction;
 import static coleo.com.abjo.constants.Constants.hour;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.manageButton;
@@ -118,19 +119,13 @@ public class AfterStartFragment extends Fragment {
     }
 
 
-
-
     @Override
     public void onResume() {
         super.onResume();
         getLastTime();
         lastAction = Constants.getLastAction();
         manageButton(lastAction);
-        if (!isPause) {
-            continueTimer();
-        } else {
-            updateTextViews();
-        }
+        updateJob();
     }
 
     @Override
@@ -139,6 +134,7 @@ public class AfterStartFragment extends Fragment {
         saveLastStartTime();
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
     }
 
@@ -149,8 +145,10 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void startTimer() {
+        Log.i("TIMER", "startTimer: ");
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
         startTime = System.currentTimeMillis();
         lastPause = 0;
@@ -159,25 +157,21 @@ public class AfterStartFragment extends Fragment {
         timer.start();
     }
 
-    public void pauseFromNotification() {
+    public void manageTimer() {
+        Log.i("TIMER", "manageTimer: ");
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
-    }
-
-    public void resumeFromNotification() {
-        if (timer != null) {
-            timer.start();
-        }
-    }
-
-    private void continueTimer() {
-        if (timer != null) {
-            timer.cancel();
-        }
+        manageButton(getLastAction());
         getLastTime();
         long now = System.currentTimeMillis();
-        long past = now - startTime - sumOfPause;
+        long past;
+        if (isPause)
+            past = lastPause - startTime - sumOfPause;
+        else
+            past = now - startTime - sumOfPause;
+
         past /= 1000;
         int min = 0;
         int hour = 0;
@@ -190,30 +184,34 @@ public class AfterStartFragment extends Fragment {
             past -= (min * 60);
         }
         timer = FinalCountDownTimer.createDefault(ONE_HOUR, new OnCount((int) past, min, hour));
-        timer.start();
+        if (!isPause)
+            timer.start();
+        else {
+            Constants.second.setText("" + (past + 1));
+            Constants.minute.setText("" + min);
+            Constants.hour.setText("" + hour);
+        }
     }
 
-    private void updateTextViews() {
+    public void pauseFromNotification() {
+        Log.i("TIMER", "pauseFromNotification: ");
+        manageButton(getLastAction());
+        lastPause = System.currentTimeMillis();
+        saveLastStartTime();
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
-        getLastTime();
-        long past = lastPause - startTime - sumOfPause;
-        past /= 1000;
-        int min = 0;
-        int hour = 0;
-        if (past > 3_600) {
-            hour = (int) (past / 3600);
-            past -= (hour * 3600);
-        }
-        if (past > 60) {
-            min = (int) (past / 60);
-            past -= (min * 60);
-        }
-        Constants.second.setText("" + past + 1);
-        Constants.minute.setText("" + min);
-        Constants.hour.setText("" + hour);
+        updateJob();
+    }
 
+    public void resumeFromNotification() {
+        Log.i("TIMER", "resumeFromNotification: ");
+        manageButton(getLastAction());
+        getLastTime();
+        sumOfPause += System.currentTimeMillis() - lastPause;
+        saveLastStartTime();
+        updateJob();
     }
 
     public void startServiceFromOut(boolean isStep, ProfileData data) {
@@ -221,7 +219,7 @@ public class AfterStartFragment extends Fragment {
         startService();
     }
 
-    private void setActionKind(boolean isStep) {
+    public void setActionKind(boolean isStep) {
         if (isStep) {
             startActionKind = Constants.ACTION.START_FOREGROUND_ACTION_STEP;
             pauseActionKind = Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP;
@@ -233,11 +231,19 @@ public class AfterStartFragment extends Fragment {
         }
     }
 
+    private void updateJob() {
+        Intent intent = new Intent(context, SaverService.class);
+        intent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
 
     private void startJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(startActionKind);
-        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -248,7 +254,6 @@ public class AfterStartFragment extends Fragment {
     private void stopJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
-        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -259,7 +264,6 @@ public class AfterStartFragment extends Fragment {
     private void resumeJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(resumeActionKind);
-        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -270,7 +274,6 @@ public class AfterStartFragment extends Fragment {
     private void pauseJob() {
         Intent intent = new Intent(context, SaverService.class);
         intent.setAction(pauseActionKind);
-        Log.i("Receiver", "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -343,7 +346,6 @@ public class AfterStartFragment extends Fragment {
 
     private void pauseService() {
         pause_resume.setImageResource(R.mipmap.play_icon);
-
         pause_resume.setEnabled(false);
         Runnable runnable = new Runnable() {
             @Override
