@@ -7,9 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_COMPANION_RUN_IN_BACKGROUND" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -20,7 +19,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.menu.RuleActivity"></activity>
+        <activity android:name=".activity.menu.RuleActivity" />
         <activity android:name=".activity.menu.MassageActivity" />
         <activity android:name=".activity.menu.AboutActivity" />
         <activity android:name=".activity.menu.ShareActivity" />
@@ -42,7 +41,15 @@
         <activity
             android:name=".activity.login.Login"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activity.login.Splash" />
+        <activity android:name=".activity.login.Splash">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
         <service android:name=".service.SaverService"
             />

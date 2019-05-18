@@ -7,9 +7,6 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Action {
 
-    public Action() {
-    }
-
     public Action(String time, String action) {
         this.time = time;
         this.action = action;

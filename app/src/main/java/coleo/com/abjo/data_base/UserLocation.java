@@ -9,9 +9,6 @@ import androidx.room.PrimaryKey;
 @Entity
 public class UserLocation {
 
-    public UserLocation() {
-    }
-
     public UserLocation(String latitude, String longitude, String time, String accuracy, int method) {
         this.accuracy = accuracy;
         this.latitude = latitude;
@@ -19,7 +16,6 @@ public class UserLocation {
         this.method = method;
         this.time = time;
     }
-
 
     @PrimaryKey(autoGenerate = true)
     public int number;

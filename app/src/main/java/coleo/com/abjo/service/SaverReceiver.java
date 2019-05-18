@@ -25,8 +25,6 @@ public class SaverReceiver extends BroadcastReceiver {
             start.setAction(intent.getAction());
         } else {
             start.setAction(Constants.ACTION.START_FOREGROUND_ACTION_BIKE);
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(2000);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(start);
