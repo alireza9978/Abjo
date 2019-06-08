@@ -124,8 +124,8 @@ public class SaverService extends Service {
                     public void onLocationUpdated(Location location) {
                         if (!isPause && isWorking)
                             Objects.requireNonNull(locationRepository.get(null))
-                                    .insert(UserLocation.makeDifference(location,
-                                            "" + System.currentTimeMillis(), 0));
+                                    .insert(new UserLocation("" + location.getLatitude(),"" + location.getLongitude(),
+                                            "" + System.currentTimeMillis(), "" + location.getAccuracy()));
 
                     }
                 });

@@ -17,6 +17,7 @@ import android.graphics.Point;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -33,6 +34,13 @@ import com.robinhood.ticker.TickerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
@@ -385,6 +393,59 @@ public class Constants {
                 || lastAction.equals(Constants.ACTION.START_FOREGROUND_ACTION_STEP)) {
             pause_resume.setImageResource(R.mipmap.pause_icon);
         }
+    }
+
+    public static int getJSONCount() {
+        File path = Environment.getDataDirectory();
+        int ct = 0;
+        if (path.isDirectory()) {
+            for (File temp : path.listFiles()) {
+                if (temp.exists() && !temp.isDirectory()) {
+                    if (temp.getName().contains("location")) {
+                        ct++;
+                    }
+                }
+            }
+        }
+        return ct;
+    }
+
+    public static ArrayList<JSONObject> getJSONs() {
+        File path = Environment.getDataDirectory();
+        ArrayList<JSONObject> lists = new ArrayList<>();
+        if (path.isDirectory()) {
+            for (File temp : path.listFiles()) {
+                if (temp.exists() && !temp.isDirectory()) {
+                    if (temp.getName().contains("location")) {
+                        JSONObject jsonObject = fileParser(temp);
+                        if (jsonObject != null) {
+                            lists.add(jsonObject);
+                        }
+                    }
+                }
+            }
+        }
+        return lists;
+    }
+
+    private static JSONObject fileParser(File file) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String all = "";
+            String line = reader.readLine();
+            while (line != null) {
+                all = all.concat(line);
+                line = reader.readLine();
+            }
+            return new JSONObject(all);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

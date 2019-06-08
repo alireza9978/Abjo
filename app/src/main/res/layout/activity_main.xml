@@ -39,16 +39,28 @@
             android:layout_marginRight="15dp"
             />
 
-        <ImageView
-            android:id="@+id/share_button_id"
+        <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/badge"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:layout_marginLeft="15dp"
-            android:padding="5dp"
-            android:src="@mipmap/paperplane"
+            android:background="@mipmap/sync"
+            app:nbMaxTextLength="2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <!--<ImageView-->
+            <!--android:id="@+id/share_button_id"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="15dp"-->
+            <!--android:padding="5dp"-->
+            <!--android:src="@mipmap/paperplane"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

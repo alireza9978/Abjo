@@ -1,6 +1,5 @@
 package coleo.com.abjo.data_base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -12,9 +11,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 
+import coleo.com.abjo.server_class.ServerClass;
 import coleo.com.abjo.service.SaverReceiver;
 
 import static coleo.com.abjo.constants.Constants.context;
@@ -33,6 +32,7 @@ public class locationRepository {
     public void setUserLocationDao(UserLocationDao userLocationDao) {
         this.userLocationDao = userLocationDao;
     }
+
     public void setActionDao(PauseDao userLocationDao) {
         this.pauseDao = userLocationDao;
     }
@@ -54,7 +54,7 @@ public class locationRepository {
         }
     }
 
-    public void insert(UserLocation[] location) {
+    public void insert(UserLocation location) {
         new insertAsyncTask(userLocationDao).execute(location);
     }
 
@@ -86,7 +86,7 @@ public class locationRepository {
         }
     }
 
-    private static class insertAsyncTask extends AsyncTask<UserLocation[], Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<UserLocation, Void, Void> {
 
         private UserLocationDao mAsyncTaskDao;
 
@@ -95,10 +95,10 @@ public class locationRepository {
         }
 
         @Override
-        protected Void doInBackground(final UserLocation[]... params) {
-            UserLocation[] temp = params[0];
+        protected Void doInBackground(final UserLocation... params) {
+            UserLocation temp = params[0];
             for (int i = 0; i < 3; i++) {
-                mAsyncTaskDao.insertAll(temp[i]);
+                mAsyncTaskDao.insertAll(temp);
             }
             return null;
         }
@@ -134,7 +134,7 @@ public class locationRepository {
         }
     }
 
-    private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject[]> {
+    private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
         private UserLocationDao mAsyncTaskDao;
         private TravelDataBase travelDataBase;
@@ -147,52 +147,36 @@ public class locationRepository {
         }
 
         @Override
-        protected JSONObject[] doInBackground(Void... voids) {
+        protected JSONObject doInBackground(Void... voids) {
             return makeJson(mAsyncTaskDao.getAll(), pauseDao.getAll());
         }
 
         @Override
-        protected void onPostExecute(JSONObject[] jsonObject) {
+        protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             travelDataBase.close();
             Intent intent = new Intent(context, SaverReceiver.class);
             context.stopService(intent);
-            //todo save jsons in file
-//            SendJsonDialog dialog = new SendJsonDialog(context, jsonObject.toString());
-//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            dialog.setCanceledOnTouchOutside(false);
-//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                @Override
-//                public void onDismiss(DialogInterface dialog) {
-//                    ReportDialog temp = new ReportDialog(context);
-//                    temp.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//                    temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                        @Override
-//                        public void onDismiss(DialogInterface dialog) {
-//                            ((MainActivity) context).backToMain();
-//                        }
-//                    });
-//                    temp.show();
-//                }
-//            });
-//            dialog.show();
+            if (!ServerClass.isNetworkConnected(context))
+                writeToFile(jsonObject);
+            else
+                ServerClass.sendActivityData(jsonObject, context);
         }
 
-        private JSONObject[] makeJson(List<UserLocation> locations, List<Action> actions) {
-            ArrayList<JSONObject> arrayList = new ArrayList<>();
-            JSONArray pauseObject = new JSONArray();
+        private JSONObject makeJson(List<UserLocation> locations, List<Action> actions) {
+            JSONObject object = new JSONObject();
+            JSONArray actionObjects = new JSONArray();
             try {
                 for (Action p : actions) {
                     JSONObject temp = new JSONObject();
                     temp.put("number", p.number);
                     temp.put("time", p.time);
                     temp.put("action", p.action);
-                    pauseObject.put(temp);
+                    actionObjects.put(temp);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            onLoc:
             for (UserLocation location : locations) {
                 JSONObject locationJsonObject = new JSONObject();
                 try {
@@ -203,57 +187,26 @@ public class locationRepository {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                for (JSONObject object : arrayList) {
-                    try {
-                        if (object.getInt("method") == location.method) {
-                            object.getJSONArray("locations").put(locationJsonObject);
-                            continue onLoc;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                JSONObject method = new JSONObject();
-                try {
-                    method.put("method", location.method);
-                    JSONArray temp = new JSONArray();
-                    method.put("locations", temp);
-                    arrayList.add(method);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
-            for (JSONObject object : arrayList) {
-                try {
-                    object.put("actions", pauseObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            try {
+                object.put("actions", actionObjects);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            writeToFile(arrayList, context);
-            JSONObject[] tempArray = new JSONObject[arrayList.size()];
-            int i = 0;
-            for (JSONObject object : arrayList) {
-                tempArray[i] = object;
-                i++;
-            }
-            return tempArray;
+            return object;
         }
 
-        private void writeToFile(ArrayList<JSONObject> data, Context context) {
-            for (JSONObject temp : data) {
-                try {
-                    File path = Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOWNLOADS);
-                    File myFile = new File(path, "Location" + System.currentTimeMillis() + ".txt");
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                    myOutWriter.append(temp.toString());
-                    myOutWriter.close();
-                    fOut.close();
-                } catch (java.io.IOException e) {
-                    e.printStackTrace();
-                }
+        private void writeToFile(JSONObject temp) {
+            try {
+                File path = Environment.getDataDirectory();
+                File myFile = new File(path, "Location" + System.currentTimeMillis() + ".txt");
+                FileOutputStream fOut = new FileOutputStream(myFile, true);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                myOutWriter.append(temp.toString());
+                myOutWriter.close();
+                fOut.close();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
             }
         }
 

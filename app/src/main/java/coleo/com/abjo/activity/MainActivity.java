@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
+import com.nex3z.notificationbadge.NotificationBadge;
+
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     private long lastTime = 0;
 
+    private NotificationBadge badge;
     private TabLayout tabLayout;
     private ImageView menuButton;
     private ImageView share;
@@ -179,18 +183,31 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             }
         });
 
-        share = findViewById(R.id.share_button_id);
-        share.setOnClickListener(new View.OnClickListener() {
+//        share = findViewById(R.id.share_button_id);
+//        share.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                share.setEnabled(false);
+//                Intent intent = new Intent(context, ShareActivity.class);
+//                //todo valid code
+//                intent.putExtra(Constants.DATA_INVITE_CODE,"adadasdas");
+//                startActivity(intent);
+//            }
+//        });
+
+        badge = findViewById(R.id.badge);
+        badge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                share.setEnabled(false);
-                Intent intent = new Intent(context, ShareActivity.class);
-                //todo valid code
-                intent.putExtra(Constants.DATA_INVITE_CODE,"adadasdas");
-                startActivity(intent);
+                if (Constants.getJSONCount() > 0) {
+                    ArrayList<JSONObject> jsonObjects = Constants.getJSONs();
+                    for (JSONObject jsonObject : jsonObjects)
+                        ServerClass.sendActivityData(jsonObject, context);
+                } else {
+                    Toast.makeText(context, "you are synced", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
 
         tabLayout.getTabAt(0).setText("");
         tabLayout.getTabAt(0).setIcon(R.drawable.leader_board_selected);
@@ -249,7 +266,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onResume() {
         super.onResume();
         Constants.context = this;
-        share.setEnabled(true);
+        badge.setNumber(Constants.getJSONCount());
+//        share.setEnabled(true);
 //        checkPermission();
 //        ServerClass.getProfile(this, true);
     }

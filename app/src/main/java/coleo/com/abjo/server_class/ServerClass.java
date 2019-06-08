@@ -64,7 +64,6 @@ public class ServerClass {
         }
     }
 
-
     private static void handleError(Context context, VolleyError error) {
         error.printStackTrace();
         if (error.networkResponse == null) {
@@ -460,6 +459,15 @@ public class ServerClass {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void sendActivityData(JSONObject data,Context context){
+
+        //todo send req
+        //on 200 show dialog & delete that file
+        //on error save json
+        //at end check remain count
+
     }
 
 

@@ -40,6 +40,8 @@ dependencies {
 
     implementation 'io.nlopez.smartlocation:library:3.3.3'
 
+    implementation 'com.nex3z:notification-badge:1.0.2'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.gms:play-services-fitness:16.0.1'
