@@ -7,15 +7,20 @@ import androidx.room.PrimaryKey;
 @Entity
 public class UserLocation {
 
-    public UserLocation(String latitude, String longitude, String time, String accuracy) {
-        this.accuracy = accuracy;
+    public UserLocation(long id, String latitude, String accuracy, String longitude) {
+        this.id = id;
         this.latitude = latitude;
+        this.accuracy = accuracy;
         this.longitude = longitude;
-        this.time = time;
+        time = "" + System.currentTimeMillis();
+        synced = false;
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int number;
+    public long number;
+
+    @ColumnInfo(name = "session_id")
+    public long id;
 
     @ColumnInfo(name = "user_lat")
     public String latitude;
@@ -29,16 +34,8 @@ public class UserLocation {
     @ColumnInfo(name = "time")
     public String time;
 
-//    public static UserLocation[] makeDifference(Location location, String time, int method) {
-//        UserLocation[] locations = new UserLocation[3];
-//        for (int i = 0; i < 3; i++) {
-//            String modifier = "%." + (6 + (i * 2)) + "f";
-//            String lat = String.format(modifier, location.getLatitude());
-//            String lng = String.format(modifier, location.getLongitude());
-//            String acc = String.format(modifier, location.getAccuracy());
-//            locations[i] = new UserLocation(lat, lng, time, acc, method + i);
-//        }
-//        return locations;
-//    }
-//
+    @ColumnInfo(name = "synced")
+    public boolean synced;
+
+
 }

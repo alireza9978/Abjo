@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.room.Room;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 import com.beardedhen.androidbootstrap.ColorOfProgress;
@@ -25,7 +24,6 @@ import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_base.Action;
-import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.locationRepository;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.service.OnCount;
@@ -35,6 +33,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static coleo.com.abjo.constants.Constants.ONE_HOUR;
 import static coleo.com.abjo.constants.Constants.context;
 import static coleo.com.abjo.constants.Constants.getLastAction;
+import static coleo.com.abjo.constants.Constants.getRepository;
 import static coleo.com.abjo.constants.Constants.hour;
 import static coleo.com.abjo.constants.Constants.isPause;
 import static coleo.com.abjo.constants.Constants.manageButton;
@@ -46,7 +45,7 @@ import static coleo.com.abjo.constants.Constants.start_stop;
 
 public class AfterStartFragment extends Fragment {
 
-
+    private long id;
     private String startActionKind = "";
     private String pauseActionKind = "";
     private String resumeActionKind = "";
@@ -217,6 +216,7 @@ public class AfterStartFragment extends Fragment {
     public void startServiceFromOut(boolean isStep, ProfileData data) {
         setActionKind(isStep);
         startService();
+        this.id = Constants.getSession();
     }
 
     public void setActionKind(boolean isStep) {
@@ -297,24 +297,28 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void startService() {
+
         startTime = System.currentTimeMillis();
-        makeDataBase();
+
+        locationRepository repository = locationRepository.get(null);
+        if (repository == null) {
+            repository = getRepository();
+            assert repository != null;
+        }
+        repository.insert(new Action(id, "start", Constants.getStepCount(context)));
+
         startJob();
         startTimer();
         start_stop.setImageResource(R.mipmap.stop_icon);
         pause_resume.setVisibility(View.VISIBLE);
 
-        locationRepository repository = locationRepository.get(null);
-        if (repository != null) {
-            repository.insert(new Action("" + System.currentTimeMillis(), "start"));
-        }
+
     }
 
     private void stopService() {
-
         locationRepository repository = locationRepository.get(null);
         if (repository != null) {
-            repository.insert(new Action("" + System.currentTimeMillis(), "stop"));
+            repository.insert(new Action(id, "stop", Constants.getStepCount(context)));
             repository.makeJsonAndSend();
         }
         stopJob();
@@ -362,15 +366,6 @@ public class AfterStartFragment extends Fragment {
         pauseJob();
     }
 
-    private void makeDataBase() {
-        TravelDataBase dataBase = Room.databaseBuilder(context.getApplicationContext(),
-                TravelDataBase.class, "database-name").build();
-        locationRepository repository = locationRepository.get(dataBase);
-        assert repository != null;
-        repository.setUserLocationDao(dataBase.userDao());
-        repository.setActionDao(dataBase.actionDao());
-        repository.nukeTable();
-    }
 
     private void updateProfile(ProfileData data) {
         name.setText(data.getUser().getFullName());

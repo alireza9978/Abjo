@@ -2,17 +2,15 @@ package coleo.com.abjo.data_base;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Environment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
+import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.server_class.ServerClass;
 import coleo.com.abjo.service.SaverReceiver;
 
@@ -68,7 +66,12 @@ public class locationRepository {
     }
 
     public void makeJsonAndSend() {
-        new getAsyncTask(userLocationDao, travelDataBase, pauseDao).execute();
+        new getAsyncTask(userLocationDao, pauseDao).execute();
+    }
+
+    public void updateUnsynced(MainActivity activity) {
+        CountAsyncTask temp = new CountAsyncTask(pauseDao);
+        temp.execute(activity);
     }
 
     private static class insertPauseAsyncTask extends AsyncTask<Action, Void, Void> {
@@ -137,29 +140,24 @@ public class locationRepository {
     private static class getAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
         private UserLocationDao mAsyncTaskDao;
-        private TravelDataBase travelDataBase;
         private PauseDao pauseDao;
 
-        getAsyncTask(UserLocationDao dao, TravelDataBase db, PauseDao pauseDao) {
+        getAsyncTask(UserLocationDao dao, PauseDao pauseDao) {
             this.pauseDao = pauseDao;
-            travelDataBase = db;
             mAsyncTaskDao = dao;
         }
 
         @Override
         protected JSONObject doInBackground(Void... voids) {
-            return makeJson(mAsyncTaskDao.getAll(), pauseDao.getAll());
+            return makeJson(mAsyncTaskDao.getNotSynced(), pauseDao.getNotSynced());
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            travelDataBase.close();
             Intent intent = new Intent(context, SaverReceiver.class);
             context.stopService(intent);
-            if (!ServerClass.isNetworkConnected(context))
-                writeToFile(jsonObject);
-            else
+            if (ServerClass.isNetworkConnected(context))
                 ServerClass.sendActivityData(jsonObject, context);
         }
 
@@ -169,6 +167,7 @@ public class locationRepository {
             try {
                 for (Action p : actions) {
                     JSONObject temp = new JSONObject();
+                    temp.put("session", p.id);
                     temp.put("number", p.number);
                     temp.put("time", p.time);
                     temp.put("action", p.action);
@@ -180,6 +179,7 @@ public class locationRepository {
             for (UserLocation location : locations) {
                 JSONObject locationJsonObject = new JSONObject();
                 try {
+                    locationJsonObject.put("session", location.id);
                     locationJsonObject.put("lat", location.latitude);
                     locationJsonObject.put("lng", location.longitude);
                     locationJsonObject.put("acc", location.accuracy);
@@ -196,20 +196,30 @@ public class locationRepository {
             return object;
         }
 
-        private void writeToFile(JSONObject temp) {
-            try {
-                File path = Environment.getDataDirectory();
-                File myFile = new File(path, "Location" + System.currentTimeMillis() + ".txt");
-                FileOutputStream fOut = new FileOutputStream(myFile, true);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                myOutWriter.append(temp.toString());
-                myOutWriter.close();
-                fOut.close();
-            } catch (java.io.IOException e) {
-                e.printStackTrace();
-            }
+    }
+
+    private static class CountAsyncTask extends AsyncTask<MainActivity, Void, Integer> {
+
+        private PauseDao pauseDao;
+
+        CountAsyncTask(PauseDao pauseDao) {
+            this.pauseDao = pauseDao;
         }
 
+        @Override
+        protected Integer doInBackground(MainActivity... mainActivities) {
+            List<Action> actions = pauseDao.getNotSynced();
+            ArrayList<Long> seen = new ArrayList<>();
+            for (Action action : actions) {
+                if (!action.synced) {
+                    if (!seen.contains(action.id)) {
+                        seen.add(action.id);
+                    }
+                }
+            }
+            mainActivities[0].syncCount(seen.size());
+            return null;
+        }
     }
 
 }

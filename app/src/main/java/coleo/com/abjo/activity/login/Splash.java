@@ -65,7 +65,8 @@ public class Splash extends AppCompatActivity {
 
     private void startApp() {
         retry.setEnabled(false);
-        if (ServerClass.isNetworkConnected(this)) {
+        if (ServerClass.isNetworkConnected(this))
+        {
             retry.setVisibility(View.INVISIBLE);
             String token = Constants.getToken(this);
             final boolean goPhone = token.equals(Constants.NO_TOKEN) || token.isEmpty();
@@ -86,7 +87,8 @@ public class Splash extends AppCompatActivity {
                 }
             };
             new Handler().postDelayed(runnable, 1000);
-        } else {
+        }
+        else {
             enable();
             Toast.makeText(context, "اتصال اینترنت خود را بررسی کنید", Toast.LENGTH_SHORT).show();
         }

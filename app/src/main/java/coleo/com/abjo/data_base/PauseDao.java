@@ -13,8 +13,11 @@ public interface PauseDao {
     @Query("SELECT * FROM `Action`")
     List<Action> getAll();
 
-    @Query("DELETE FROM `Action`")
+    @Query("DELETE FROM `Action` WHERE synced='TRUE'")
     void nukeTable();
+
+    @Query("SELECT * FROM `Action` WHERE synced='FALSE'")
+    List<Action> getNotSynced();
 
     @Insert
     void insertAll(Action... users);

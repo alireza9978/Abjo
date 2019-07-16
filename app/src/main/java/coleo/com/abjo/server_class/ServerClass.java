@@ -461,6 +461,28 @@ public class ServerClass {
         return null;
     }
 
+    public static void openNewSession(final Context context, final boolean step, final ProfileData data) {
+        String url = Constants.URL_OPEN_SESSION;
+
+        FirstObjectRequest jsonObjectRequest = new FirstObjectRequest
+                (context, Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        String id = "sad";//todo get this from server
+                        Constants.setSession(id);
+                        ((MainActivity) context).showAfterStart(step,data);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(context, error);
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
     public static void sendActivityData(JSONObject data,Context context){
 
         //todo send req

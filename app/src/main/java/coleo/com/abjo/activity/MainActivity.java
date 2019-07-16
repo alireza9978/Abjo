@@ -199,12 +199,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         badge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Constants.getJSONCount() > 0) {
-                    ArrayList<JSONObject> jsonObjects = Constants.getJSONs();
-                    for (JSONObject jsonObject : jsonObjects)
-                        ServerClass.sendActivityData(jsonObject, context);
-                } else {
-                    Toast.makeText(context, "you are synced", Toast.LENGTH_SHORT).show();
+                if (ServerClass.isNetworkConnected(context)){
+                    if (remain > 0) {
+                        Constants.sendJSONs();
+                    } else {
+                        Toast.makeText(context, "you are synced", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -221,8 +221,9 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         drawerLayout.closeDrawer();
 
         Bundle extra = getIntent().getExtras();
-//        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
-        boolean temp = false;
+        assert extra != null;
+        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+//        boolean temp = false;
         if (!Constants.getLastAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             temp = true;
         }
@@ -243,8 +244,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     }
 
-
-
     public void toggleNavigation(){
         if (drawerLayout.isDrawerOpen())
             drawerLayout.closeDrawer();
@@ -262,11 +261,17 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             drawerLayout.openDrawer();
     }
 
+    private int remain;
+    public void syncCount(int count){
+        remain = count;
+        badge.setNumber(count);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         Constants.context = this;
-        badge.setNumber(Constants.getJSONCount());
+        Constants.getNotSendSession(this);
 //        share.setEnabled(true);
 //        checkPermission();
 //        ServerClass.getProfile(this, true);
@@ -360,4 +365,20 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         ((AfterStartFragment) fragment4).startServiceFromNotification(data);
     }
 
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

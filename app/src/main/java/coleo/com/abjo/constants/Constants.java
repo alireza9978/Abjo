@@ -14,10 +14,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -28,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.android.volley.VolleyError;
 import com.robinhood.ticker.TickerView;
@@ -40,14 +42,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.Splash;
+import coleo.com.abjo.data_base.TravelDataBase;
+import coleo.com.abjo.data_base.locationRepository;
 import coleo.com.abjo.service.SaverReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.SENSOR_SERVICE;
 
 public class Constants {
 
@@ -56,6 +60,8 @@ public class Constants {
     public static final double fuckingRatio = 1.351543942992874;
     public static final double fuckingRatioHoshyar = 1.34261444077;
     public static final double fuckingRatioTop = 1.653934300993125;
+
+    public static locationRepository repository;
 
     private final static String TOKEN_STORAGE = "someWhereInDarkness";
     private final static String TOKEN_DATA = "someWhereInDarkness12";
@@ -69,10 +75,13 @@ public class Constants {
     public static final String URL_GET_USER_PROFILE = Base_Url + "users_store/";
     public static final String URL_GET_LEADER_BOARD = Base_Url + "leader_board/";
     public static final String URL_GET_HISTORY = Base_Url + "user_records_store/";
+    public static final String URL_OPEN_SESSION = Base_Url + "user_records_store/";//todo get this url
 
     //intent
     public static final String PHONE_FROM_LOGIN = "code data";
     public static final String DATA_INVITE_CODE = "invite data";
+    public static final String OPEN_SESSION_ID = "session id";
+    public static final String CURRENT_SESSION_ID = "session id";
 
     //timer Text view
     public static TickerView hour;
@@ -100,6 +109,8 @@ public class Constants {
                 !action.equals(ACTION.RESUME_FOREGROUND_ACTION_BIKE);
 
     }
+
+    private static Sensor stepCounter;
 
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
@@ -395,37 +406,13 @@ public class Constants {
         }
     }
 
-    public static int getJSONCount() {
-        File path = Environment.getDataDirectory();
-        int ct = 0;
-        if (path.isDirectory()) {
-            for (File temp : path.listFiles()) {
-                if (temp.exists() && !temp.isDirectory()) {
-                    if (temp.getName().contains("location")) {
-                        ct++;
-                    }
-                }
-            }
-        }
-        return ct;
+    public static void getNotSendSession(MainActivity activity) {
+        locationRepository repository = getRepository();
+        repository.updateUnsynced(activity);
     }
 
-    public static ArrayList<JSONObject> getJSONs() {
-        File path = Environment.getDataDirectory();
-        ArrayList<JSONObject> lists = new ArrayList<>();
-        if (path.isDirectory()) {
-            for (File temp : path.listFiles()) {
-                if (temp.exists() && !temp.isDirectory()) {
-                    if (temp.getName().contains("location")) {
-                        JSONObject jsonObject = fileParser(temp);
-                        if (jsonObject != null) {
-                            lists.add(jsonObject);
-                        }
-                    }
-                }
-            }
-        }
-        return lists;
+    public static void sendJSONs() {
+        repository.makeJsonAndSend();
     }
 
     private static JSONObject fileParser(File file) {
@@ -446,6 +433,46 @@ public class Constants {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static long getStepCount(Context context) {
+        if (stepCounter == null) {
+            SensorManager sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+            stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        }
+        return (long) stepCounter.getResolution();
+    }
+
+    public static void setSession(String id) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Constants.CURRENT_SESSION_ID, id);
+        editor.apply();
+    }
+
+    public static long getSession() {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        return sharedPref.getLong(Constants.CURRENT_SESSION_ID, -1);
+    }
+
+    public static void makeDataBase() {
+        TravelDataBase dataBase = Room.databaseBuilder(context.getApplicationContext(),
+                TravelDataBase.class, "database-name").build();
+        repository = locationRepository.get(dataBase);
+        assert repository != null;
+        repository.setUserLocationDao(dataBase.userDao());
+        repository.setActionDao(dataBase.actionDao());
+        repository.nukeTable();
+    }
+
+    public static locationRepository getRepository() {
+        if (repository == null) {
+            makeDataBase();
+        }
+        return repository;
     }
 
 }

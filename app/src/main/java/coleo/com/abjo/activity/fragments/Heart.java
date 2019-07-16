@@ -21,6 +21,7 @@ import java.io.Serializable;
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.data_class.ProfileData;
+import coleo.com.abjo.server_class.ServerClass;
 
 public class Heart extends Fragment implements Serializable {
 
@@ -71,7 +72,7 @@ public class Heart extends Fragment implements Serializable {
             @Override
             public void onClick(View v) {
                 if (((MainActivity) container.getContext()).checkFullPermission()) {
-                    ((MainActivity) container.getContext()).showAfterStart(walk, data);
+                    ServerClass.openNewSession(container.getContext(),walk, data);
                 }
             }
         });

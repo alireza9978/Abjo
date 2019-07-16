@@ -32,11 +32,12 @@ import static coleo.com.abjo.constants.Constants.updateNotification;
 public class SaverService extends Service {
 
     private static final int id = Constants.NOTIFICATION_ID.FOREGROUND_SERVICE;
-
+    private static long session;
     @Override
     public void onCreate() {
         super.onCreate();
     }
+
 
     @Nullable
     @Override
@@ -69,6 +70,7 @@ public class SaverService extends Service {
                         if (isStep) {
                             title = "پیاده روی";
                         }
+                        session = Constants.getSession();
                         builder = showNotification(title, workingMassage, context, true, false, isStep, false);
                         startForeground(id, builder.build());
                         startJob();
@@ -78,7 +80,8 @@ public class SaverService extends Service {
                     case Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP:
                         Constants.isWorking = true;
                         Constants.isPause = true;
-                        Objects.requireNonNull(locationRepository.get(null)).insert(new Action("" + System.currentTimeMillis(), "pause"));
+                        Objects.requireNonNull(locationRepository.get(null)).insert(
+                                new Action(session, "pause", Constants.getStepCount(context)));
                         stopJob();
                         updateNotification(builder, "توقف", "در حال حاضر امتیاز شما محاسبه نمی شود.", context, true, isActionKindStep(action));
                         if (context != null) {
@@ -90,7 +93,8 @@ public class SaverService extends Service {
                         Constants.isPause = false;
                         Constants.isWorking = true;
                         startJob();
-                        Objects.requireNonNull(locationRepository.get(null)).insert(new Action("" + System.currentTimeMillis(), "resume"));
+                        Objects.requireNonNull(locationRepository.get(null)).insert(
+                                new Action(session, "resume", Constants.getStepCount(context)));
                         boolean isStep = isActionKindStep(action);
                         String title = "دوچرخه";
                         if (isStep) {
@@ -124,8 +128,8 @@ public class SaverService extends Service {
                     public void onLocationUpdated(Location location) {
                         if (!isPause && isWorking)
                             Objects.requireNonNull(locationRepository.get(null))
-                                    .insert(new UserLocation("" + location.getLatitude(),"" + location.getLongitude(),
-                                            "" + System.currentTimeMillis(), "" + location.getAccuracy()));
+                                    .insert(new UserLocation(session, "" + location.getLatitude()
+                                            , "" + location.getLongitude(), "" + location.getAccuracy()));
 
                     }
                 });
