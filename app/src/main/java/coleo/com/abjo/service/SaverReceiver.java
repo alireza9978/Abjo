@@ -13,6 +13,7 @@ import coleo.com.abjo.constants.Constants;
 
 public class SaverReceiver extends BroadcastReceiver {
 
+    String TAG = "receiver";
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("Receiver", "onReceive: real");
@@ -26,6 +27,7 @@ public class SaverReceiver extends BroadcastReceiver {
         } else {
             start.setAction(Constants.ACTION.START_FOREGROUND_ACTION_BIKE);
         }
+        Log.i(TAG, "onReceive: ");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(start);
         } else {

@@ -1,10 +1,8 @@
 package coleo.com.abjo.activity;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -23,8 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
 import com.nex3z.notificationbadge.NotificationBadge;
-
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,12 +43,12 @@ import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
-import coleo.com.abjo.service.SaverReceiver;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
 
+    String TAG = "AFTER_START";
     final Fragment fragment1 = new Profile();
     final Fragment fragment2 = new Heart();
     final Fragment fragment3 = new LeaderBoard();
@@ -68,6 +65,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private ImageView menuButton;
     private ImageView share;
     private DuoDrawerLayout drawerLayout;
+
+    @Override
+    protected void onStop() {
+        Constants.getRepository().close();
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,10 +223,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         drawerLayout.openDrawer();
         drawerLayout.closeDrawer();
 
-        Bundle extra = getIntent().getExtras();
-        assert extra != null;
-        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
-//        boolean temp = false;
+//        Bundle extra = getIntent().getExtras();
+//        assert extra != null;
+//        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+        boolean temp = false;
         if (!Constants.getLastAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             temp = true;
         }
@@ -235,12 +238,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             }
         }
 
-        ComponentName receiver = new ComponentName(context, SaverReceiver.class);
-        PackageManager pm = context.getPackageManager();
+//        ComponentName receiver = new ComponentName(context, SaverReceiver.class);
+//        PackageManager pm = context.getPackageManager();
+//
+//        pm.setComponentEnabledSetting(receiver,
+//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                PackageManager.DONT_KILL_APP);
 
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
+        Log.i(TAG, "onCreate: ");
 
     }
 
@@ -272,12 +277,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onResume();
         Constants.context = this;
         Constants.getNotSendSession(this);
+        Log.i(TAG, "onResume: ");
 //        share.setEnabled(true);
 //        checkPermission();
 //        ServerClass.getProfile(this, true);
     }
 
     public boolean checkFullPermission() {
+        Log.i(TAG, "checkFullPermission: ");
         if (Constants.checkPermission(this)) {
             return Constants.checkLocation(this);
         }
@@ -304,11 +311,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     }
 
     public void startTimer(){
+        Log.i(TAG, "startTimer: ");
         ((AfterStartFragment) fragment4).resumeFromNotification();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         //Do not call super class method here.
 //        super.onSaveInstanceState(outState);
     }
@@ -365,7 +373,11 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         ((AfterStartFragment) fragment4).startServiceFromNotification(data);
     }
 
-
+    public void restart() {
+        finish();
+        Intent intent = new Intent(this, Splash.class);
+        startActivity(intent);
+    }
 
 }
 

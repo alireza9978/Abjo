@@ -232,12 +232,14 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void updateJob() {
-        Intent intent = new Intent(context, SaverService.class);
-        intent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
+        if (!lastAction.equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
+            Intent intent = new Intent(context, SaverService.class);
+            intent.setAction(Constants.ACTION.UPDATE_FOREGROUND_ACTION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
         }
     }
 
@@ -259,6 +261,7 @@ public class AfterStartFragment extends Fragment {
         } else {
             context.startService(intent);
         }
+        Constants.endSession();
     }
 
     private void resumeJob() {
@@ -297,7 +300,8 @@ public class AfterStartFragment extends Fragment {
     }
 
     private void startService() {
-
+        String TAG = "AFTER_START";
+        Log.i(TAG, "startService: ");
         startTime = System.currentTimeMillis();
 
         locationRepository repository = locationRepository.get(null);

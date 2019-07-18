@@ -81,7 +81,8 @@ public class Constants {
     public static final String PHONE_FROM_LOGIN = "code data";
     public static final String DATA_INVITE_CODE = "invite data";
     public static final String OPEN_SESSION_ID = "session id";
-    public static final String CURRENT_SESSION_ID = "session id";
+    public static final String CURRENT_SESSION_ID = "session id long";
+    public static final String HAVE_SESSION_ID = "session id valid";
 
     //timer Text view
     public static TickerView hour;
@@ -444,11 +445,12 @@ public class Constants {
         return (long) stepCounter.getResolution();
     }
 
-    public static void setSession(String id) {
+    public static void setSession(long id) {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(Constants.CURRENT_SESSION_ID, id);
+        editor.putBoolean(Constants.HAVE_SESSION_ID,true);
+        editor.putLong(Constants.CURRENT_SESSION_ID, id);
         editor.apply();
     }
 
@@ -456,6 +458,15 @@ public class Constants {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
         return sharedPref.getLong(Constants.CURRENT_SESSION_ID, -1);
+    }
+
+    public static void endSession(){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.HAVE_SESSION_ID,false);
+        editor.putLong(Constants.CURRENT_SESSION_ID, -1);
+        editor.apply();
     }
 
     public static void makeDataBase() {

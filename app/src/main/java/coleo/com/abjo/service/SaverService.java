@@ -3,6 +3,7 @@ package coleo.com.abjo.service;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -33,6 +34,8 @@ public class SaverService extends Service {
 
     private static final int id = Constants.NOTIFICATION_ID.FOREGROUND_SERVICE;
     private static long session;
+    String TAG = "SERVICE";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,8 +66,8 @@ public class SaverService extends Service {
                     }
                     case Constants.ACTION.START_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.START_FOREGROUND_ACTION_STEP: {
-                        Constants.isWorking = true;
-                        Constants.isPause = false;
+                        isWorking = true;
+                        isPause = false;
                         boolean isStep = isActionKindStep(action);
                         String title = "دوچرخه";
                         if (isStep) {
@@ -78,8 +81,8 @@ public class SaverService extends Service {
                     }
                     case Constants.ACTION.PAUSE_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.PAUSE_FOREGROUND_ACTION_STEP:
-                        Constants.isWorking = true;
-                        Constants.isPause = true;
+                        isWorking = true;
+                        isPause = true;
                         Objects.requireNonNull(locationRepository.get(null)).insert(
                                 new Action(session, "pause", Constants.getStepCount(context)));
                         stopJob();
@@ -90,8 +93,8 @@ public class SaverService extends Service {
                         break;
                     case Constants.ACTION.RESUME_FOREGROUND_ACTION_BIKE:
                     case Constants.ACTION.RESUME_FOREGROUND_ACTION_STEP: {
-                        Constants.isPause = false;
-                        Constants.isWorking = true;
+                        isPause = false;
+                        isWorking = true;
                         startJob();
                         Objects.requireNonNull(locationRepository.get(null)).insert(
                                 new Action(session, "resume", Constants.getStepCount(context)));
@@ -107,8 +110,8 @@ public class SaverService extends Service {
                         break;
                     }
                     case (Constants.ACTION.STOP_FOREGROUND_ACTION):
-                        Constants.isWorking = false;
-                        Constants.isPause = false;
+                        isWorking = false;
+                        isPause = false;
                         stopJob();
                         stopForeground(true);
                         stopSelf(id);

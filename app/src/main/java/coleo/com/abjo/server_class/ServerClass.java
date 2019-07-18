@@ -468,7 +468,7 @@ public class ServerClass {
                 (context, Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String id = "sad";//todo get this from server
+                        long id = 1512;//todo get this from server
                         Constants.setSession(id);
                         ((MainActivity) context).showAfterStart(step,data);
                     }
@@ -485,10 +485,18 @@ public class ServerClass {
 
     public static void sendActivityData(JSONObject data,Context context){
 
+        if (!isNetworkConnected(context)) {
+            ((MainActivity) context).restart();
+            return;
+        } else {
+
+        }
+
         //todo send req
         //on 200 show dialog & delete that file
         //on error save json
         //at end check remain count
+
 
     }
 

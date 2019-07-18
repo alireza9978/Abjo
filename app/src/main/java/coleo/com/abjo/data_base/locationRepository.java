@@ -159,6 +159,9 @@ public class locationRepository {
             context.stopService(intent);
             if (ServerClass.isNetworkConnected(context))
                 ServerClass.sendActivityData(jsonObject, context);
+            else{
+
+            }
         }
 
         private JSONObject makeJson(List<UserLocation> locations, List<Action> actions) {
