@@ -1,8 +1,6 @@
 package coleo.com.abjo.server_class;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.util.Log;
@@ -30,7 +28,6 @@ import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.CodeActivity;
 import coleo.com.abjo.activity.login.Login;
 import coleo.com.abjo.activity.login.SignUpActivity;
-import coleo.com.abjo.activity.login.Splash;
 import coleo.com.abjo.constants.Constants;
 import coleo.com.abjo.data_class.ActivityKind;
 import coleo.com.abjo.data_class.DateAction;
@@ -69,13 +66,14 @@ public class ServerClass {
         if (error.networkResponse == null) {
             Toast.makeText(context, "اتصال اینترنت خود را بررسی کنید", Toast.LENGTH_SHORT).show();
         } else {
-            if (error.networkResponse.statusCode == 403) {
-                Constants.setToken(context, "");
-                Intent intent = new Intent(context, Splash.class);
-                context.startActivity(intent);
-                ((Activity) context).finish();
-                return;
-            }
+//            if (error.networkResponse.statusCode == 403) {
+//                Constants.setToken(context, "");
+//                Intent intent = new Intent(context, Splash.class);
+//                context.startActivity(intent);
+//                ((Activity) context).finish();
+//                return;
+//            }
+            error.printStackTrace();
             Toast.makeText(context, getErrorMessage(error), Toast.LENGTH_SHORT).show();
         }
     }
@@ -104,35 +102,6 @@ public class ServerClass {
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
-    public static class StrImplRequest extends StringRequest {
-
-        static boolean isNewUser = false;
-
-        public StrImplRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
-            super(method, url, listener, errorListener);
-        }
-
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            HashMap<String, String> headers = new HashMap<String, String>();
-            headers.put("Content-Type", "application/json");
-            headers.put("role", "user");
-            return headers;
-        }
-
-        @Override
-        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-            int temp = response.statusCode;
-            Log.i(TAG, "parseNetworkResponse: ");
-            if (temp == 201) {
-                isNewUser = true;
-            }
-            return super.parseNetworkResponse(response);
-        }
-
-
-    }
-
     public static void sendCode(final Context context, final String phone, final String code) {
 
         String url = Constants.URL_SEND_CODE;
@@ -144,17 +113,17 @@ public class ServerClass {
         StrImplRequest request = new StrImplRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                JSONObject object = null;
+                try {
+                    object = new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                saveToken(context, object);
                 if (StrImplRequest.isNewUser) {
                     ((CodeActivity) context).goSignUp();
                     ((CodeActivity) context).finish();
                 } else {
-                    JSONObject object = null;
-                    try {
-                        object = new JSONObject(response);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    saveToken(context, object);
                     ((CodeActivity) context).goMainPage();
                 }
             }
@@ -169,6 +138,44 @@ public class ServerClass {
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(request);
+
+    }
+
+    public static void getProfile(final Context context) {
+
+        String url = Constants.URL_GET_USER_PROFILE;
+
+        ObjectRequest jsonObjectRequest = new ObjectRequest
+                (context, Request.Method.GET, url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                saveToken(context, response);
+                                ((MainActivity) context).updateProfile(parseProfile(response));
+                            }
+                        }
+                        , new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error != null) {
+                            if (error.networkResponse != null) {
+                                if (error.networkResponse.statusCode == 201) {
+                                    String jsonString = new String(error.networkResponse.data);
+                                    try {
+                                        saveToken(context, new JSONObject(jsonString));
+                                        ((CodeActivity) context).goSignUp();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                        ServerClass.handleError(context, error);
+                    }
+                }
+                );
+
+        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
 
     }
 
@@ -213,45 +220,26 @@ public class ServerClass {
 
     }
 
-    public static void getProfile(final Context context, final boolean fromNotif) {
-
-        String url = Constants.URL_GET_USER_PROFILE;
-
-        ObjectRequest jsonObjectRequest = new ObjectRequest
-                (context, Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                saveToken(context, response);
-                                if (fromNotif)
-                                    ((MainActivity) context).updateProfile(parseProfile(response));
-                                else
-                                    ((MainActivity) context).updateProfileFromNotif(parseProfile(response));
-                            }
-                        }
-                        , new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-//                        if (error != null) {
-//                            if (error.networkResponse != null) {
-//                                if (error.networkResponse.statusCode == 201) {
-//                                    String jsonString = new String(error.networkResponse.data);
-//                                    try {
-//                                        saveToken(context, new JSONObject(jsonString));
-//                                        ((CodeActivity) context).goSignUp();
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                            }
-//                        }
-                        ServerClass.handleError(context, error);
-                    }
-                }
-                );
-
-        MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
-
+    private static ProfileData parseProfile(JSONObject response) {
+        Log.i(TAG, "parseProfile: " + response.toString());
+        int coins, hours;
+        String note = " ";
+        try {
+            User user = parseUser(response, "user_data");
+            try {
+                note = response.getString("note");
+            } catch (JSONException e) {
+                Log.i(TAG, "parseProfile: note not found");
+            }
+            JSONObject user_data = response.getJSONObject("user_data");
+            coins = user_data.getInt("coins");
+            hours = user_data.getInt("hours");
+            UserLevel level = parseLevel(user_data);
+            return new ProfileData(user, coins, hours, level, note);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void getLeaderBoard(final Context context) {
@@ -400,22 +388,18 @@ public class ServerClass {
         return null;
     }
 
-    private static ProfileData parseProfile(JSONObject response) {
-        Log.i(TAG, "parseProfile: " + response.toString());
-        int coins, hours;
-        String note;
+    private static User parseUser(JSONObject response, String from) {
+        Log.i(TAG, "parseUser: " + response.toString());
+        String first, last, number;
+        boolean isWoman;
         try {
-            User user = parseUser(response, "user_data");
-            JSONObject user_data = response.getJSONObject("user_data");
-            coins = user_data.getInt("coins");
-            hours = user_data.getInt("hours");
-            try {
-                note = user_data.getString("note");
-            } catch (JSONException e) {
-                note = " ";
-            }
-            UserLevel level = parseLevel(user_data);
-            return new ProfileData(user, coins, hours, level, note);
+            JSONObject user = response.getJSONObject(from);
+            first = user.getString("first_name");
+            last = user.getString("last_name");
+            number = user.getString("phone");
+//            isWoman = user.getBoolean("is_woman");
+            isWoman = false;//todo fuckkkkkk
+            return new User(first, last, number, isWoman);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -444,23 +428,6 @@ public class ServerClass {
         return parseUser(response, "user");
     }
 
-    private static User parseUser(JSONObject response, String from) {
-        Log.i(TAG, "parseUser: " + response.toString());
-        String first,last,number;
-        boolean isWoman;
-        try {
-            JSONObject user = response.getJSONObject(from);
-            first = user.getString("first_name");
-            last = user.getString("last_name");
-            number = user.getString("phone");
-            isWoman = user.getBoolean("is_woman");
-            return new User(first,last,number,isWoman);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static void openNewSession(final Context context, final boolean step, final ProfileData data) {
         String url = Constants.URL_OPEN_SESSION;
 
@@ -470,6 +437,7 @@ public class ServerClass {
                     public void onResponse(JSONObject response) {
                         long id = 1512;//todo get this from server
                         Constants.setSession(id);
+                        Constants.saveUserSession(data);
                         ((MainActivity) context).showAfterStart(step,data);
                     }
                 }, new Response.ErrorListener() {
@@ -481,6 +449,35 @@ public class ServerClass {
 
         // Access the RequestQueue through your singleton class.
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public static class StrImplRequest extends StringRequest {
+
+        static boolean isNewUser = false;
+
+        public StrImplRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
+            super(method, url, listener, errorListener);
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            HashMap<String, String> headers = new HashMap<String, String>();
+            headers.put("Content-Type", "application/json");
+            headers.put("role", "user");
+            return headers;
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            int temp = response.statusCode;
+            Log.i(TAG, "parseNetworkResponse: ");
+            if (temp == 201 || temp == 202) {
+                isNewUser = true;
+            }
+            return super.parseNetworkResponse(response);
+        }
+
+
     }
 
     public static void sendActivityData(JSONObject data,Context context){

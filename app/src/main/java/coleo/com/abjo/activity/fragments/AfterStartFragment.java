@@ -141,6 +141,7 @@ public class AfterStartFragment extends Fragment {
         lastAction = Constants.getLastAction();
         boolean isStep = Constants.isActionKindStep(lastAction);
         setActionKind(isStep);
+        updateProfile(data);
     }
 
     private void startTimer() {
@@ -214,6 +215,7 @@ public class AfterStartFragment extends Fragment {
     }
 
     public void startServiceFromOut(boolean isStep, ProfileData data) {
+        updateProfile(data);
         setActionKind(isStep);
         startService();
         this.id = Constants.getSession();

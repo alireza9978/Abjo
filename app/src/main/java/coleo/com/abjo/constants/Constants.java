@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.android.volley.VolleyError;
+import com.microsoft.appcenter.analytics.Analytics;
 import com.robinhood.ticker.TickerView;
 
 import org.json.JSONException;
@@ -42,12 +43,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.activity.login.Splash;
 import coleo.com.abjo.data_base.TravelDataBase;
 import coleo.com.abjo.data_base.locationRepository;
+import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.service.SaverReceiver;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -67,8 +71,7 @@ public class Constants {
     private final static String TOKEN_DATA = "someWhereInDarkness12";
     public final static String NO_TOKEN = "nothingInTheBag";
 
-    //url
-    private final static String Base_Url = "http://abjo.coleo.me/api/v1/";
+    public static final String CURRENT_SESSION_USER = "session user";
     public static final String URL_CHECK_PHONE = Base_Url + "auth/check_phone/";
     public static final String URL_SEND_CODE = Base_Url + "auth/check_code/";
     public static final String URL_MAKE_USER = Base_Url + "users_store/";
@@ -82,6 +85,8 @@ public class Constants {
     public static final String DATA_INVITE_CODE = "invite data";
     public static final String OPEN_SESSION_ID = "session id";
     public static final String CURRENT_SESSION_ID = "session id long";
+    //url
+    private final static String Base_Url = "http://abjo.coleo.ir/api/v1/";
     public static final String HAVE_SESSION_ID = "session id valid";
 
     //timer Text view
@@ -469,6 +474,23 @@ public class Constants {
         editor.apply();
     }
 
+    private static HashMap<String, String> map = new HashMap<>();
+
+    public static void saveUserSession(ProfileData data) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putStringSet(Constants.HAVE_SESSION_ID, data.toSet());
+        editor.apply();
+    }
+
+    public static ProfileData getLastUserDataSession() {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        HashSet<String> set = (HashSet<String>) sharedPref.getStringSet(Constants.HAVE_SESSION_ID, null);
+        return ProfileData.maker(set);
+    }
+
     public static void makeDataBase() {
         TravelDataBase dataBase = Room.databaseBuilder(context.getApplicationContext(),
                 TravelDataBase.class, "database-name").build();
@@ -484,6 +506,16 @@ public class Constants {
             makeDataBase();
         }
         return repository;
+    }
+
+    public static boolean isActiveSession() {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                Constants.OPEN_SESSION_ID, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(Constants.HAVE_SESSION_ID, false);
+    }
+
+    public static void trackEvent(String eventName) {
+        Analytics.trackEvent(eventName, map);
     }
 
 }

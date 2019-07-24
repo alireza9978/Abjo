@@ -1,5 +1,8 @@
 package coleo.com.abjo.data_class;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class User {
 
     private String firstName;
@@ -48,6 +51,14 @@ public class User {
 
     public String getFullName() {
         return " " + firstName + " " + lastName + " ";
+    }
+
+    public Set<String> toSet() {
+        HashSet<String> list = new HashSet<>();
+        list.add(firstName);
+        list.add(lastName);
+        list.add(number);
+        return list;
     }
 
 }

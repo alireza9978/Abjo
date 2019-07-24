@@ -1,8 +1,10 @@
 package coleo.com.abjo.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.material.tabs.TabLayout;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+import com.microsoft.appcenter.push.Push;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.io.Serializable;
@@ -43,6 +49,7 @@ import coleo.com.abjo.data_class.LeaderBoardData;
 import coleo.com.abjo.data_class.NavigationDrawerItem;
 import coleo.com.abjo.data_class.ProfileData;
 import coleo.com.abjo.server_class.ServerClass;
+import coleo.com.abjo.service.SaverReceiver;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
@@ -78,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         setContentView(R.layout.activity_main);
         TypefaceProvider.registerDefaultIconSets();
         Constants.context = this;
+
+        AppCenter.start(getApplication(), "1d67449a-1efc-42b3-a4e7-8f28f97b8f0a",
+                Analytics.class, Crashes.class, Push.class);
+
         LayoutInflater inflater = getLayoutInflater();
         View menu = inflater.inflate(R.layout.navigation_menu_layout, null, false);
 
@@ -122,13 +133,16 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 int icon = 0;
                 switch (tab.getPosition()) {
                     case 0: {
-//                        ServerClass.getLeaderBoard(context);
+                        Constants.trackEvent("open leader board");
+                        ServerClass.getLeaderBoard(context);
                         icon = R.drawable.leader_board_selected;
                         fm.beginTransaction().hide(active).show(fragment3).commit();
                         active = fragment3;
                         break;
                     }
                     case 1: {
+                        Constants.trackEvent("open main part");
+                        ServerClass.getProfile(context);
                         icon = R.drawable.heart_selected;
                         if (mainFragmentNumber == 0) {
                             fm.beginTransaction().hide(active).show(fragment2).commit();
@@ -142,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         break;
                     }
                     case 2: {
-//                        ServerClass.getHistory(context, 0);
+                        Constants.trackEvent("open history page");
+                        ServerClass.getHistory(context, 0);
                         icon = R.drawable.profile_selected;
                         fm.beginTransaction().hide(active).show(fragment1).commit();
                         active = fragment1;
@@ -202,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         badge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Constants.trackEvent("Sync Request");
                 if (ServerClass.isNetworkConnected(context)){
                     if (remain > 0) {
                         Constants.sendJSONs();
@@ -223,29 +239,25 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         drawerLayout.openDrawer();
         drawerLayout.closeDrawer();
 
-//        Bundle extra = getIntent().getExtras();
-//        assert extra != null;
-//        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
-        boolean temp = false;
-        if (!Constants.getLastAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
-            temp = true;
-        }
+        Bundle extra = getIntent().getExtras();
+        assert extra != null;
+        boolean temp = extra.getBoolean(Constants.FROM_NOTIFICATION, false);
+//        boolean temp = false;
         if (temp) {
-            if (ServerClass.isNetworkConnected(context))
+            if (Constants.isActiveSession())
                 showAfterStartFromNotification();
-            else {
-                Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
-            }
+            else
+                restart();
         }
 
-//        ComponentName receiver = new ComponentName(context, SaverReceiver.class);
-//        PackageManager pm = context.getPackageManager();
-//
-//        pm.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-//                PackageManager.DONT_KILL_APP);
 
-        Log.i(TAG, "onCreate: ");
+        ComponentName receiver = new ComponentName(context, SaverReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
 
     }
 
@@ -277,10 +289,19 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         super.onResume();
         Constants.context = this;
         Constants.getNotSendSession(this);
-        Log.i(TAG, "onResume: ");
 //        share.setEnabled(true);
 //        checkPermission();
-//        ServerClass.getProfile(this, true);
+
+        if (ServerClass.isNetworkConnected(context))
+            ServerClass.getProfile(this);
+        else {
+            if (Constants.isActiveSession())
+                updateProfile(Constants.getLastUserDataSession());
+            else {
+                restart();
+                Toast.makeText(context, "اینترنت خود را برسی کنید", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public boolean checkFullPermission() {
@@ -342,8 +363,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         fm.beginTransaction().hide(active).show(fragment4).commit();
         active = fragment4;
         ((AfterStartFragment) fragment4).setActionKind(Constants.isActionKindStep(Constants.getLastAction()));
-//        ServerClass.getProfile(context, false);
         menuButton.setVisibility(View.INVISIBLE);
+        if (ServerClass.isNetworkConnected(context))
+            ServerClass.getProfile(context);
+        else {
+            updateProfile(Constants.getLastUserDataSession());
+        }
     }
 
     public void backToMain() {
@@ -366,11 +391,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     }
 
     public void updateProfile(ProfileData data) {
-        ((Heart) fragment2).updateProfile(data);
-    }
-
-    public void updateProfileFromNotif(ProfileData data) {
-        ((AfterStartFragment) fragment4).startServiceFromNotification(data);
+        if (data != null) {
+            ((Heart) fragment2).updateProfile(data);
+            ((AfterStartFragment) fragment4).startServiceFromNotification(data);
+        }
     }
 
     public void restart() {

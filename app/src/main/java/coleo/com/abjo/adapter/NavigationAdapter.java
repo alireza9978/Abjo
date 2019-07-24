@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
 import coleo.com.abjo.R;
 import coleo.com.abjo.activity.MainActivity;
 import coleo.com.abjo.constants.Constants;
@@ -43,6 +44,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
             @Override
             public void onClick(View v) {
                 if (position == 4) {
+                    Constants.trackEvent("exit user account");
                     Constants.setToken(context, "");
                     ((MainActivity) context).finish();
                 }

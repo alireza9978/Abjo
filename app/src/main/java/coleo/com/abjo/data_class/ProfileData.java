@@ -1,6 +1,11 @@
 package coleo.com.abjo.data_class;
 
-public class ProfileData {
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class ProfileData implements Serializable {
 
     private User user;
     private int coins;
@@ -15,6 +20,7 @@ public class ProfileData {
         this.level = level;
         setNote(note);
     }
+
 
     public void setNote(String note) {
         if (note == null) {
@@ -70,4 +76,26 @@ public class ProfileData {
     public UserLevel getLevel() {
         return level;
     }
+
+    public static ProfileData maker(HashSet<String> set) {
+        if (set == null)
+            return null;
+        Iterator<String> iterator = set.iterator();
+        User user = new User(iterator.next(), iterator.next(), iterator.next(), false);
+        int coin = Integer.parseInt(iterator.next());
+        int hours = Integer.parseInt(iterator.next());
+        String note = iterator.next();
+        UserLevel level = UserLevel.maker(iterator);
+        return new ProfileData(user, coin, hours, level, note);
+    }
+
+    public Set<String> toSet() {
+        HashSet<String> list = new HashSet<>(user.toSet());
+        list.add("" + coins);
+        list.add("" + hours);
+        list.add("" + note);
+        list.addAll(level.toSet());
+        return list;
+    }
+
 }

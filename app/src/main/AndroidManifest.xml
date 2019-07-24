@@ -27,12 +27,6 @@
             android:name=".activity.MainActivity"
             android:launchMode="singleTop">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
         <activity android:name=".activity.login.SignUpActivity" />
         <activity
@@ -43,7 +37,11 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.login.Splash">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
 

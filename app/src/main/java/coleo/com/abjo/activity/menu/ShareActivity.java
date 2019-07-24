@@ -22,6 +22,8 @@ public class ShareActivity extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         final String inviteCode = extra.getString(Constants.DATA_INVITE_CODE);
 
+        Constants.trackEvent("sharePageOpened");
+
         ImageView back = findViewById(R.id.inviteBack);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
